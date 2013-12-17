@@ -170,7 +170,10 @@ namespace CoinPost
                 this.current_exchange = this.comboSourceCurrency.SelectedItem.ToString() + "_" + this.comboTargetCurrency.SelectedItem.ToString();
                 this.exchange_changed = true;
                 mutExchangeString.ReleaseMutex();
-                this.webBrowser.Url = new System.Uri("http://bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString() + this.comboTargetCurrency.SelectedItem.ToString()+":8080");
+                if (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC")
+                    this.webBrowser.Url = new System.Uri("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+                else
+                    this.webBrowser.Url = new System.Uri("http://bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString() + this.comboTargetCurrency.SelectedItem.ToString() + ":8080");
             }
         }
         private void SafeToggleTradeHistory()
@@ -297,8 +300,15 @@ namespace CoinPost
             ComboBox caller = (ComboBox)sender;
             if (caller.SelectedIndex == 0 && this.comboTargetCurrency.SelectedIndex == 0)
                 this.comboTargetCurrency.SelectedIndex = 1;
-            else if (caller.SelectedIndex != -1 && (caller.SelectedItem.ToString() == "FTC" || caller.SelectedItem.ToString() == "TRC") && this.comboTargetCurrency.SelectedIndex == 1)
+            if (caller.SelectedIndex != -1 && (caller.SelectedItem.ToString() == "FTC" || caller.SelectedItem.ToString() == "TRC"))
+            {
                 this.comboTargetCurrency.SelectedIndex = 0;
+                if(this.comboTargetCurrency.Items.Contains("USD"))
+                    this.comboTargetCurrency.Items.Remove("USD");
+            }
+            else if(!this.comboTargetCurrency.Items.Contains("USD"))
+                this.comboTargetCurrency.Items.Add("USD");
+
             this.SafeUpdateExchangeString();
             return;
         }
