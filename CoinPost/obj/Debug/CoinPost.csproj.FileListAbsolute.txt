@@ -1,0 +1,1 @@
+D:\space\vcsharp\CoinPost\CoinPost\bin\Debug\CoinPost.exe.config

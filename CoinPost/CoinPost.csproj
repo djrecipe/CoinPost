@@ -124,7 +124,7 @@
     <None Include="Resources\Reset.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BtceApi\BtceApi\BtceApi.csproj">
+    <ProjectReference Include="..\BtceApi\BtceApi\BtceApi.csproj">
       <Project>{266935b5-b5b2-462c-8308-20e2bd1360b5}</Project>
       <Name>BtceApi</Name>
     </ProjectReference>

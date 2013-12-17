@@ -1,0 +1,5 @@
+D:\space\vcsharp\CoinPost\CoinPost\CoinPostGUI.dll.config
+D:\space\vcsharp\CoinPost\CoinPost\CoinPostGUI.dll
+D:\space\vcsharp\CoinPost\CoinPost\CoinPostGUI.pdb
+D:\space\vcsharp\CoinPost\CoinPostGUI\obj\Release\CoinPostGUI.dll
+D:\space\vcsharp\CoinPost\CoinPostGUI\obj\Release\CoinPostGUI.pdb
