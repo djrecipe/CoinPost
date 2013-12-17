@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CoinPostGUI.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Background" Type="System.Drawing.Color" Scope="Application">
+      <Value Profile="(Default)">10, 10, 10</Value>
+    </Setting>
+    <Setting Name="EditField" Type="System.Drawing.Color" Scope="Application">
+      <Value Profile="(Default)">125, 125, 125</Value>
+    </Setting>
+    <Setting Name="Link" Type="System.Drawing.Color" Scope="Application">
+      <Value Profile="(Default)">102, 182, 255</Value>
+    </Setting>
+    <Setting Name="StaticField" Type="System.Drawing.Color" Scope="Application">
+      <Value Profile="(Default)">25, 25, 25</Value>
+    </Setting>
+    <Setting Name="Text" Type="System.Drawing.Color" Scope="Application">
+      <Value Profile="(Default)">DarkGreen</Value>
+    </Setting>
+    <Setting Name="BrightText" Type="System.Drawing.Color" Scope="Application">
+      <Value Profile="(Default)">102, 204, 102</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
