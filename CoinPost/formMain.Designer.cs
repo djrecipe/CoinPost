@@ -284,6 +284,7 @@
             // 
             // comboTargetCurrency
             // 
+            this.comboTargetCurrency.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             this.comboTargetCurrency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboTargetCurrency.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboTargetCurrency.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -301,6 +302,7 @@
             // 
             // comboSourceCurrency
             // 
+            this.comboSourceCurrency.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             this.comboSourceCurrency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboSourceCurrency.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboSourceCurrency.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -426,7 +428,7 @@
             this.gridBalances.ShowCellToolTips = false;
             this.gridBalances.ShowEditingIcon = false;
             this.gridBalances.ShowRowErrors = false;
-            this.gridBalances.Size = new System.Drawing.Size(144, 167);
+            this.gridBalances.Size = new System.Drawing.Size(144, 171);
             this.gridBalances.TabIndex = 0;
             this.gridBalances.TabStop = false;
             this.gridBalances.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBalances_CellContentClick);
@@ -466,7 +468,7 @@
             // 
             this.splitActiveOrders.Panel2.Controls.Add(this.gridSell);
             this.splitActiveOrders.Panel2MinSize = 100;
-            this.splitActiveOrders.Size = new System.Drawing.Size(469, 168);
+            this.splitActiveOrders.Size = new System.Drawing.Size(469, 172);
             this.splitActiveOrders.SplitterDistance = 222;
             this.splitActiveOrders.TabIndex = 13;
             // 
@@ -518,7 +520,7 @@
             this.gridBuy.ShowCellToolTips = false;
             this.gridBuy.ShowEditingIcon = false;
             this.gridBuy.ShowRowErrors = false;
-            this.gridBuy.Size = new System.Drawing.Size(220, 166);
+            this.gridBuy.Size = new System.Drawing.Size(220, 170);
             this.gridBuy.TabIndex = 0;
             this.gridBuy.TabStop = false;
             this.gridBuy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);
@@ -624,7 +626,7 @@
             this.gridSell.ShowCellToolTips = false;
             this.gridSell.ShowEditingIcon = false;
             this.gridSell.ShowRowErrors = false;
-            this.gridSell.Size = new System.Drawing.Size(241, 166);
+            this.gridSell.Size = new System.Drawing.Size(241, 170);
             this.gridSell.TabIndex = 0;
             this.gridSell.TabStop = false;
             this.gridSell.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);

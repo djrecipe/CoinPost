@@ -2,20 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Forms;
 
 using BtcE;
-using ZedGraph;
 using System.Text.RegularExpressions;
 
 namespace CoinPost
@@ -97,22 +90,9 @@ namespace CoinPost
             this.pendingTrades = new List<PendingTrade>();
             return true;
         }
-        private void InitializeColors()
-        {
-
-            this.BackColor = this.splitMain.BackColor = this.splitMain.Panel1.BackColor = this.splitMain.Panel2.BackColor = this.groupTrade.BackColor =
-                this.comboSourceCurrency.BackColor = this.comboTargetCurrency.BackColor = CoinPost.Properties.Settings.Default.Background;
-            this.txtTotal.BackColor =  CoinPost.Properties.Settings.Default.StaticField;
-            this.txtPrice.BackColor = this.txtQuantity.BackColor = CoinPost.Properties.Settings.Default.EditField;
-            this.lklblLastPrice.LinkColor = this.lklblShowAllHistory.LinkColor  = CoinPost.Properties.Settings.Default.Link;
-            this.groupTrade.ForeColor=this.btnBuy.ForeColor=this.btnSell.ForeColor=this.lblAsk.ForeColor = this.lblBid.ForeColor = this.lblBlank.ForeColor =
-                this.txtTotal.ForeColor = this.lblCurrentPrice.ForeColor = this.lblTotal.ForeColor = CoinPost.Properties.Settings.Default.BrightText;
-            return;
-        }
         public formMain()
         {
             this.InitializeComponent();
-            this.InitializeColors();
             #region Child Form Initialization
             this.fTradeHistory = new formTradeHistory(new delEmpty(this.SafeToggleTradeHistory));
             #endregion
