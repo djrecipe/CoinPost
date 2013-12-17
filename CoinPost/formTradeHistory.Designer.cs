@@ -47,13 +47,13 @@
             this.gridSell = new CoinPost.Grid();
             this.colBuyID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colBuyPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colBuyPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSellID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSellTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colSellPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSellQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSellPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSellTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
@@ -105,8 +105,8 @@
             this.gridBuy.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colBuyID,
             this.colBuyTime,
-            this.colBuyPrice,
             this.colBuyQuantity,
+            this.colBuyPrice,
             this.colBuyTotal});
             dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
@@ -156,8 +156,8 @@
             this.gridSell.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colSellID,
             this.colSellTime,
-            this.colSellPrice,
             this.colSellQuantity,
+            this.colSellPrice,
             this.colSellTotal});
             dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
@@ -205,23 +205,23 @@
             this.colBuyTime.ReadOnly = true;
             this.colBuyTime.Width = 66;
             // 
-            // colBuyPrice
-            // 
-            this.colBuyPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.colBuyPrice.DefaultCellStyle = dataGridViewCellStyle4;
-            this.colBuyPrice.HeaderText = "Price";
-            this.colBuyPrice.Name = "colBuyPrice";
-            this.colBuyPrice.ReadOnly = true;
-            // 
             // colBuyQuantity
             // 
             this.colBuyQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.colBuyQuantity.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.colBuyQuantity.DefaultCellStyle = dataGridViewCellStyle4;
             this.colBuyQuantity.HeaderText = "Buy";
             this.colBuyQuantity.Name = "colBuyQuantity";
             this.colBuyQuantity.ReadOnly = true;
+            // 
+            // colBuyPrice
+            // 
+            this.colBuyPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.colBuyPrice.DefaultCellStyle = dataGridViewCellStyle5;
+            this.colBuyPrice.HeaderText = "Price";
+            this.colBuyPrice.Name = "colBuyPrice";
+            this.colBuyPrice.ReadOnly = true;
             // 
             // colBuyTotal
             // 
@@ -253,23 +253,23 @@
             this.colSellTime.ReadOnly = true;
             this.colSellTime.Width = 66;
             // 
-            // colSellPrice
-            // 
-            this.colSellPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.colSellPrice.DefaultCellStyle = dataGridViewCellStyle11;
-            this.colSellPrice.HeaderText = "Price";
-            this.colSellPrice.Name = "colSellPrice";
-            this.colSellPrice.ReadOnly = true;
-            // 
             // colSellQuantity
             // 
             this.colSellQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.colSellQuantity.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.colSellQuantity.DefaultCellStyle = dataGridViewCellStyle11;
             this.colSellQuantity.HeaderText = "Sell";
             this.colSellQuantity.Name = "colSellQuantity";
             this.colSellQuantity.ReadOnly = true;
+            // 
+            // colSellPrice
+            // 
+            this.colSellPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.colSellPrice.DefaultCellStyle = dataGridViewCellStyle12;
+            this.colSellPrice.HeaderText = "Price";
+            this.colSellPrice.Name = "colSellPrice";
+            this.colSellPrice.ReadOnly = true;
             // 
             // colSellTotal
             // 
@@ -309,13 +309,13 @@
         private Grid gridSell;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBuyID;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBuyTime;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colBuyPrice;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBuyQuantity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colBuyPrice;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBuyTotal;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSellID;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSellTime;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colSellPrice;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSellQuantity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSellPrice;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSellTotal;
 
     }

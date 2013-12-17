@@ -61,10 +61,14 @@
             this.timerModifyOrder = new System.Windows.Forms.Timer(this.components);
             this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.splitMain = new System.Windows.Forms.SplitContainer();
+            this.splitActiveOrders = new System.Windows.Forms.SplitContainer();
+            this.lklblShowAllHistory = new System.Windows.Forms.ToolStripStatusLabel();
+            this.stripMain = new System.Windows.Forms.StatusStrip();
+            this.lblBlank = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ttipRecentBuyOrders = new System.Windows.Forms.ToolTip(this.components);
             this.gridBalances = new CoinPost.Grid();
             this.colCurrency = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBalance = new System.Windows.Forms.DataGridViewLinkColumn();
-            this.splitActiveOrders = new System.Windows.Forms.SplitContainer();
             this.gridBuy = new CoinPost.Grid();
             this.colBuyID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuying = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -79,22 +83,19 @@
             this.colSellTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCancelSell = new System.Windows.Forms.DataGridViewButtonColumn();
             this.colModifySell = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.lklblShowAllHistory = new System.Windows.Forms.ToolStripStatusLabel();
-            this.stripMain = new System.Windows.Forms.StatusStrip();
-            this.lblBlank = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupTrade.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
             this.splitMain.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridBalances)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitActiveOrders)).BeginInit();
             this.splitActiveOrders.Panel1.SuspendLayout();
             this.splitActiveOrders.Panel2.SuspendLayout();
             this.splitActiveOrders.SuspendLayout();
+            this.stripMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridBalances)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridBuy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSell)).BeginInit();
-            this.stripMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnBuy
@@ -279,6 +280,7 @@
             this.btnSell.Size = new System.Drawing.Size(69, 29);
             this.btnSell.TabIndex = 12;
             this.btnSell.Text = "Sell";
+            this.ttipRecentBuyOrders.SetToolTip(this.btnSell, "Recent Purchases (Button)");
             this.btnSell.UseVisualStyleBackColor = true;
             this.btnSell.Click += new System.EventHandler(this.btnSell_Click);
             // 
@@ -382,6 +384,65 @@
             this.splitMain.SplitterWidth = 8;
             this.splitMain.TabIndex = 13;
             // 
+            // splitActiveOrders
+            // 
+            this.splitActiveOrders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitActiveOrders.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitActiveOrders.Location = new System.Drawing.Point(471, 9);
+            this.splitActiveOrders.Name = "splitActiveOrders";
+            // 
+            // splitActiveOrders.Panel1
+            // 
+            this.splitActiveOrders.Panel1.Controls.Add(this.gridBuy);
+            this.splitActiveOrders.Panel1MinSize = 100;
+            // 
+            // splitActiveOrders.Panel2
+            // 
+            this.splitActiveOrders.Panel2.Controls.Add(this.gridSell);
+            this.splitActiveOrders.Panel2MinSize = 100;
+            this.splitActiveOrders.Size = new System.Drawing.Size(469, 172);
+            this.splitActiveOrders.SplitterDistance = 222;
+            this.splitActiveOrders.TabIndex = 13;
+            // 
+            // lklblShowAllHistory
+            // 
+            this.lklblShowAllHistory.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.lklblShowAllHistory.IsLink = true;
+            this.lklblShowAllHistory.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
+            this.lklblShowAllHistory.Name = "lklblShowAllHistory";
+            this.lklblShowAllHistory.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lklblShowAllHistory.Size = new System.Drawing.Size(116, 17);
+            this.lklblShowAllHistory.Text = "SHOW Trade History";
+            this.lklblShowAllHistory.Click += new System.EventHandler(this.lklblShowAllHistory_Click);
+            // 
+            // stripMain
+            // 
+            this.stripMain.BackColor = System.Drawing.Color.Transparent;
+            this.stripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblBlank,
+            this.lklblShowAllHistory});
+            this.stripMain.Location = new System.Drawing.Point(0, 650);
+            this.stripMain.Name = "stripMain";
+            this.stripMain.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.stripMain.Size = new System.Drawing.Size(953, 22);
+            this.stripMain.SizingGrip = false;
+            this.stripMain.TabIndex = 14;
+            this.stripMain.Text = "statusStrip1";
+            // 
+            // lblBlank
+            // 
+            this.lblBlank.Name = "lblBlank";
+            this.lblBlank.Size = new System.Drawing.Size(19, 17);
+            this.lblBlank.Text = "    ";
+            // 
+            // ttipRecentBuyOrders
+            // 
+            this.ttipRecentBuyOrders.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.ttipRecentBuyOrders.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.ttipRecentBuyOrders.Tag = "";
+            // 
             // gridBalances
             // 
             this.gridBalances.AllowUserToAddRows = false;
@@ -449,28 +510,6 @@
             this.colBalance.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
             this.colBalance.Name = "colBalance";
             this.colBalance.ReadOnly = true;
-            // 
-            // splitActiveOrders
-            // 
-            this.splitActiveOrders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitActiveOrders.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitActiveOrders.Location = new System.Drawing.Point(471, 9);
-            this.splitActiveOrders.Name = "splitActiveOrders";
-            // 
-            // splitActiveOrders.Panel1
-            // 
-            this.splitActiveOrders.Panel1.Controls.Add(this.gridBuy);
-            this.splitActiveOrders.Panel1MinSize = 100;
-            // 
-            // splitActiveOrders.Panel2
-            // 
-            this.splitActiveOrders.Panel2.Controls.Add(this.gridSell);
-            this.splitActiveOrders.Panel2MinSize = 100;
-            this.splitActiveOrders.Size = new System.Drawing.Size(469, 172);
-            this.splitActiveOrders.SplitterDistance = 222;
-            this.splitActiveOrders.TabIndex = 13;
             // 
             // gridBuy
             // 
@@ -684,37 +723,6 @@
             this.colModifySell.ReadOnly = true;
             this.colModifySell.Width = 5;
             // 
-            // lklblShowAllHistory
-            // 
-            this.lklblShowAllHistory.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.lklblShowAllHistory.IsLink = true;
-            this.lklblShowAllHistory.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
-            this.lklblShowAllHistory.Name = "lklblShowAllHistory";
-            this.lklblShowAllHistory.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lklblShowAllHistory.Size = new System.Drawing.Size(116, 17);
-            this.lklblShowAllHistory.Text = "SHOW Trade History";
-            this.lklblShowAllHistory.Click += new System.EventHandler(this.lklblShowAllHistory_Click);
-            // 
-            // stripMain
-            // 
-            this.stripMain.BackColor = System.Drawing.Color.Transparent;
-            this.stripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblBlank,
-            this.lklblShowAllHistory});
-            this.stripMain.Location = new System.Drawing.Point(0, 650);
-            this.stripMain.Name = "stripMain";
-            this.stripMain.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.stripMain.Size = new System.Drawing.Size(953, 22);
-            this.stripMain.SizingGrip = false;
-            this.stripMain.TabIndex = 14;
-            this.stripMain.Text = "statusStrip1";
-            // 
-            // lblBlank
-            // 
-            this.lblBlank.Name = "lblBlank";
-            this.lblBlank.Size = new System.Drawing.Size(19, 17);
-            this.lblBlank.Text = "    ";
-            // 
             // formMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -734,15 +742,15 @@
             this.splitMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
             this.splitMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridBalances)).EndInit();
             this.splitActiveOrders.Panel1.ResumeLayout(false);
             this.splitActiveOrders.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitActiveOrders)).EndInit();
             this.splitActiveOrders.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridBuy)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridSell)).EndInit();
             this.stripMain.ResumeLayout(false);
             this.stripMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridBalances)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridBuy)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridSell)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -789,6 +797,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colBuyTotal;
         private System.Windows.Forms.DataGridViewButtonColumn colCancelBuy;
         private System.Windows.Forms.DataGridViewButtonColumn colModifyBuy;
+        private System.Windows.Forms.ToolTip ttipRecentBuyOrders;
     }
 }
 

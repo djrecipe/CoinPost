@@ -41,6 +41,7 @@ namespace CoinPost
         #region BtceApi
         private BtceApi btceApi;                                // primary object for api interaction
         private List<PendingTrade> pendingTrades;               // list of trades to-be-made (used for cancel & reorder)
+        private Dictionary<int, Trade> recentPurchases;
         private string current_exchange;                        // current exchange string (see mutExchangeString)
         #endregion
         #region Flags
@@ -88,6 +89,7 @@ namespace CoinPost
             }
             this.btceApi = new BtceApi(curr_api_key, curr_api_secret);
             this.pendingTrades = new List<PendingTrade>();
+            this.recentPurchases = new Dictionary<int, Trade>();
             return true;
         }
         public formMain()
@@ -100,7 +102,7 @@ namespace CoinPost
             this.cbUpdateUserInfo = new delUserInfo(this.UpdateUserInfo);
             this.cbUpdateOrderList = new delOrderList(this.UpdateOrderList);
             this.cbUpdateLastPrice = new delDecimal(this.UpdateLastPrice);
-            this.cbUpdateTradeHistory = new delTradeHistory(this.fTradeHistory.UpdateTradeHistory);
+            this.cbUpdateTradeHistory = new delTradeHistory(this.UpdateTradeHistory);
             #endregion
             #region Flag Initialization
             this.exchange_changed = true;
@@ -190,8 +192,7 @@ namespace CoinPost
                
                 this.BeginInvoke(this.cbUpdateUserInfo,this.btceApi.GetInfo());
                 mutTradeHistory.WaitOne();
-                if (this.fTradeHistory.Visible)
-                    this.BeginInvoke(this.cbUpdateTradeHistory, this.btceApi.GetTradeHistory());
+                this.BeginInvoke(this.cbUpdateTradeHistory, this.btceApi.GetTradeHistory());
                 mutTradeHistory.ReleaseMutex();
                 this.BeginInvoke(this.cbUpdateOrderList, this.btceApi.GetOrderList());
                 this.BeginInvoke(this.cbUpdateLastPrice, BtceApi.GetTicker(this.SafeRetrieveExchangeString()).Last);
@@ -250,6 +251,14 @@ namespace CoinPost
                 this.txtPrice.Text = this.lklblLastPrice.Text;
             this.exchange_changed = false;
             mutExchangeString.ReleaseMutex();
+        }
+        private void UpdateTradeHistory(TradeHistory history_in)
+        {
+            foreach(KeyValuePair<int,Trade> pair in history_in.List)
+            {
+            }
+            if(history_in!=null)
+                this.fTradeHistory.UpdateTradeHistory(history_in);
         }
         #endregion
         #endregion
