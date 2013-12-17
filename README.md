@@ -11,6 +11,13 @@ INSTRUCTIONS
 * Create a BTC-E API key at https://btc-e.com/profile#api_keys.
 * Compile and run the program and enter your API key and secret.
 
+USAGE
+==========================================================================
+* Change the two drop-down lists (in the lower bottom-left corner) to reflect the two currencies you wish to trade. A bitcoinwisdom chart will be displayed if one exists for that currency.
+* Try clicking the 'Max' buttons to see what they do. Also, you can try clicking your balance for any given currency and your price/quantity fields will be intelligently updated depending on your currently selected currencies.
+* Cancel or modify an already existing order by clicking on the [X] (cancel) or [M] (modify) buttons next to the order.
+
+
 NOTES
 ==========================================================================
 * Once you close your web browser your API key and secret will be hidden FOREVER. If you lose the CoinPost.key file, you will have to disable your old API key and generate a new one (which is a painless process, thankfully).
@@ -19,7 +26,7 @@ NOTES
 KNOWN BUGS/LIMITATIONS
 ==========================================================================
 12/16/13:
-* There are several exchanges currently present on www.btc-e.com that do not have a corresponding www.bitcoinwisdom.com graph. (i.e. BTC/NVC)
+* There are several exchanges currently present on www.btc-e.com that do not have a corresponding www.bitcoinwisdom.com graph. (i.e. BTC/NVC) I will be handling these cases and directing to a different website.
 * There are certain ways in which it is possible to try and make invalid orders. This will result in an endless series of message boxes and you might have to CTRL+ALT+DEL. The primary way this bug is invoked is by trying to commit an order with too many decimal numbers (via order modification).
 
 ==========================================================================
