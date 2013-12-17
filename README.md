@@ -9,7 +9,7 @@ INSTRUCTIONS
 * Download and install Microsoft Visual Studio Express 2013 from http://www.visualstudio.com/en-us/downloads.
 * Download this git directory and open CoinPost.sln.
 * Create a BTC-E API key at https://btc-e.com/profile#api_keys.
-* Compile and Run the program and enter your API key and secret.
+* Compile and run the program and enter your API key and secret.
 
 NOTES
 ==========================================================================
@@ -19,8 +19,7 @@ NOTES
 KNOWN BUGS/LIMITATIONS
 ==========================================================================
 12/16/13:
-* There are several exchanges currently present on www.btc-e.com
-  that do not have a corresponding www.bitcoinwisdom.com graph. (i.e. BTC/NVC)
-* There are certain ways in which it is possible to try and make invalid orders. This will result in an endless series   of message boxes and you might have to CTRL+ALT+DEL. The primary way this bug is invoked is by trying to commit an     order with too many decimal numbers (via order modification).
+* There are several exchanges currently present on www.btc-e.com that do not have a corresponding www.bitcoinwisdom.com graph. (i.e. BTC/NVC)
+* There are certain ways in which it is possible to try and make invalid orders. This will result in an endless series of message boxes and you might have to CTRL+ALT+DEL. The primary way this bug is invoked is by trying to commit an order with too many decimal numbers (via order modification).
 
 ==========================================================================
