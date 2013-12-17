@@ -15,7 +15,7 @@ USAGE
 ==========================================================================
 * Change the two drop-down lists (in the lower bottom-left corner) to reflect the two currencies you wish to trade. A bitcoinwisdom chart will be displayed if one exists for that currency.
 * Try clicking the 'Max' buttons to see what they do. Also, you can try clicking your balance for any given currency and your price/quantity fields will be intelligently updated depending on your currently selected currencies.
-* Cancel or modify an already existing order by clicking on the [X] (cancel) or [M] (modify) buttons next to the order.
+* Cancel or modify an already existing order by clicking on the "X" (cancel) or "M" (modify) buttons next to the order.
 
 
 NOTES
