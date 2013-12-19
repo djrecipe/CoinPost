@@ -14,10 +14,8 @@ using Microsoft.Win32;
 
 namespace CoinPost
 {
-
     public partial class formMain : Form
     {
-
         #region formMain Members
         #region Constants
         private static readonly double MinimumSellThreshold=1.004012032080192;
@@ -438,9 +436,9 @@ namespace CoinPost
                                                 "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
                                                 "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
                 this.ttipOrderAssist.SetToolTip(this.btnSell, "0.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                                "\n0.5%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 0.995, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                                "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 0.99, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                                "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 0.98, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
+                                                "\n0.5%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                                "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                                "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
             }
         }
         #endregion
