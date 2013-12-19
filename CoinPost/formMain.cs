@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using BtcE;
 using System.Text.RegularExpressions;
+using Microsoft.Win32;
 
 namespace CoinPost
 {
@@ -18,6 +19,10 @@ namespace CoinPost
     {
 
         #region formMain Members
+        #region Constants
+        private static readonly double MinimumSellThreshold=1.004012032080192;
+        private static readonly double MinimumBuyThreshold = 0.996004;
+        #endregion
         #region Mutices
         private static Mutex mutExchangeString = new Mutex();           // to access current currency exchange string (i.e. "ltc_btc")
         private static Mutex mutTradeHistory = new Mutex();             // determines whether or not trade history should be shown
@@ -94,6 +99,8 @@ namespace CoinPost
         }
         public formMain()
         {
+            Registry.SetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Internet Explorer\\Main\\Feature Control\\FEATURE_BROWSER_EMULATION", "CoinPost.exe", 0x2af9, RegistryValueKind.DWord);
+            Registry.SetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", "CoinPost.vshost.exe", 0x2af9, RegistryValueKind.DWord);
             this.InitializeComponent();
             #region Child Form Initialization
             this.fTradeHistory = new formTradeHistory(new delEmpty(this.SafeToggleTradeHistory));
@@ -270,7 +277,7 @@ namespace CoinPost
         private void btnBuy_Click(object sender, EventArgs e)
         {
             double price_out = 0.0, quantity_out = 0.0;
-            if (Double.TryParse(txtPrice.Text, out price_out) && Double.TryParse(txtQuantity.Text, out quantity_out) && price_out <= Convert.ToDouble(this.lklblLastPrice.Text) && quantity_out != 0.0)
+            if (Double.TryParse(txtPrice.Text, out price_out) && Double.TryParse(txtQuantity.Text, out quantity_out) && price_out <= Convert.ToDouble(this.lklblLastPrice.Text)*1.1 && quantity_out != 0.0)
             {
                 TradeAnswer answer = this.btceApi.Trade(this.SafeRetrieveExchangeString(), TradeType.Buy, price_out, quantity_out);
             }
@@ -279,7 +286,7 @@ namespace CoinPost
         private void btnSell_Click(object sender, EventArgs e)
         {
             double price_out = 0.0, quantity_out = 0.0;
-            if (Double.TryParse(txtPrice.Text, out price_out) && Double.TryParse(txtQuantity.Text, out quantity_out) && price_out >= Convert.ToDouble(this.lklblLastPrice.Text) && quantity_out != 0.0)
+            if (Double.TryParse(txtPrice.Text, out price_out) && Double.TryParse(txtQuantity.Text, out quantity_out) && price_out >= Convert.ToDouble(this.lklblLastPrice.Text)*0.9 && quantity_out != 0.0)
             {
                 TradeAnswer answer = this.btceApi.Trade(this.SafeRetrieveExchangeString(), TradeType.Sell, price_out, quantity_out);
             }
@@ -416,10 +423,25 @@ namespace CoinPost
                 this.btnSell.Enabled = true;
                 this.btnMaxSell.Enabled = true;
             }
+            double? new_total = null;
             if (this.txtPrice.Text == "" || this.txtQuantity.Text == "")
                 this.txtTotal.Text = "";
             else
-                this.txtTotal.Text = (Convert.ToDouble(this.txtPrice.Text) * Convert.ToDouble(this.txtQuantity.Text)).ToString() + " " + comboTargetCurrency.SelectedItem.ToString();
+            {
+                new_total = Convert.ToDouble(this.txtPrice.Text) * Convert.ToDouble(this.txtQuantity.Text)*0.998;
+                this.txtTotal.Text = new_total.ToString() + " " + comboTargetCurrency.SelectedItem.ToString();
+            }
+            if (new_total!=null)
+            {
+                this.ttipOrderAssist.SetToolTip(this.btnBuy, "0.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold,6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                                "\n0.5%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                                "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                                "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
+                this.ttipOrderAssist.SetToolTip(this.btnSell, "0.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                                "\n0.5%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 0.995, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                                "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 0.99, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                                "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 0.98, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
+            }
         }
         #endregion
         #region Timer Events
