@@ -214,10 +214,10 @@ namespace CoinPost
         #region Update Callbacks
         private void UpdateOrderList(OrderList orders_in)
         {
-            if (orders_in == null)
-                return;
             this.gridSell.Rows.Clear();
             this.gridBuy.Rows.Clear();
+            if (orders_in == null)
+                return;
             foreach (KeyValuePair<int, Order> pair in orders_in.List)
             {
                 string[] units = pair.Value.Pair.ToString().Split('_');
@@ -263,7 +263,7 @@ namespace CoinPost
         private void UpdateTradeHistory(TradeHistory history_in)
         {
             foreach(KeyValuePair<int,Trade> pair in history_in.List)
-            {
+            { // look for recent buys and sells of current exchange so-as to provide "most recent YOU bought/sold" prices on bottom of window
             }
             if(history_in!=null)
                 this.fTradeHistory.UpdateTradeHistory(history_in);
@@ -303,8 +303,6 @@ namespace CoinPost
         private void comboBidCurrency_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox caller = (ComboBox)sender;
-            if (caller.SelectedIndex == 0 && this.comboTargetCurrency.SelectedIndex == 0)
-                this.comboTargetCurrency.SelectedIndex = 1;
             if (caller.SelectedIndex != -1 && (caller.SelectedItem.ToString() == "FTC" || caller.SelectedItem.ToString() == "TRC"))
             {
                 this.comboTargetCurrency.SelectedIndex = 0;
@@ -313,7 +311,8 @@ namespace CoinPost
             }
             else if(!this.comboTargetCurrency.Items.Contains("USD"))
                 this.comboTargetCurrency.Items.Add("USD");
-
+            if (caller.SelectedIndex == 0 && this.comboTargetCurrency.SelectedIndex == 0)
+                this.comboTargetCurrency.SelectedIndex = 1;
             this.SafeUpdateExchangeString();
             return;
         }
