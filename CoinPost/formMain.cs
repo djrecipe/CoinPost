@@ -97,7 +97,7 @@ namespace CoinPost
         }
         public formMain()
         {
-            Registry.SetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Internet Explorer\\Main\\Feature Control\\FEATURE_BROWSER_EMULATION", "CoinPost.exe", 0x2af9, RegistryValueKind.DWord);
+            Registry.SetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", "CoinPost.exe", 0x2af9, RegistryValueKind.DWord);
             Registry.SetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", "CoinPost.vshost.exe", 0x2af9, RegistryValueKind.DWord);
             this.InitializeComponent();
             #region Child Form Initialization
@@ -314,6 +314,7 @@ namespace CoinPost
             if (caller.SelectedIndex == 0 && this.comboTargetCurrency.SelectedIndex == 0)
                 this.comboTargetCurrency.SelectedIndex = 1;
             this.SafeUpdateExchangeString();
+            this.webBrowser.Focus();
             return;
         }
         private void comboTargetCurrency_SelectedIndexChanged(object sender, EventArgs e)
@@ -324,6 +325,7 @@ namespace CoinPost
             else if (caller.SelectedIndex == 1 && this.comboSourceCurrency.SelectedIndex != -1 && (this.comboSourceCurrency.SelectedItem.ToString() == "FTC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC"))
                 caller.SelectedIndex = 0;
             this.SafeUpdateExchangeString();
+            this.webBrowser.Focus();
             return;
         }
         #endregion
