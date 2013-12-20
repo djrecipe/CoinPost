@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using BtcE;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
+using Gecko;
 
 namespace CoinPost
 {
@@ -97,9 +98,9 @@ namespace CoinPost
         }
         public formMain()
         {
-            Registry.SetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", "CoinPost.exe", 0x2af9, RegistryValueKind.DWord);
-            Registry.SetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", "CoinPost.vshost.exe", 0x2af9, RegistryValueKind.DWord);
             this.InitializeComponent();
+            Xpcom.Initialize(@".\xulrunner");
+            
             #region Child Form Initialization
             this.fTradeHistory = new formTradeHistory(new delEmpty(this.SafeToggleTradeHistory));
             #endregion
@@ -175,10 +176,12 @@ namespace CoinPost
                 this.current_exchange = this.comboSourceCurrency.SelectedItem.ToString() + "_" + this.comboTargetCurrency.SelectedItem.ToString();
                 this.exchange_changed = true;
                 mutExchangeString.ReleaseMutex();
-                if (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC")
-                    this.webBrowser.Url = new System.Uri("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
-                else
-                    this.webBrowser.Url = new System.Uri("http://bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString() + this.comboTargetCurrency.SelectedItem.ToString() + ":8080");
+                if (this.webBrowser.Created  && (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC"))
+                    this.webBrowser.Navigate("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+                else if (this.webBrowser.Created)
+                {
+                    this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower()+":8080");
+                }
             }
         }
         private void SafeToggleTradeHistory()
@@ -334,6 +337,12 @@ namespace CoinPost
         {
             if (!this.threadInfo.IsAlive)
                 this.threadInfo.Start();
+            if (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC")
+                this.webBrowser.Navigate("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+            else
+            {
+                this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower() + ":8080");
+            }
         }
 
         private void formMain_FormClosing(object sender, FormClosingEventArgs e)
