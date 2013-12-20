@@ -18,7 +18,9 @@ namespace CoinPost
         private string quantity_units;
         private double base_price;
         private double base_quantity;
-        public formModifyOrder(double initial_price, double initial_quantity, string unit_string, bool buy_order)
+        private double max_balance;
+        private bool is_buy_order;
+        public formModifyOrder(double initial_price, double initial_quantity,double balance, string unit_string, bool buy_order)
         {
             InitializeComponent();
             //
@@ -27,12 +29,24 @@ namespace CoinPost
             this.quantity_units = units[0];
             this.base_price = initial_price;
             this.base_quantity = initial_quantity;
+            this.max_balance = balance+initial_price*initial_quantity;
+            Console.WriteLine(max_balance.ToString());
             //
             this.lklblPrice.Text = initial_price.ToString() + " " + this.price_units;
             this.lklblQuantity.Text = initial_quantity.ToString() + " " + this.quantity_units;
             //
+            this.is_buy_order = buy_order;
             if (!buy_order)
+            {
                 this.lblOrderType.Text = "This is a SELL order.";
+                this.txtQuantity.Text = this.lklblQuantity.Text.Split(' ')[0];
+            }
+        }
+        private void UpdateTotal()
+        {
+            double dbl_price = 0.0, dbl_quantity = 0.0;
+            if (double.TryParse(this.txtPrice.Text, out dbl_price) && double.TryParse(this.txtQuantity.Text, out dbl_quantity))
+                this.txtTotal.Text = (dbl_price * dbl_quantity).ToString();
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
@@ -55,12 +69,34 @@ namespace CoinPost
 
         private void lklblQuantity_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            this.txtQuantity.Text = this.lklblQuantity.Text.Split(' ')[0];
+            double dbl_price = 0.0;
+            if (this.is_buy_order && Double.TryParse(this.txtPrice.Text, out dbl_price))
+                this.txtQuantity.Text = (this.max_balance / dbl_price).ToString();
+            else
+                this.txtQuantity.Text = this.lklblQuantity.Text.Split(' ')[0];
         }
 
         private void lklblPrice_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             this.txtPrice.Text = this.lklblPrice.Text.Split(' ')[0];
+        }
+
+        private void txtPrice_TextChanged(object sender, EventArgs e)
+        {
+            TextBox caller = (TextBox)sender;
+            decimal value = 0;
+            decimal.TryParse(caller.Text, out value);
+            caller.Text = (Decimal.Truncate(value * 1000000) / 1000000).ToString();
+            this.UpdateTotal();
+        }
+
+        private void txtQuantity_TextChanged(object sender, EventArgs e)
+        {
+            TextBox caller = (TextBox)sender;
+            decimal value = 0;
+            decimal.TryParse(caller.Text, out value);
+            caller.Text = (Decimal.Truncate(value * 100000000) / 100000000).ToString();
+            this.UpdateTotal();
         }
     }
 }

@@ -198,7 +198,14 @@ namespace BtcE
 			var reqStream = request.GetRequestStream();
 			reqStream.Write(data, 0, data.Length);
 			reqStream.Close();
-            string retval = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+            string retval = "";
+            try
+            {
+                retval = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+            }
+            catch (Exception e)
+            {
+            }
             mutQuery.ReleaseMutex();
 			return retval;
 		}

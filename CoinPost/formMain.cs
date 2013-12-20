@@ -386,7 +386,7 @@ namespace CoinPost
                 double initial_price_out = Convert.ToDouble(caller.Rows[e.RowIndex].Cells[2].Value.ToString().Split(' ')[0]);
                 double initial_quantity_out = Convert.ToDouble(caller.Rows[e.RowIndex].Cells[1].Value.ToString().Split(' ')[0]);
                 string exchange_string_out = caller.Rows[e.RowIndex].Cells[1].Value.ToString().Split(' ')[1] + "_" + caller.Rows[e.RowIndex].Cells[2].Value.ToString().Split(' ')[1];
-                formModifyOrder fModify = new formModifyOrder(initial_price_out, initial_quantity_out, exchange_string_out, caller == this.gridBuy);
+                formModifyOrder fModify = new formModifyOrder(initial_price_out, initial_quantity_out, Convert.ToDouble(this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(caller.Rows[e.RowIndex].Cells[2].Value.ToString().Split(' ')[1])].Cells[1].Value), exchange_string_out, caller == this.gridBuy);
                 fModify.ShowDialog();
                 if (fModify.Price.HasValue && fModify.Quantity.HasValue)
                 {

@@ -23,11 +23,3 @@ NOTES
 ==========================================================================
 * Once you close your web browser your API key and secret will be hidden FOREVER. If you lose the CoinPost.key file, you will have to disable your old API key and generate a new one (which is a painless process, thankfully).
 * You will have to generate a new API key and secret and a new CoinPost.key file for every computer you run the application on.
-
-KNOWN BUGS/LIMITATIONS
-==========================================================================
-12/16/13:
-* There are several exchanges currently present on www.btc-e.com that do not have a corresponding www.bitcoinwisdom.com graph. (i.e. BTC/NVC) I will be handling these cases and directing to a different website.
-* There are certain ways in which it is possible to try and make invalid orders. This will result in an endless series of message boxes and you might have to CTRL+ALT+DEL. The primary way this bug is invoked is by trying to commit an order with too many decimal numbers (via order modification).
-
-==========================================================================
