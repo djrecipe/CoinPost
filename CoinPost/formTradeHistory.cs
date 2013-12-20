@@ -35,7 +35,7 @@ namespace CoinPost
                     string[] units = pair.Value.Pair.ToString().Split('_');
                     ((pair.Value.Type.ToString() == "Sell") ? this.gridSell : this.gridBuy).Rows.Add(new object[]
                 { 
-                    pair.Key, dt.ToString(),pair.Value.Amount.ToString() + " " + units[0].ToUpper(),
+                    pair.Key, dt.ToLongTimeString(),pair.Value.Amount.ToString() + " " + units[0].ToUpper(),
                     pair.Value.Rate.ToString() + " " + units[1].ToUpper(),(pair.Value.Amount * pair.Value.Rate).ToString() + " " + units[1].ToUpper()
                 });
                 }

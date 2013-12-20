@@ -343,6 +343,8 @@ namespace CoinPost
             {
                 this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower() + ":8080");
             }
+            GeckoDocument doc = this.webBrowser.Document;
+            //doc.
         }
 
         private void formMain_FormClosing(object sender, FormClosingEventArgs e)

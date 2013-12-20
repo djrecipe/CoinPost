@@ -60,6 +60,7 @@
             this.lblAsk = new System.Windows.Forms.Label();
             this.timerModifyOrder = new System.Windows.Forms.Timer(this.components);
             this.splitMain = new System.Windows.Forms.SplitContainer();
+            this.webBrowser = new Gecko.GeckoWebBrowser();
             this.gridBalances = new CoinPost.Grid();
             this.colCurrency = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBalance = new System.Windows.Forms.DataGridViewLinkColumn();
@@ -82,7 +83,6 @@
             this.stripMain = new System.Windows.Forms.StatusStrip();
             this.lblBlank = new System.Windows.Forms.ToolStripStatusLabel();
             this.ttipOrderAssist = new System.Windows.Forms.ToolTip(this.components);
-            this.webBrowser = new Gecko.GeckoWebBrowser();
             this.groupTrade.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
@@ -370,6 +370,15 @@
             this.splitMain.SplitterWidth = 8;
             this.splitMain.TabIndex = 13;
             // 
+            // webBrowser
+            // 
+            this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webBrowser.Location = new System.Drawing.Point(0, 0);
+            this.webBrowser.Name = "webBrowser";
+            this.webBrowser.Size = new System.Drawing.Size(951, 436);
+            this.webBrowser.TabIndex = 0;
+            this.webBrowser.UseHttpActivityObserver = false;
+            // 
             // gridBalances
             // 
             this.gridBalances.AllowUserToAddRows = false;
@@ -416,7 +425,7 @@
             this.gridBalances.ShowCellToolTips = false;
             this.gridBalances.ShowEditingIcon = false;
             this.gridBalances.ShowRowErrors = false;
-            this.gridBalances.Size = new System.Drawing.Size(144, 163);
+            this.gridBalances.Size = new System.Drawing.Size(144, 175);
             this.gridBalances.TabIndex = 0;
             this.gridBalances.TabStop = false;
             this.gridBalances.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBalances_CellContentClick);
@@ -456,7 +465,7 @@
             // 
             this.splitActiveOrders.Panel2.Controls.Add(this.gridSell);
             this.splitActiveOrders.Panel2MinSize = 100;
-            this.splitActiveOrders.Size = new System.Drawing.Size(469, 164);
+            this.splitActiveOrders.Size = new System.Drawing.Size(469, 176);
             this.splitActiveOrders.SplitterDistance = 222;
             this.splitActiveOrders.TabIndex = 13;
             // 
@@ -508,7 +517,7 @@
             this.gridBuy.ShowCellToolTips = false;
             this.gridBuy.ShowEditingIcon = false;
             this.gridBuy.ShowRowErrors = false;
-            this.gridBuy.Size = new System.Drawing.Size(220, 162);
+            this.gridBuy.Size = new System.Drawing.Size(220, 174);
             this.gridBuy.TabIndex = 0;
             this.gridBuy.TabStop = false;
             this.gridBuy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);
@@ -614,7 +623,7 @@
             this.gridSell.ShowCellToolTips = false;
             this.gridSell.ShowEditingIcon = false;
             this.gridSell.ShowRowErrors = false;
-            this.gridSell.Size = new System.Drawing.Size(241, 162);
+            this.gridSell.Size = new System.Drawing.Size(241, 174);
             this.gridSell.TabIndex = 0;
             this.gridSell.TabStop = false;
             this.gridSell.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);
@@ -711,15 +720,6 @@
             this.ttipOrderAssist.InitialDelay = 500;
             this.ttipOrderAssist.ReshowDelay = 100;
             this.ttipOrderAssist.Tag = "";
-            // 
-            // webBrowser
-            // 
-            this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(951, 436);
-            this.webBrowser.TabIndex = 0;
-            this.webBrowser.UseHttpActivityObserver = false;
             // 
             // formMain
             // 

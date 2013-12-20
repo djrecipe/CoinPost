@@ -23,3 +23,7 @@ NOTES
 ==========================================================================
 * Once you close your web browser your API key and secret will be hidden FOREVER. If you lose the CoinPost.key file, you will have to disable your old API key and generate a new one (which is a painless process, thankfully).
 * You will have to generate a new API key and secret and a new CoinPost.key file for every computer you run the application on.
+
+KNOWN ISSUES
+==========================================================================
+* WARNING!! CURRENTLY YOUR API KEY AND SECRET ARE BEING STORED IN AN UNENCRYPTED FILE! I will be fixing this issue tonight, Friday 12/20/13.
