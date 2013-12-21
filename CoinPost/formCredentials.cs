@@ -49,6 +49,7 @@ namespace CoinPost
         {
             TextBox caller = (TextBox)sender;
             caller.UseSystemPasswordChar = true;
+            this.btnOK.Enabled = true;
         }
 
         private void txtAPIKey_Click(object sender, EventArgs e)
