@@ -102,7 +102,6 @@
             // 
             this.btnBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnBuy.AutoEllipsis = true;
-            this.btnBuy.Enabled = false;
             this.btnBuy.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnBuy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBuy.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -237,7 +236,6 @@
             // btnMaxBuy
             // 
             this.btnMaxBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnMaxBuy.Enabled = false;
             this.btnMaxBuy.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnMaxBuy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMaxBuy.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -253,7 +251,6 @@
             // btnMaxSell
             // 
             this.btnMaxSell.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnMaxSell.Enabled = false;
             this.btnMaxSell.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnMaxSell.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMaxSell.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -270,7 +267,6 @@
             // 
             this.btnSell.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnSell.AutoEllipsis = true;
-            this.btnSell.Enabled = false;
             this.btnSell.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnSell.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSell.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -425,7 +421,7 @@
             this.gridBalances.ShowCellToolTips = false;
             this.gridBalances.ShowEditingIcon = false;
             this.gridBalances.ShowRowErrors = false;
-            this.gridBalances.Size = new System.Drawing.Size(144, 175);
+            this.gridBalances.Size = new System.Drawing.Size(144, 171);
             this.gridBalances.TabIndex = 0;
             this.gridBalances.TabStop = false;
             this.gridBalances.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBalances_CellContentClick);
@@ -465,7 +461,7 @@
             // 
             this.splitActiveOrders.Panel2.Controls.Add(this.gridSell);
             this.splitActiveOrders.Panel2MinSize = 100;
-            this.splitActiveOrders.Size = new System.Drawing.Size(469, 176);
+            this.splitActiveOrders.Size = new System.Drawing.Size(469, 172);
             this.splitActiveOrders.SplitterDistance = 222;
             this.splitActiveOrders.TabIndex = 13;
             // 
@@ -517,7 +513,7 @@
             this.gridBuy.ShowCellToolTips = false;
             this.gridBuy.ShowEditingIcon = false;
             this.gridBuy.ShowRowErrors = false;
-            this.gridBuy.Size = new System.Drawing.Size(220, 174);
+            this.gridBuy.Size = new System.Drawing.Size(220, 170);
             this.gridBuy.TabIndex = 0;
             this.gridBuy.TabStop = false;
             this.gridBuy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);
@@ -623,7 +619,7 @@
             this.gridSell.ShowCellToolTips = false;
             this.gridSell.ShowEditingIcon = false;
             this.gridSell.ShowRowErrors = false;
-            this.gridSell.Size = new System.Drawing.Size(241, 174);
+            this.gridSell.Size = new System.Drawing.Size(241, 170);
             this.gridSell.TabIndex = 0;
             this.gridSell.TabStop = false;
             this.gridSell.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);
