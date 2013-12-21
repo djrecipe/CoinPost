@@ -138,7 +138,7 @@
             this.txtQuantity.TabIndex = 8;
             this.txtQuantity.Text = "0.0";
             this.txtQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtQuantity.TextChanged += new System.EventHandler(this.txtTotal_Update);
+            this.txtQuantity.TextChanged += new System.EventHandler(this.txtQuantity_Update);
             // 
             // txtPrice
             // 
@@ -152,7 +152,7 @@
             this.txtPrice.TabIndex = 9;
             this.txtPrice.Text = "0.0";
             this.txtPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtPrice.TextChanged += new System.EventHandler(this.txtTotal_Update);
+            this.txtPrice.TextChanged += new System.EventHandler(this.txtPrice_Update);
             // 
             // groupTrade
             // 

@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -57,6 +60,10 @@ namespace CoinPost
         #region Forms
         formTradeHistory fTradeHistory;
         #endregion
+        #region Strings
+        private string old_price_text="0.0";
+        private string old_quantity_text = "0.0";
+        #endregion
         #endregion
         #region formMain Methods
         #region Initialization Methods
@@ -65,28 +72,36 @@ namespace CoinPost
             string curr_api_key = null, curr_api_secret = null;
             if (File.Exists("CoinPost.key"))
             {
-                File.Decrypt("CoinPost.key");
-                string[] encrypted_text = File.ReadAllText("CoinPost.key").Split('|');
-                File.Encrypt("CoinPost.key");
-                Regex rgx = new Regex("[^a-zA-Z0-9 -]");
-                curr_api_key = rgx.Replace(encrypted_text[0], "");
-                curr_api_secret = rgx.Replace(encrypted_text[1], "");
+                formCredentials fLogin = new formCredentials(false);
+                if (fLogin.ShowDialog() != DialogResult.OK || fLogin.APIPassword == null)
+                    return false;
+                string encrypted_text = Convert.ToBase64String(File.ReadAllBytes("CoinPost.key"));
+                string decrypted_text=Crypto.SimpleDecryptWithPassword(encrypted_text,fLogin.APIPassword);
+                if(decrypted_text==null || !decrypted_text.Contains("encrypted"))
+                    return false;
+                string[] text_elements = decrypted_text.Split('|');
+                curr_api_key = text_elements[1];
+                curr_api_secret = text_elements[2];
             }
             else
             {
                 formCredentials fLogin = new formCredentials();
-                fLogin.ShowDialog();
-                if (fLogin.APIKey!=null && fLogin.APISecret!=null)
+                if (fLogin.ShowDialog()==DialogResult.OK && fLogin.APIKey!=null && fLogin.APISecret!=null)
                 {
                     FileStream fstream = File.Create("CoinPost.key");
-                    string output = fLogin.APIKey + "|" + fLogin.APISecret;
+                    string output = "encrypted|"+fLogin.APIKey + "|" + fLogin.APISecret;
                     curr_api_key = fLogin.APIKey;
                     curr_api_secret = fLogin.APISecret;
-                    byte[] bytes = new byte[output.Length * sizeof(char)];
-                    System.Buffer.BlockCopy(output.ToCharArray(), 0, bytes, 0, bytes.Length);
+                    output = Crypto.SimpleEncryptWithPassword(output, fLogin.APIPassword);
+                    if (output == null)
+                    {
+                        fstream.Close();
+                        File.Delete("CoinPost.key");
+                        return false;
+                    }
+                    byte[] bytes = Convert.FromBase64String(output);
                     fstream.Write(bytes, 0, bytes.Length);
                     fstream.Close();
-                    File.Encrypt("CoinPost.key");
                 }
                 else
                     return false;
@@ -236,10 +251,7 @@ namespace CoinPost
         private void UpdateUserInfo(UserInfo info_in)
         {
             if (info_in == null)
-            {
-                this.InitBtceApi();
                 return;
-            }
             this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("btc")].Cells[1].Value = info_in.Funds.Btc;
             this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("ftc")].Cells[1].Value = info_in.Funds.Ftc;
             this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("ltc")].Cells[1].Value = info_in.Funds.Ltc;
@@ -252,10 +264,7 @@ namespace CoinPost
         private void UpdateLastPrice(Decimal? price_in)
         {
             if (!price_in.HasValue)
-            {
-                this.InitBtceApi();
                 return;
-            }
             this.lklblLastPrice.Text = price_in.Value.ToString();
             mutExchangeString.WaitOne();
             if (Convert.ToDecimal(this.txtPrice.Text) == 0 || this.exchange_changed)
@@ -413,45 +422,58 @@ namespace CoinPost
         }
         #endregion
         #region TextBox Events
-        private void txtTotal_Update(object sender, EventArgs e)
+        private void txtQuantity_Update(object sender, EventArgs e)
         {
             TextBox caller = (TextBox)sender;
-            decimal result = 0;
-            if (!decimal.TryParse(caller.Text, out result))
+            string temp = caller.Text;
+            if (temp.Length == 0)
+                return;
+            if (temp.Last() == '.')
+                temp += "0";
+            decimal value = 0;
+            if (decimal.TryParse(temp, out value))
             {
-                caller.Text = "0.0";
-                this.btnBuy.Enabled = false;
-                this.btnMaxBuy.Enabled = false;
-                this.btnSell.Enabled = false;
-                this.btnMaxSell.Enabled = false;
+                if (caller.Text.Last() != '.')
+                    caller.Text = (Decimal.Truncate(value * 1000000) / 1000000).ToString();
             }
             else
+                caller.Text = old_quantity_text;
+            old_quantity_text = caller.Text;
+            caller.SelectionStart = caller.Text.Length;
+            this.UpdateTotal();
+        }
+        private void txtPrice_Update(object sender, EventArgs e)
+        {
+            TextBox caller = (TextBox)sender;
+            string temp = caller.Text;
+            if (temp.Length == 0)
+                return;
+            if (temp.Last() == '.')
+                temp += "0";
+            decimal value = 0;
+            if (decimal.TryParse(temp, out value))
             {
-                result = Decimal.Truncate(result * 100000000) / 100000000;
-                this.btnBuy.Enabled = true;
-                this.btnMaxBuy.Enabled = true;
-                this.btnSell.Enabled = true;
-                this.btnMaxSell.Enabled = true;
+                if (caller.Text.Last() != '.')
+                    caller.Text = (Decimal.Truncate(value * 1000000) / 1000000).ToString();
             }
-            double? new_total = null;
-            if (this.txtPrice.Text == "" || this.txtQuantity.Text == "")
-                this.txtTotal.Text = "";
             else
-            {
-                new_total = Convert.ToDouble(this.txtPrice.Text) * Convert.ToDouble(this.txtQuantity.Text)*0.998;
-                this.txtTotal.Text = new_total.ToString() + " " + comboTargetCurrency.SelectedItem.ToString();
-            }
-            if (new_total!=null)
-            {
-                this.ttipOrderAssist.SetToolTip(this.btnBuy, "0.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold,6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                                "\n0.5%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                                "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                                "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
-                this.ttipOrderAssist.SetToolTip(this.btnSell, "0.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                                "\n0.5%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                                "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                                "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
-            }
+                caller.Text = old_price_text;
+            old_price_text = caller.Text;
+            caller.SelectionStart = caller.Text.Length;
+            this.UpdateTotal();
+        }
+        private void UpdateTotal()
+        {
+            double? new_total = Convert.ToDouble(this.txtPrice.Text) * Convert.ToDouble(this.txtQuantity.Text) * 0.998;
+            this.txtTotal.Text = new_total.ToString() + " " + comboTargetCurrency.SelectedItem.ToString();
+            this.ttipOrderAssist.SetToolTip(this.btnBuy, "0.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold,6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n0.5%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
+            this.ttipOrderAssist.SetToolTip(this.btnSell, "0.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n0.5%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
         }
         #endregion
         #region Timer Events

@@ -7,10 +7,9 @@ CoinPost
 
 INSTRUCTIONS
 ==========================================================================
-* Download and install Microsoft Visual Studio Express 2013 from http://www.visualstudio.com/en-us/downloads.
-* Download this git directory and open CoinPost.sln.
 * Create a BTC-E API key at https://btc-e.com/profile#api_keys.
-* Compile and run the program and enter your API key and secret.
+* Choose a password (12 character minimum) that you will remember.
+* Run the program and enter your API key, API secret, and password. 
 
 USAGE
 ==========================================================================

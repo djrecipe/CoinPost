@@ -16,6 +16,8 @@ namespace CoinPost
         public double? Quantity { get; private set; }
         private string price_units;
         private string quantity_units;
+        private string old_price_text;
+        private string old_quantity_text;
         private double base_price;
         private double base_quantity;
         private double max_balance;
@@ -34,6 +36,8 @@ namespace CoinPost
             //
             this.lklblPrice.Text = initial_price.ToString() + " " + this.price_units;
             this.lklblQuantity.Text = initial_quantity.ToString() + " " + this.quantity_units;
+            this.old_price_text = initial_price.ToString();
+            this.old_quantity_text = initial_quantity.ToString();
             //
             this.is_buy_order = buy_order;
             if (!buy_order)
@@ -46,7 +50,7 @@ namespace CoinPost
         {
             double dbl_price = 0.0, dbl_quantity = 0.0;
             if (double.TryParse(this.txtPrice.Text, out dbl_price) && double.TryParse(this.txtQuantity.Text, out dbl_quantity))
-                this.txtTotal.Text = (dbl_price * dbl_quantity).ToString();
+                this.txtTotal.Text = (dbl_price * dbl_quantity).ToString() + " " + price_units ;
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
@@ -84,18 +88,42 @@ namespace CoinPost
         private void txtPrice_TextChanged(object sender, EventArgs e)
         {
             TextBox caller = (TextBox)sender;
+            string temp = caller.Text;
+            if (temp.Length == 0)
+                return;
+            if (temp.Last() == '.')
+                temp += "0";
             decimal value = 0;
-            decimal.TryParse(caller.Text, out value);
-            caller.Text = (Decimal.Truncate(value * 1000000) / 1000000).ToString();
+            if (decimal.TryParse(temp, out value))
+            {
+                if (caller.Text.Last() != '.')
+                    caller.Text = (Decimal.Truncate(value * 1000000) / 1000000).ToString();
+            }
+            else
+                caller.Text = old_price_text;
+            old_price_text = caller.Text;
+            caller.SelectionStart = caller.Text.Length;
             this.UpdateTotal();
         }
 
         private void txtQuantity_TextChanged(object sender, EventArgs e)
         {
             TextBox caller = (TextBox)sender;
+            string temp = caller.Text;
+            if (temp.Length == 0)
+                return;
+            if (temp.Last() == '.')
+                temp += "0";
             decimal value = 0;
-            decimal.TryParse(caller.Text, out value);
-            caller.Text = (Decimal.Truncate(value * 100000000) / 100000000).ToString();
+            if (decimal.TryParse(temp, out value))
+            {
+                if (caller.Text.Last() != '.')
+                    caller.Text = (Decimal.Truncate(value * 1000000) / 1000000).ToString();
+            }
+            else
+                caller.Text = old_quantity_text;
+            old_quantity_text = caller.Text;
+            caller.SelectionStart = caller.Text.Length;
             this.UpdateTotal();
         }
     }
