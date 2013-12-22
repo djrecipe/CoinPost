@@ -577,7 +577,7 @@ namespace CoinPost
                 return;
             string source_currency = split_string[split_string_len - 1].Substring(0, 3).ToUpper();
             string target_currency = split_string[split_string_len - 1].Substring(3, 3).ToUpper();
-            if (source_currency == this.comboSourceCurrency.SelectedItem.ToString() && target_currency == this.comboTargetCurrency.SelectedItem.ToString())
+            if (split_string[split_string_len - 2]=="btce" && source_currency == this.comboSourceCurrency.SelectedItem.ToString() && target_currency == this.comboTargetCurrency.SelectedItem.ToString())
             {
                 this.tabsMain.SelectedIndex = 0;
                 return;
