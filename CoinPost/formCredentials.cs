@@ -75,7 +75,7 @@ namespace CoinPost
         private void txtPassword_Click(object sender, EventArgs e)
         {
             TextBox caller = (TextBox)sender;
-            if (caller.Text == "ENTER YOUR PASSWORD HERE")
+            if (caller.Text == "ENTER YOUR -COINPOST- PASSWORD HERE")
             {
                 caller.Text = "";
             }

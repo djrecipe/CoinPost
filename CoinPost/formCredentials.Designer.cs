@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.txtAPIKey = new System.Windows.Forms.TextBox();
             this.txtSecret = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.txtPassword = new System.Windows.Forms.TextBox();
+            this.ttipLogin = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // txtAPIKey
@@ -109,8 +111,9 @@
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(527, 15);
             this.txtPassword.TabIndex = 4;
-            this.txtPassword.Text = "ENTER YOUR PASSWORD HERE";
+            this.txtPassword.Text = "ENTER YOUR -COINPOST- PASSWORD HERE";
             this.txtPassword.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.ttipLogin.SetToolTip(this.txtPassword, "Enter your CoinPost password. Do not enter your BTC-E password.");
             this.txtPassword.Click += new System.EventHandler(this.txtPassword_Click);
             this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
             // 
@@ -142,5 +145,6 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.ToolTip ttipLogin;
     }
 }

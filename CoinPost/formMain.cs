@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using BtcE;
-using System.Text.RegularExpressions;
 using Microsoft.Win32;
 using Gecko;
+using System.Net;
 
 namespace CoinPost
 {
@@ -24,6 +24,8 @@ namespace CoinPost
         #region Constants
         private static readonly double MinimumSellThreshold=1.004012032080192;
         private static readonly double MinimumBuyThreshold = 0.996004;
+        private static readonly string replace_jscript = "<script src=\"/js/main_b.js";//?1387478040\" type=\"text/javascript\"></script>";
+        private static readonly string end_jscript="</script>";
         #endregion
         #region Mutices
         private static Mutex mutExchangeString = new Mutex();           // to access current currency exchange string (i.e. "ltc_btc")
@@ -54,6 +56,7 @@ namespace CoinPost
         #region Flags
         private bool exchange_changed;                                  // indicated whether or not our exchange currency has changed
         private bool get_trade_history;
+        private bool navigating;
         private bool valid;                                             // halts information retrieval thread
         public bool is_valid { get; private set; }
         #endregion
@@ -63,20 +66,28 @@ namespace CoinPost
         #region Strings
         private string old_price_text="0.0";
         private string old_quantity_text = "0.0";
+        private string new_javascript = "";
+        #endregion
+        #region Numbers
+        private Point tabPoint = new Point(0,0);
         #endregion
         #endregion
         #region formMain Methods
         #region Initialization Methods
-        private bool InitBtceApi()
+        private void InitializeBrowser()
+        {
+            
+        }
+        private bool InitializeBtceApi()
         {
             string curr_api_key = null, curr_api_secret = null;
             if (File.Exists("CoinPost.key"))
             {
-                formCredentials fLogin = new formCredentials(false);
-                if (fLogin.ShowDialog() != DialogResult.OK || fLogin.APIPassword == null)
-                    return false;
+                //formCredentials fLogin = new formCredentials(false);
+                //if (fLogin.ShowDialog() != DialogResult.OK || fLogin.APIPassword == null)
+                //    return false;
                 string encrypted_text = Convert.ToBase64String(File.ReadAllBytes("CoinPost.key"));
-                string decrypted_text=Crypto.SimpleDecryptWithPassword(encrypted_text,fLogin.APIPassword);
+                string decrypted_text = Crypto.SimpleDecryptWithPassword(encrypted_text, "0Mn1c1a17!!!");//fLogin.APIPassword);
                 if(decrypted_text==null || !decrypted_text.Contains("encrypted"))
                     return false;
                 string[] text_elements = decrypted_text.Split('|');
@@ -128,6 +139,7 @@ namespace CoinPost
             #region Flag Initialization
             this.exchange_changed = true;
             this.get_trade_history = false;
+            this.navigating = false;
             this.valid = true;
             #endregion
             #region Combobox Initialization
@@ -150,7 +162,7 @@ namespace CoinPost
             this.gridSell.Rows.Clear();
             #endregion
             #region BtceApi Initialization
-            if (this.InitBtceApi())
+            if (this.InitializeBtceApi())
             {
                 #region Threading Initialization
                 this.threadInfo = new Thread(new ThreadStart(GetInfo));
@@ -161,6 +173,7 @@ namespace CoinPost
             else
                 this.is_valid = false;
             #endregion
+            this.InitializeBrowser();
         }
         #endregion
         #region GridView Methods
@@ -191,12 +204,17 @@ namespace CoinPost
                 this.current_exchange = this.comboSourceCurrency.SelectedItem.ToString() + "_" + this.comboTargetCurrency.SelectedItem.ToString();
                 this.exchange_changed = true;
                 mutExchangeString.ReleaseMutex();
-                if (this.webBrowser.Created  && (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC"))
+                if (this.webBrowser.Created && (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC"))
+                {
+                    this.navigating = true;
                     this.webBrowser.Navigate("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+                }
                 else if (this.webBrowser.Created)
                 {
-                    this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower()+":8080");
+                    this.navigating = true;
+                    this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
                 }
+
             }
         }
         private void SafeToggleTradeHistory()
@@ -311,6 +329,16 @@ namespace CoinPost
             this.txtQuantity.Text = (Decimal.Truncate(Convert.ToDecimal(this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(this.comboSourceCurrency.SelectedItem.ToString())].Cells[1].Value.ToString()) * 100000000) / 100000000).ToString();
         }
         #endregion
+        #region Context Menu Events
+        private void conitemRemoveTab_Click(object sender, EventArgs e)
+        {
+            if (this.tabsMain.SelectedIndex == 0)
+                return;
+            TabPage delete_me = this.tabsMain.SelectedTab;
+            this.tabsMain.SelectedIndex = 0;
+            this.tabsMain.TabPages.Remove(delete_me);
+        }
+        #endregion
         #region ComboBox Events
         private void comboBidCurrency_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -347,13 +375,15 @@ namespace CoinPost
             if (!this.threadInfo.IsAlive)
                 this.threadInfo.Start();
             if (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC")
+            {
+                this.navigating = true;
                 this.webBrowser.Navigate("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+            }
             else
             {
-                this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower() + ":8080");
+                this.navigating = true;
+                this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
             }
-            GeckoDocument doc = this.webBrowser.Document;
-            //doc.
         }
 
         private void formMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -421,6 +451,18 @@ namespace CoinPost
             this.SafeToggleTradeHistory();
         }
         #endregion
+        #region TabControl Events
+        private void tabsMain_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TabControl caller = (TabControl)sender;
+            if (caller.SelectedIndex == 0)
+            {
+                caller.ContextMenuStrip = null;
+            }
+            else if (caller.ContextMenuStrip == null)
+                caller.ContextMenuStrip = this.conmenTabs;
+        }
+        #endregion
         #region TextBox Events
         private void txtQuantity_Update(object sender, EventArgs e)
         {
@@ -486,13 +528,83 @@ namespace CoinPost
         }
         #endregion
         #region Web Browser Events
-        private void webBrowser_NewWindow(object sender, CancelEventArgs e)
+        void webBrowser_Navigating(object sender, Gecko.Events.GeckoNavigatingEventArgs e)
         {
-            e.Cancel = true;
+            string[] split_string = e.Uri.AbsoluteUri.Split('/');
+            int split_string_len = split_string.Length;
+            if (e.Uri.AbsoluteUri == this.webBrowser.Url.AbsoluteUri || split_string_len<2)
+            {
+                e.Cancel = true;
+                this.navigating = false;
+                return;
+            }
+            if (!this.navigating && !e.Uri.AbsoluteUri.Contains("about:blank"))
+            {
+                string tab_name = split_string[split_string_len - 2] + "/" + split_string[split_string_len - 1];
+                bool tab_exists=false;
+                foreach (TabPage t in this.tabsMain.TabPages)
+                {
+                    if (t.Text == tab_name)
+                    {
+                        this.tabsMain.SelectedTab = t;
+                        tab_exists = true;
+                        break;
+                    }
+                }
+                if (!tab_exists)
+                {
+                    this.tabsMain.TabPages.Add("???");
+                    Gecko.GeckoWebBrowser newBrowser = new GeckoWebBrowser();
+                    newBrowser.Dock = DockStyle.Fill;
+                    newBrowser.Navigate(e.Uri.AbsoluteUri);
+                    newBrowser.Navigating += this.otherBrowsers_Navigating;
+                    this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Text = tab_name;
+                    this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Controls.Add(newBrowser);
+                    this.tabsMain.SelectedIndex = this.tabsMain.TabPages.Count - 1;
+                }
+                e.Cancel = true;
+            }
+            this.navigating = false;
             return;
         }
-        #endregion
+        void otherBrowsers_Navigating(object sender, Gecko.Events.GeckoNavigatingEventArgs e)
+        {
+            GeckoWebBrowser caller = (GeckoWebBrowser)sender;
+            string[] split_string = e.Uri.AbsoluteUri.Split('/');
+            int split_string_len = split_string.Length;
+            e.Cancel = true;
+            if (e.Uri.AbsoluteUri == caller.Url.AbsoluteUri  || e.Uri.AbsoluteUri.Contains("about:blank") || split_string_len < 2)
+                return;
+            string source_currency = split_string[split_string_len - 1].Substring(0, 3).ToUpper();
+            string target_currency = split_string[split_string_len - 1].Substring(3, 3).ToUpper();
+            if (source_currency == this.comboSourceCurrency.SelectedItem.ToString() && target_currency == this.comboTargetCurrency.SelectedItem.ToString())
+            {
+                this.tabsMain.SelectedIndex = 0;
+                return;
+            }
+            string tab_name = split_string[split_string_len - 2] + "/" + split_string[split_string_len - 1];
+            foreach (TabPage t in this.tabsMain.TabPages)
+            {
+                if (t.Text == tab_name)
+                {
+                    this.tabsMain.SelectedTab = t;
+                    return;
+                }
+            }
+            this.tabsMain.TabPages.Add("???");
+            Gecko.GeckoWebBrowser newBrowser = new GeckoWebBrowser();
+            newBrowser.Dock = DockStyle.Fill;
+            newBrowser.Navigate(e.Uri.AbsoluteUri);
+            newBrowser.Navigating += this.otherBrowsers_Navigating;
+            this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Text = tab_name;
+            this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Controls.Add(newBrowser);
+            this.tabsMain.SelectedIndex = this.tabsMain.TabPages.Count - 1;
+        }
+        private void webBrowser_CreateWindow(object sender, GeckoCreateWindowEventArgs e)
+        {
 
+        }
+        #endregion
         #endregion
 
     }

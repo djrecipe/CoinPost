@@ -60,6 +60,8 @@
             this.lblAsk = new System.Windows.Forms.Label();
             this.timerModifyOrder = new System.Windows.Forms.Timer(this.components);
             this.splitMain = new System.Windows.Forms.SplitContainer();
+            this.tabsMain = new System.Windows.Forms.TabControl();
+            this.pgMain = new System.Windows.Forms.TabPage();
             this.webBrowser = new Gecko.GeckoWebBrowser();
             this.gridBalances = new CoinPost.Grid();
             this.colCurrency = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -79,15 +81,20 @@
             this.colSellTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCancelSell = new System.Windows.Forms.DataGridViewButtonColumn();
             this.colModifySell = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.conmenTabs = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.conitemRemoveTab = new System.Windows.Forms.ToolStripMenuItem();
             this.lklblShowAllHistory = new System.Windows.Forms.ToolStripStatusLabel();
             this.stripMain = new System.Windows.Forms.StatusStrip();
             this.lblBlank = new System.Windows.Forms.ToolStripStatusLabel();
             this.ttipOrderAssist = new System.Windows.Forms.ToolTip(this.components);
+            this.ttipTabs = new System.Windows.Forms.ToolTip(this.components);
             this.groupTrade.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
             this.splitMain.SuspendLayout();
+            this.tabsMain.SuspendLayout();
+            this.pgMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridBalances)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitActiveOrders)).BeginInit();
             this.splitActiveOrders.Panel1.SuspendLayout();
@@ -95,6 +102,7 @@
             this.splitActiveOrders.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridBuy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSell)).BeginInit();
+            this.conmenTabs.SuspendLayout();
             this.stripMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -174,7 +182,7 @@
             this.groupTrade.Controls.Add(this.txtQuantity);
             this.groupTrade.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupTrade.Font = new System.Drawing.Font("Arial", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupTrade.ForeColor = System.Drawing.Color.Green;
+            this.groupTrade.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
             this.groupTrade.Location = new System.Drawing.Point(11, 3);
             this.groupTrade.MaximumSize = new System.Drawing.Size(474, 9000);
             this.groupTrade.MinimumSize = new System.Drawing.Size(305, 182);
@@ -351,7 +359,7 @@
             // splitMain.Panel1
             // 
             this.splitMain.Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            this.splitMain.Panel1.Controls.Add(this.webBrowser);
+            this.splitMain.Panel1.Controls.Add(this.tabsMain);
             this.splitMain.Panel1MinSize = 300;
             // 
             // splitMain.Panel2
@@ -366,14 +374,39 @@
             this.splitMain.SplitterWidth = 8;
             this.splitMain.TabIndex = 13;
             // 
+            // tabsMain
+            // 
+            this.tabsMain.Controls.Add(this.pgMain);
+            this.tabsMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabsMain.Location = new System.Drawing.Point(0, 0);
+            this.tabsMain.Name = "tabsMain";
+            this.tabsMain.SelectedIndex = 0;
+            this.tabsMain.Size = new System.Drawing.Size(951, 436);
+            this.tabsMain.TabIndex = 1;
+            this.ttipTabs.SetToolTip(this.tabsMain, "Web browser tabs. Right click a secondary tab to remove it.");
+            this.tabsMain.SelectedIndexChanged += new System.EventHandler(this.tabsMain_SelectedIndexChanged);
+            // 
+            // pgMain
+            // 
+            this.pgMain.BackColor = System.Drawing.Color.Transparent;
+            this.pgMain.Controls.Add(this.webBrowser);
+            this.pgMain.Location = new System.Drawing.Point(4, 22);
+            this.pgMain.Name = "pgMain";
+            this.pgMain.Padding = new System.Windows.Forms.Padding(3);
+            this.pgMain.Size = new System.Drawing.Size(943, 410);
+            this.pgMain.TabIndex = 0;
+            this.pgMain.Text = "Trade";
+            // 
             // webBrowser
             // 
             this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser.Location = new System.Drawing.Point(0, 0);
+            this.webBrowser.Location = new System.Drawing.Point(3, 3);
             this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(951, 436);
+            this.webBrowser.Size = new System.Drawing.Size(937, 404);
             this.webBrowser.TabIndex = 0;
             this.webBrowser.UseHttpActivityObserver = false;
+            this.webBrowser.Navigating += new System.EventHandler<Gecko.Events.GeckoNavigatingEventArgs>(this.webBrowser_Navigating);
+            this.webBrowser.CreateWindow += new System.EventHandler<Gecko.GeckoCreateWindowEventArgs>(this.webBrowser_CreateWindow);
             // 
             // gridBalances
             // 
@@ -677,6 +710,20 @@
             this.colModifySell.ReadOnly = true;
             this.colModifySell.Width = 5;
             // 
+            // conmenTabs
+            // 
+            this.conmenTabs.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.conitemRemoveTab});
+            this.conmenTabs.Name = "conmenTabs";
+            this.conmenTabs.Size = new System.Drawing.Size(184, 26);
+            // 
+            // conitemRemoveTab
+            // 
+            this.conitemRemoveTab.Name = "conitemRemoveTab";
+            this.conitemRemoveTab.Size = new System.Drawing.Size(183, 22);
+            this.conitemRemoveTab.Text = "&Remove Current Tab";
+            this.conitemRemoveTab.Click += new System.EventHandler(this.conitemRemoveTab_Click);
+            // 
             // lklblShowAllHistory
             // 
             this.lklblShowAllHistory.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -736,6 +783,8 @@
             this.splitMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
             this.splitMain.ResumeLayout(false);
+            this.tabsMain.ResumeLayout(false);
+            this.pgMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridBalances)).EndInit();
             this.splitActiveOrders.Panel1.ResumeLayout(false);
             this.splitActiveOrders.Panel2.ResumeLayout(false);
@@ -743,6 +792,7 @@
             this.splitActiveOrders.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridBuy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSell)).EndInit();
+            this.conmenTabs.ResumeLayout(false);
             this.stripMain.ResumeLayout(false);
             this.stripMain.PerformLayout();
             this.ResumeLayout(false);
@@ -792,6 +842,11 @@
         private System.Windows.Forms.DataGridViewButtonColumn colModifyBuy;
         private System.Windows.Forms.ToolTip ttipOrderAssist;
         private Gecko.GeckoWebBrowser webBrowser;
+        private System.Windows.Forms.TabControl tabsMain;
+        private System.Windows.Forms.TabPage pgMain;
+        private System.Windows.Forms.ContextMenuStrip conmenTabs;
+        private System.Windows.Forms.ToolStripMenuItem conitemRemoveTab;
+        private System.Windows.Forms.ToolTip ttipTabs;
     }
 }
 

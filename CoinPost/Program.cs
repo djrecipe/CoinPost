@@ -13,17 +13,16 @@ namespace CoinPost
 {
     public static class Crypto
     {
+        #region Static Constants
         private static readonly RandomNumberGenerator Random = RandomNumberGenerator.Create();
-
-        //Preconfigured Encryption Parameters
+        // ~ Encryption Parameters
         public static readonly int BlockBitSize = 128;
         public static readonly int KeyBitSize = 256;
-
-        //Preconfigured Password Key Derivation Parameters
+        // ~ Password Key Derivation Parameters
         public static readonly int SaltBitSize = 64;
         public static readonly int Iterations = 10000;
         public static readonly int MinPasswordLength = 12;
-
+        #endregion
         /// <summary>
         /// Helper that generates a random key on each call.
         /// </summary>
