@@ -25,4 +25,4 @@ NOTES
 
 KNOWN ISSUES
 ==========================================================================
-* WARNING!! CURRENTLY YOUR API KEY AND SECRET ARE BEING STORED IN AN UNENCRYPTED FILE! I will be fixing this issue tonight, Friday 12/20/13.
+* None, at the moment.
