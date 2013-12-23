@@ -360,7 +360,7 @@
             // 
             this.splitMain.Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             this.splitMain.Panel1.Controls.Add(this.tabsMain);
-            this.splitMain.Panel1MinSize = 300;
+            this.splitMain.Panel1MinSize = 1;
             // 
             // splitMain.Panel2
             // 
@@ -436,7 +436,7 @@
             this.colBalance});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.DarkGreen;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Gray;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Chartreuse;
@@ -444,6 +444,7 @@
             this.gridBalances.DefaultCellStyle = dataGridViewCellStyle2;
             this.gridBalances.EnableHeadersVisualStyles = false;
             this.gridBalances.Location = new System.Drawing.Point(322, 10);
+            this.gridBalances.MinimumSize = new System.Drawing.Size(144, 175);
             this.gridBalances.MultiSelect = false;
             this.gridBalances.Name = "gridBalances";
             this.gridBalances.ReadOnly = true;
@@ -454,7 +455,7 @@
             this.gridBalances.ShowCellToolTips = false;
             this.gridBalances.ShowEditingIcon = false;
             this.gridBalances.ShowRowErrors = false;
-            this.gridBalances.Size = new System.Drawing.Size(144, 171);
+            this.gridBalances.Size = new System.Drawing.Size(144, 175);
             this.gridBalances.TabIndex = 0;
             this.gridBalances.TabStop = false;
             this.gridBalances.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBalances_CellContentClick);
@@ -483,6 +484,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitActiveOrders.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.splitActiveOrders.Location = new System.Drawing.Point(471, 9);
+            this.splitActiveOrders.MinimumSize = new System.Drawing.Size(469, 176);
             this.splitActiveOrders.Name = "splitActiveOrders";
             // 
             // splitActiveOrders.Panel1
@@ -494,7 +496,7 @@
             // 
             this.splitActiveOrders.Panel2.Controls.Add(this.gridSell);
             this.splitActiveOrders.Panel2MinSize = 100;
-            this.splitActiveOrders.Size = new System.Drawing.Size(469, 172);
+            this.splitActiveOrders.Size = new System.Drawing.Size(469, 176);
             this.splitActiveOrders.SplitterDistance = 222;
             this.splitActiveOrders.TabIndex = 13;
             // 
@@ -546,7 +548,7 @@
             this.gridBuy.ShowCellToolTips = false;
             this.gridBuy.ShowEditingIcon = false;
             this.gridBuy.ShowRowErrors = false;
-            this.gridBuy.Size = new System.Drawing.Size(220, 170);
+            this.gridBuy.Size = new System.Drawing.Size(220, 174);
             this.gridBuy.TabIndex = 0;
             this.gridBuy.TabStop = false;
             this.gridBuy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);
@@ -652,7 +654,7 @@
             this.gridSell.ShowCellToolTips = false;
             this.gridSell.ShowEditingIcon = false;
             this.gridSell.ShowRowErrors = false;
-            this.gridSell.Size = new System.Drawing.Size(241, 170);
+            this.gridSell.Size = new System.Drawing.Size(241, 174);
             this.gridSell.TabIndex = 0;
             this.gridSell.TabStop = false;
             this.gridSell.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);
@@ -715,12 +717,13 @@
             this.conmenTabs.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.conitemRemoveTab});
             this.conmenTabs.Name = "conmenTabs";
-            this.conmenTabs.Size = new System.Drawing.Size(184, 26);
+            this.conmenTabs.ShowImageMargin = false;
+            this.conmenTabs.Size = new System.Drawing.Size(159, 26);
             // 
             // conitemRemoveTab
             // 
             this.conitemRemoveTab.Name = "conitemRemoveTab";
-            this.conitemRemoveTab.Size = new System.Drawing.Size(183, 22);
+            this.conitemRemoveTab.Size = new System.Drawing.Size(158, 22);
             this.conitemRemoveTab.Text = "&Remove Current Tab";
             this.conitemRemoveTab.Click += new System.EventHandler(this.conitemRemoveTab_Click);
             // 
@@ -772,11 +775,13 @@
             this.ClientSize = new System.Drawing.Size(953, 672);
             this.Controls.Add(this.stripMain);
             this.Controls.Add(this.splitMain);
-            this.MinimumSize = new System.Drawing.Size(900, 710);
+            this.MinimumSize = new System.Drawing.Size(900, 270);
             this.Name = "formMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "CoinPost";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formMain_FormClosing);
             this.Load += new System.EventHandler(this.formMain_Load);
+            this.ResizeEnd += new System.EventHandler(this.formMain_ResizeEnd);
             this.groupTrade.ResumeLayout(false);
             this.groupTrade.PerformLayout();
             this.splitMain.Panel1.ResumeLayout(false);

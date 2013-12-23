@@ -54,6 +54,7 @@ namespace CoinPost
         private string current_exchange;                        // current exchange string (see mutExchangeString)
         #endregion
         #region Flags
+        private bool browsers_enabled;
         private bool exchange_changed;                                  // indicated whether or not our exchange currency has changed
         private bool get_trade_history;
         private bool navigating;
@@ -73,6 +74,35 @@ namespace CoinPost
         #endregion
         #endregion
         #region formMain Methods
+        #region Configuration Methods
+        private void LoadWindowConfiguration()
+        {
+            //
+            int? initial_height = (int?)Registry.GetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "WindowHeight", -1);
+            int? initial_width = (int?)Registry.GetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "WindowWidth", -1);
+            if (initial_height.HasValue && initial_width.HasValue && initial_height.Value > 0 && initial_width.Value > 0)
+                this.Size = new Size(initial_width.Value, initial_height.Value);
+            //
+            int? initial_left = (int?)Registry.GetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "WindowLeft", -1);
+            int? initial_top = (int?)Registry.GetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "WindowTop", -1);
+            if (initial_left.HasValue && initial_top.HasValue && initial_left.Value != -1 && initial_top.Value != -1)
+                this.Location = new Point(initial_left.Value, initial_top.Value);
+            //
+            bool maximized = Convert.ToBoolean((string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "WindowMaximized", "False"));
+            this.WindowState = maximized ? FormWindowState.Maximized : FormWindowState.Normal;
+            this.formMain_ResizeEnd(null, null);
+            return;
+        }
+        private void SaveWindowConfiguration()
+        {
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "WindowHeight", this.Height);
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "WindowWidth", this.Width);
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "WindowLeft", this.Left);
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "WindowTop", this.Top);
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "WindowMaximized", this.WindowState==FormWindowState.Maximized?true:false);
+            return;
+        }
+        #endregion
         #region Initialization Methods
         private void InitializeBrowser()
         {
@@ -137,6 +167,7 @@ namespace CoinPost
             this.cbUpdateTradeHistory = new delTradeHistory(this.UpdateTradeHistory);
             #endregion
             #region Flag Initialization
+            this.browsers_enabled = true;
             this.exchange_changed = true;
             this.get_trade_history = false;
             this.navigating = false;
@@ -174,6 +205,7 @@ namespace CoinPost
                 this.is_valid = false;
             #endregion
             this.InitializeBrowser();
+            this.LoadWindowConfiguration();
         }
         #endregion
         #region GridView Methods
@@ -204,12 +236,12 @@ namespace CoinPost
                 this.current_exchange = this.comboSourceCurrency.SelectedItem.ToString() + "_" + this.comboTargetCurrency.SelectedItem.ToString();
                 this.exchange_changed = true;
                 mutExchangeString.ReleaseMutex();
-                if (this.webBrowser.Created && (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC"))
+                if (this.browsers_enabled && this.webBrowser.Created && (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC"))
                 {
                     this.navigating = true;
                     this.webBrowser.Navigate("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
                 }
-                else if (this.webBrowser.Created)
+                else if (this.browsers_enabled && this.webBrowser.Created)
                 {
                     this.navigating = true;
                     this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
@@ -374,6 +406,8 @@ namespace CoinPost
         {
             if (!this.threadInfo.IsAlive)
                 this.threadInfo.Start();
+            if (!this.browsers_enabled)
+                return;
             if (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC")
             {
                 this.navigating = true;
@@ -388,9 +422,28 @@ namespace CoinPost
 
         private void formMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            this.SaveWindowConfiguration();
             mutValid.WaitOne();
             this.valid = false;
             mutValid.ReleaseMutex();
+        }
+        private void formMain_ResizeEnd(object sender, EventArgs e)
+        {
+            bool old_value = this.browsers_enabled;
+            this.webBrowser.Visible = this.webBrowser.Enabled = this.browsers_enabled = (this.Height > this.MinimumSize.Height * 1.1);
+            foreach (TabPage page in this.tabsMain.TabPages)
+            {
+                foreach (Control control in page.Controls)
+                {
+                    GeckoWebBrowser browser = control as GeckoWebBrowser;
+                    if (browser != null)
+                    {
+                        browser.Visible = browser.Enabled = this.browsers_enabled;
+                    }
+                }
+            }
+            if (!old_value && this.browsers_enabled)
+                this.SafeUpdateExchangeString();
         }
         #endregion
         #region GridView Events
@@ -530,6 +583,11 @@ namespace CoinPost
         #region Web Browser Events
         void webBrowser_Navigating(object sender, Gecko.Events.GeckoNavigatingEventArgs e)
         {
+            if (!this.browsers_enabled)
+            {
+                e.Cancel = true;
+                return;
+            }
             string[] split_string = e.Uri.AbsoluteUri.Split('/');
             int split_string_len = split_string.Length;
             if (e.Uri.AbsoluteUri == this.webBrowser.Url.AbsoluteUri || split_string_len<2)
@@ -569,6 +627,11 @@ namespace CoinPost
         }
         void otherBrowsers_Navigating(object sender, Gecko.Events.GeckoNavigatingEventArgs e)
         {
+            if (!this.browsers_enabled)
+            {
+                e.Cancel = true;
+                return;
+            }
             GeckoWebBrowser caller = (GeckoWebBrowser)sender;
             string[] split_string = e.Uri.AbsoluteUri.Split('/');
             int split_string_len = split_string.Length;
@@ -605,6 +668,8 @@ namespace CoinPost
 
         }
         #endregion
+
+
         #endregion
 
     }
