@@ -31,8 +31,6 @@ namespace CoinPost
             this.quantity_units = units[0];
             this.base_price = initial_price;
             this.base_quantity = initial_quantity;
-            this.max_balance = balance+initial_price*initial_quantity;
-            Console.WriteLine(max_balance.ToString());
             //
             this.lklblPrice.Text = initial_price.ToString() + " " + this.price_units;
             this.lklblQuantity.Text = initial_quantity.ToString() + " " + this.quantity_units;
@@ -40,11 +38,14 @@ namespace CoinPost
             this.old_quantity_text = initial_quantity.ToString();
             //
             this.is_buy_order = buy_order;
+            this.max_balance = balance;
             if (!buy_order)
             {
                 this.lblOrderType.Text = "This is a SELL order.";
                 this.txtQuantity.Text = this.lklblQuantity.Text.Split(' ')[0];
             }
+            else
+                this.max_balance += initial_price * initial_quantity;
         }
         private void UpdateTotal()
         {
@@ -56,6 +57,12 @@ namespace CoinPost
         private void btnAccept_Click(object sender, EventArgs e)
         {
             double new_price = 0.0, new_quantity = 0.0;
+            if (this.is_buy_order && this.txtTotal.Text!="")
+            {
+                double total = Convert.ToDouble(this.txtTotal.Text.Split(' ')[0]);
+                if (total > this.max_balance)
+                    this.lklblQuantity_LinkClicked(null, null);
+            }
             if (Double.TryParse(this.txtPrice.Text, out new_price) && Double.TryParse(this.txtQuantity.Text, out new_quantity))
             {
                 this.Price = new_price;
@@ -94,14 +101,16 @@ namespace CoinPost
             if (temp.Last() == '.')
                 temp += "0";
             decimal value = 0;
+            decimal new_value = 0;
             if (decimal.TryParse(temp, out value))
             {
-                if (caller.Text.Last() != '.')
-                    caller.Text = (Decimal.Truncate(value * 1000000) / 1000000).ToString();
+                new_value = Decimal.Truncate(value * 1000000) / 1000000;
+                if (caller.Text.Last() != '.' && new_value != value && value != 0)
+                    caller.Text = new_value.ToString();
             }
             else
-                caller.Text = old_price_text;
-            old_price_text = caller.Text;
+                caller.Text = old_quantity_text;
+            old_quantity_text = caller.Text;
             caller.SelectionStart = caller.Text.Length;
             this.UpdateTotal();
         }
@@ -115,10 +124,12 @@ namespace CoinPost
             if (temp.Last() == '.')
                 temp += "0";
             decimal value = 0;
+            decimal new_value = 0;
             if (decimal.TryParse(temp, out value))
             {
-                if (caller.Text.Last() != '.')
-                    caller.Text = (Decimal.Truncate(value * 1000000) / 1000000).ToString();
+                new_value = Decimal.Truncate(value * 1000000) / 1000000;
+                if (caller.Text.Last() != '.' && new_value != value && value != 0)
+                    caller.Text = new_value.ToString();
             }
             else
                 caller.Text = old_quantity_text;

@@ -317,7 +317,7 @@ namespace CoinPost
                 return;
             this.lklblLastPrice.Text = price_in.Value.ToString();
             mutExchangeString.WaitOne();
-            if (Convert.ToDecimal(this.txtPrice.Text) == 0 || this.exchange_changed)
+            if (this.exchange_changed)
                 this.txtPrice.Text = this.lklblLastPrice.Text;
             this.exchange_changed = false;
             mutExchangeString.ReleaseMutex();
@@ -445,6 +445,10 @@ namespace CoinPost
             if (!old_value && this.browsers_enabled)
                 this.SafeUpdateExchangeString();
         }
+        private void splitMain_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            this.formMain_ResizeEnd(null, null);
+        }
         #endregion
         #region GridView Events
         private void gridBalances_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -526,10 +530,12 @@ namespace CoinPost
             if (temp.Last() == '.')
                 temp += "0";
             decimal value = 0;
+            decimal new_value = 0;
             if (decimal.TryParse(temp, out value))
             {
-                if (caller.Text.Last() != '.')
-                    caller.Text = (Decimal.Truncate(value * 1000000) / 1000000).ToString();
+                new_value = Decimal.Truncate(value * 1000000) / 1000000;
+                if (caller.Text.Last() != '.' && new_value != value && value != 0)
+                    caller.Text = new_value.ToString();
             }
             else
                 caller.Text = old_quantity_text;
@@ -546,14 +552,16 @@ namespace CoinPost
             if (temp.Last() == '.')
                 temp += "0";
             decimal value = 0;
+            decimal new_value = 0;
             if (decimal.TryParse(temp, out value))
             {
-                if (caller.Text.Last() != '.')
-                    caller.Text = (Decimal.Truncate(value * 1000000) / 1000000).ToString();
+                new_value = Decimal.Truncate(value * 1000000) / 1000000;
+                if (caller.Text.Last() != '.' && new_value != value && value!=0)
+                    caller.Text = new_value.ToString();
             }
             else
-                caller.Text = old_price_text;
-            old_price_text = caller.Text;
+                caller.Text = old_quantity_text;
+            old_quantity_text = caller.Text;
             caller.SelectionStart = caller.Text.Length;
             this.UpdateTotal();
         }
@@ -668,8 +676,6 @@ namespace CoinPost
 
         }
         #endregion
-
-
         #endregion
 
     }

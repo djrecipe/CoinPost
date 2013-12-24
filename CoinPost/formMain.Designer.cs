@@ -373,6 +373,7 @@
             this.splitMain.SplitterDistance = 438;
             this.splitMain.SplitterWidth = 8;
             this.splitMain.TabIndex = 13;
+            this.splitMain.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitMain_SplitterMoved);
             // 
             // tabsMain
             // 
