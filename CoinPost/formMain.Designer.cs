@@ -407,6 +407,7 @@
             this.webBrowser.TabIndex = 0;
             this.webBrowser.UseHttpActivityObserver = false;
             this.webBrowser.Navigating += new System.EventHandler<Gecko.Events.GeckoNavigatingEventArgs>(this.webBrowser_Navigating);
+            this.webBrowser.DocumentCompleted += new System.EventHandler(this.webBrowser_DocumentCompleted);
             this.webBrowser.CreateWindow += new System.EventHandler<Gecko.GeckoCreateWindowEventArgs>(this.webBrowser_CreateWindow);
             // 
             // gridBalances
@@ -456,7 +457,7 @@
             this.gridBalances.ShowCellToolTips = false;
             this.gridBalances.ShowEditingIcon = false;
             this.gridBalances.ShowRowErrors = false;
-            this.gridBalances.Size = new System.Drawing.Size(144, 175);
+            this.gridBalances.Size = new System.Drawing.Size(169, 175);
             this.gridBalances.TabIndex = 0;
             this.gridBalances.TabStop = false;
             this.gridBalances.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBalances_CellContentClick);
@@ -484,8 +485,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitActiveOrders.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitActiveOrders.Location = new System.Drawing.Point(471, 9);
-            this.splitActiveOrders.MinimumSize = new System.Drawing.Size(469, 176);
+            this.splitActiveOrders.Location = new System.Drawing.Point(497, 9);
+            this.splitActiveOrders.MinimumSize = new System.Drawing.Size(425, 176);
             this.splitActiveOrders.Name = "splitActiveOrders";
             // 
             // splitActiveOrders.Panel1
@@ -497,8 +498,8 @@
             // 
             this.splitActiveOrders.Panel2.Controls.Add(this.gridSell);
             this.splitActiveOrders.Panel2MinSize = 100;
-            this.splitActiveOrders.Size = new System.Drawing.Size(469, 176);
-            this.splitActiveOrders.SplitterDistance = 222;
+            this.splitActiveOrders.Size = new System.Drawing.Size(443, 176);
+            this.splitActiveOrders.SplitterDistance = 220;
             this.splitActiveOrders.TabIndex = 13;
             // 
             // gridBuy
@@ -549,7 +550,7 @@
             this.gridBuy.ShowCellToolTips = false;
             this.gridBuy.ShowEditingIcon = false;
             this.gridBuy.ShowRowErrors = false;
-            this.gridBuy.Size = new System.Drawing.Size(220, 174);
+            this.gridBuy.Size = new System.Drawing.Size(218, 174);
             this.gridBuy.TabIndex = 0;
             this.gridBuy.TabStop = false;
             this.gridBuy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);
@@ -655,7 +656,7 @@
             this.gridSell.ShowCellToolTips = false;
             this.gridSell.ShowEditingIcon = false;
             this.gridSell.ShowRowErrors = false;
-            this.gridSell.Size = new System.Drawing.Size(241, 174);
+            this.gridSell.Size = new System.Drawing.Size(217, 174);
             this.gridSell.TabIndex = 0;
             this.gridSell.TabStop = false;
             this.gridSell.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);

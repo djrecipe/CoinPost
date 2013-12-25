@@ -111,7 +111,6 @@ namespace CoinPost
             else
                 caller.Text = old_quantity_text;
             old_quantity_text = caller.Text;
-            caller.SelectionStart = caller.Text.Length;
             this.UpdateTotal();
         }
 
@@ -134,7 +133,6 @@ namespace CoinPost
             else
                 caller.Text = old_quantity_text;
             old_quantity_text = caller.Text;
-            caller.SelectionStart = caller.Text.Length;
             this.UpdateTotal();
         }
     }

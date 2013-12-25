@@ -106,18 +106,21 @@ namespace CoinPost
         #region Initialization Methods
         private void InitializeBrowser()
         {
-            
+        }
+        private void Action(string string_in)
+        {
+            Console.WriteLine("event");
         }
         private bool InitializeBtceApi()
         {
             string curr_api_key = null, curr_api_secret = null;
             if (File.Exists("CoinPost.key"))
             {
-                //formCredentials fLogin = new formCredentials(false);
-                //if (fLogin.ShowDialog() != DialogResult.OK || fLogin.APIPassword == null)
-                //    return false;
+                formCredentials fLogin = new formCredentials(false);
+                if (fLogin.ShowDialog() != DialogResult.OK || fLogin.APIPassword == null)
+                    return false;
                 string encrypted_text = Convert.ToBase64String(File.ReadAllBytes("CoinPost.key"));
-                string decrypted_text = Crypto.SimpleDecryptWithPassword(encrypted_text, "0Mn1c1a17!!!");//fLogin.APIPassword);
+                string decrypted_text = Crypto.SimpleDecryptWithPassword(encrypted_text, fLogin.APIPassword);
                 if(decrypted_text==null || !decrypted_text.Contains("encrypted"))
                     return false;
                 string[] text_elements = decrypted_text.Split('|');
@@ -204,7 +207,6 @@ namespace CoinPost
             else
                 this.is_valid = false;
             #endregion
-            this.InitializeBrowser();
             this.LoadWindowConfiguration();
         }
         #endregion
@@ -408,6 +410,7 @@ namespace CoinPost
                 this.threadInfo.Start();
             if (!this.browsers_enabled)
                 return;
+            this.InitializeBrowser();
             if (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC")
             {
                 this.navigating = true;
@@ -540,7 +543,6 @@ namespace CoinPost
             else
                 caller.Text = old_quantity_text;
             old_quantity_text = caller.Text;
-            caller.SelectionStart = caller.Text.Length;
             this.UpdateTotal();
         }
         private void txtPrice_Update(object sender, EventArgs e)
@@ -556,13 +558,12 @@ namespace CoinPost
             if (decimal.TryParse(temp, out value))
             {
                 new_value = Decimal.Truncate(value * 1000000) / 1000000;
-                if (caller.Text.Last() != '.' && new_value != value && value!=0)
+                if (caller.Text.Last() != '.' && new_value != value && value != 0)
                     caller.Text = new_value.ToString();
             }
             else
                 caller.Text = old_quantity_text;
             old_quantity_text = caller.Text;
-            caller.SelectionStart = caller.Text.Length;
             this.UpdateTotal();
         }
         private void UpdateTotal()
@@ -604,7 +605,7 @@ namespace CoinPost
                 this.navigating = false;
                 return;
             }
-            if (!this.navigating && !e.Uri.AbsoluteUri.Contains("about:blank"))
+            if (!this.navigating && !e.Uri.AbsoluteUri.Contains("about:blank") && !e.Uri.AbsoluteUri.Contains("twitter"))
             {
                 string tab_name = split_string[split_string_len - 2] + "/" + split_string[split_string_len - 1];
                 bool tab_exists=false;
@@ -624,6 +625,7 @@ namespace CoinPost
                     newBrowser.Dock = DockStyle.Fill;
                     newBrowser.Navigate(e.Uri.AbsoluteUri);
                     newBrowser.Navigating += this.otherBrowsers_Navigating;
+                    newBrowser.DocumentCompleted += this.webBrowser_DocumentCompleted;
                     this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Text = tab_name;
                     this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Controls.Add(newBrowser);
                     this.tabsMain.SelectedIndex = this.tabsMain.TabPages.Count - 1;
@@ -644,7 +646,7 @@ namespace CoinPost
             string[] split_string = e.Uri.AbsoluteUri.Split('/');
             int split_string_len = split_string.Length;
             e.Cancel = true;
-            if (e.Uri.AbsoluteUri == caller.Url.AbsoluteUri  || e.Uri.AbsoluteUri.Contains("about:blank") || split_string_len < 2)
+            if (e.Uri.AbsoluteUri == caller.Url.AbsoluteUri || e.Uri.AbsoluteUri.Contains("about:blank") || e.Uri.AbsoluteUri.Contains("twitter") || split_string_len < 2)
                 return;
             string source_currency = split_string[split_string_len - 1].Substring(0, 3).ToUpper();
             string target_currency = split_string[split_string_len - 1].Substring(3, 3).ToUpper();
@@ -667,6 +669,7 @@ namespace CoinPost
             newBrowser.Dock = DockStyle.Fill;
             newBrowser.Navigate(e.Uri.AbsoluteUri);
             newBrowser.Navigating += this.otherBrowsers_Navigating;
+            newBrowser.DocumentCompleted += this.webBrowser_DocumentCompleted;
             this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Text = tab_name;
             this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Controls.Add(newBrowser);
             this.tabsMain.SelectedIndex = this.tabsMain.TabPages.Count - 1;
@@ -676,6 +679,19 @@ namespace CoinPost
 
         }
         #endregion
+
+        private void webBrowser_DocumentCompleted(object sender, EventArgs e)
+        {
+            GeckoWebBrowser browser = (GeckoWebBrowser)sender;
+            if (browser.Url.AbsoluteUri.Contains("bitcoinwisdom"))
+            {
+                using (AutoJSContext context = new AutoJSContext(browser.Window.JSContext))
+                {
+                    context.EvaluateScript("$( document ).ready(function(){$( \"#leftbar_outer\" ).hide();$( \"#leftbar\" ).hide();});");
+                    context.EvaluateScript("$( document ).ready(function(){$( \"#canvas_cross\" ).mousewheel();});");
+                }
+            }
+        }
         #endregion
 
     }
