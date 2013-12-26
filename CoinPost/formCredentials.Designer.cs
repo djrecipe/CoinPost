@@ -44,7 +44,7 @@
             this.txtAPIKey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(125)))), ((int)(((byte)(125)))));
             this.txtAPIKey.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtAPIKey.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold);
-            this.txtAPIKey.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(40)))), ((int)(((byte)(0)))));
+            this.txtAPIKey.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
             this.txtAPIKey.Location = new System.Drawing.Point(12, 12);
             this.txtAPIKey.Name = "txtAPIKey";
             this.txtAPIKey.Size = new System.Drawing.Size(527, 15);
@@ -60,7 +60,7 @@
             this.txtSecret.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(125)))), ((int)(((byte)(125)))));
             this.txtSecret.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtSecret.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSecret.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(40)))), ((int)(((byte)(0)))));
+            this.txtSecret.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
             this.txtSecret.Location = new System.Drawing.Point(12, 32);
             this.txtSecret.Name = "txtSecret";
             this.txtSecret.Size = new System.Drawing.Size(527, 15);
@@ -106,7 +106,7 @@
             this.txtPassword.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(125)))), ((int)(((byte)(125)))));
             this.txtPassword.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtPassword.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(40)))), ((int)(((byte)(0)))));
+            this.txtPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
             this.txtPassword.Location = new System.Drawing.Point(12, 52);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(527, 15);

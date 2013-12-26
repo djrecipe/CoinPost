@@ -30,13 +30,13 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -44,12 +44,12 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitMain = new System.Windows.Forms.SplitContainer();
             this.gridBuy = new CoinPost.Grid();
+            this.gridSell = new CoinPost.Grid();
             this.colBuyID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gridSell = new CoinPost.Grid();
             this.colSellID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSellTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSellQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -77,8 +77,8 @@
             // splitMain.Panel2
             // 
             this.splitMain.Panel2.Controls.Add(this.gridSell);
-            this.splitMain.Size = new System.Drawing.Size(745, 219);
-            this.splitMain.SplitterDistance = 382;
+            this.splitMain.Size = new System.Drawing.Size(1123, 219);
+            this.splitMain.SplitterDistance = 575;
             this.splitMain.SplitterWidth = 8;
             this.splitMain.TabIndex = 1;
             // 
@@ -129,57 +129,9 @@
             this.gridBuy.ShowCellToolTips = false;
             this.gridBuy.ShowEditingIcon = false;
             this.gridBuy.ShowRowErrors = false;
-            this.gridBuy.Size = new System.Drawing.Size(382, 219);
+            this.gridBuy.Size = new System.Drawing.Size(575, 219);
             this.gridBuy.TabIndex = 0;
             this.gridBuy.TabStop = false;
-            // 
-            // colBuyID
-            // 
-            this.colBuyID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.colBuyID.DefaultCellStyle = dataGridViewCellStyle2;
-            this.colBuyID.HeaderText = "#";
-            this.colBuyID.Name = "colBuyID";
-            this.colBuyID.ReadOnly = true;
-            this.colBuyID.Width = 41;
-            // 
-            // colBuyTime
-            // 
-            this.colBuyTime.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle3.Format = "G";
-            dataGridViewCellStyle3.NullValue = null;
-            this.colBuyTime.DefaultCellStyle = dataGridViewCellStyle3;
-            this.colBuyTime.HeaderText = "Time";
-            this.colBuyTime.Name = "colBuyTime";
-            this.colBuyTime.ReadOnly = true;
-            this.colBuyTime.Width = 66;
-            // 
-            // colBuyQuantity
-            // 
-            this.colBuyQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.colBuyQuantity.DefaultCellStyle = dataGridViewCellStyle4;
-            this.colBuyQuantity.HeaderText = "Buy";
-            this.colBuyQuantity.Name = "colBuyQuantity";
-            this.colBuyQuantity.ReadOnly = true;
-            // 
-            // colBuyPrice
-            // 
-            this.colBuyPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.colBuyPrice.DefaultCellStyle = dataGridViewCellStyle5;
-            this.colBuyPrice.HeaderText = "Price";
-            this.colBuyPrice.Name = "colBuyPrice";
-            this.colBuyPrice.ReadOnly = true;
-            // 
-            // colBuyTotal
-            // 
-            this.colBuyTotal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.colBuyTotal.DefaultCellStyle = dataGridViewCellStyle6;
-            this.colBuyTotal.HeaderText = "Total";
-            this.colBuyTotal.Name = "colBuyTotal";
-            this.colBuyTotal.ReadOnly = true;
             // 
             // gridSell
             // 
@@ -228,9 +180,58 @@
             this.gridSell.ShowCellToolTips = false;
             this.gridSell.ShowEditingIcon = false;
             this.gridSell.ShowRowErrors = false;
-            this.gridSell.Size = new System.Drawing.Size(355, 219);
+            this.gridSell.Size = new System.Drawing.Size(540, 219);
             this.gridSell.TabIndex = 1;
             this.gridSell.TabStop = false;
+            // 
+            // colBuyID
+            // 
+            this.colBuyID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.colBuyID.DefaultCellStyle = dataGridViewCellStyle2;
+            this.colBuyID.HeaderText = "#";
+            this.colBuyID.Name = "colBuyID";
+            this.colBuyID.ReadOnly = true;
+            this.colBuyID.Width = 41;
+            // 
+            // colBuyTime
+            // 
+            this.colBuyTime.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridViewCellStyle3.Format = "G";
+            dataGridViewCellStyle3.NullValue = null;
+            this.colBuyTime.DefaultCellStyle = dataGridViewCellStyle3;
+            this.colBuyTime.HeaderText = "Time";
+            this.colBuyTime.Name = "colBuyTime";
+            this.colBuyTime.ReadOnly = true;
+            this.colBuyTime.Width = 66;
+            // 
+            // colBuyQuantity
+            // 
+            this.colBuyQuantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.colBuyQuantity.DefaultCellStyle = dataGridViewCellStyle4;
+            this.colBuyQuantity.HeaderText = "Buy";
+            this.colBuyQuantity.Name = "colBuyQuantity";
+            this.colBuyQuantity.ReadOnly = true;
+            // 
+            // colBuyPrice
+            // 
+            this.colBuyPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.colBuyPrice.DefaultCellStyle = dataGridViewCellStyle5;
+            this.colBuyPrice.HeaderText = "Price";
+            this.colBuyPrice.Name = "colBuyPrice";
+            this.colBuyPrice.ReadOnly = true;
+            // 
+            // colBuyTotal
+            // 
+            this.colBuyTotal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.colBuyTotal.DefaultCellStyle = dataGridViewCellStyle6;
+            this.colBuyTotal.HeaderText = "Total";
+            this.colBuyTotal.Name = "colBuyTotal";
+            this.colBuyTotal.ReadOnly = true;
             // 
             // colSellID
             // 
@@ -266,6 +267,7 @@
             // 
             this.colSellPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
             this.colSellPrice.DefaultCellStyle = dataGridViewCellStyle12;
             this.colSellPrice.HeaderText = "Price";
             this.colSellPrice.Name = "colSellPrice";
@@ -286,7 +288,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            this.ClientSize = new System.Drawing.Size(745, 219);
+            this.ClientSize = new System.Drawing.Size(1123, 219);
             this.Controls.Add(this.splitMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "formTradeHistory";

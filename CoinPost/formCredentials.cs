@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
@@ -21,7 +22,9 @@ namespace CoinPost
             if (!initial_login)
             {
                 this.txtAPIKey.Enabled = false;
+                this.txtAPIKey.Text = "";
                 this.txtSecret.Enabled = false;
+                this.txtSecret.Text = "";
             }
         }
 
