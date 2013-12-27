@@ -578,12 +578,15 @@ namespace CoinPost
         }
         private void gridBuySell_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0)
+                return;
             DataGridView caller = (DataGridView)sender;
+            int order_number = Convert.ToInt32(caller.Rows[e.RowIndex].Cells[0].Value);
             if (e.ColumnIndex == 4)
             {
-                this.canceledOrders.Add(Convert.ToInt32(caller.Rows[e.RowIndex].Cells[0].Value));
-                CancelOrderAnswer answer = this.btceApi.CancelOrder(this.canceledOrders.Last());
-                caller.Rows.RemoveAt(e.RowIndex);
+                caller.Rows.RemoveAt(order_number);
+                this.canceledOrders.Add(order_number);
+                CancelOrderAnswer answer = this.btceApi.CancelOrder(order_number);
             }
             if (e.ColumnIndex == 5)
             {
@@ -596,11 +599,18 @@ namespace CoinPost
                 {
                     if (fModify.Price.Value != initial_price_out || fModify.Quantity.Value != initial_quantity_out)
                     {
-                        this.canceledOrders.Add(Convert.ToInt32(caller.Rows[e.RowIndex].Cells[0].Value));
-                        this.btceApi.CancelOrder(this.canceledOrders.Last());
-                        this.pendingTrades.Add(new PendingTrade(exchange_string_out, caller == this.gridBuy ? TradeType.Buy : TradeType.Sell, fModify.Price.Value, fModify.Quantity.Value));
-                        this.timerModifyOrder.Enabled = true;
-                        caller.Rows.RemoveAt(e.RowIndex);
+                        for (int i = 0; i < caller.Rows.Count; i++)
+                        {
+                            if (Convert.ToInt32(caller.Rows[i].Cells[0].Value)==order_number)
+                            {
+                                caller.Rows.RemoveAt(i);
+                                this.canceledOrders.Add(order_number);
+                                this.btceApi.CancelOrder(order_number);
+                                this.pendingTrades.Add(new PendingTrade(exchange_string_out, caller == this.gridBuy ? TradeType.Buy : TradeType.Sell, fModify.Price.Value, fModify.Quantity.Value));
+                                this.timerModifyOrder.Enabled = true;
+                                break;
+                            }
+                        }
                     }
                 }
             }
