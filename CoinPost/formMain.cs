@@ -584,7 +584,7 @@ namespace CoinPost
             int order_number = Convert.ToInt32(caller.Rows[e.RowIndex].Cells[0].Value);
             if (e.ColumnIndex == 4)
             {
-                caller.Rows.RemoveAt(order_number);
+                caller.Rows.RemoveAt(e.RowIndex);
                 this.canceledOrders.Add(order_number);
                 CancelOrderAnswer answer = this.btceApi.CancelOrder(order_number);
             }
