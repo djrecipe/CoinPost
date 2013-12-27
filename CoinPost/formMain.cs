@@ -279,28 +279,28 @@ namespace CoinPost
                     non_usd_rates[i]= BtceApi.GetTicker(formMain.non_usd_pairs[i] + "_" + formMain.target_pairs[0]);
                 //
                 UserInfo userinfo = this.btceApi.GetInfo();
+                this.BeginInvoke(this.cbUpdateUserInfo, userinfo);
                 if (userinfo != null)
                 {
-                    this.BeginInvoke(this.cbUpdateUserInfo, userinfo);
                     total_balance += userinfo.Funds.Usd;
                     for(int j=0; j<formMain.usd_pairs.Count; j++)
                     {
                         switch (formMain.usd_pairs[j])
                         {
                             case "BTC":
-                                total_balance += userinfo.Funds.Btc * usd_rates[j].Last;
+                                total_balance += userinfo.Funds.Btc * usd_rates[j].Last * Convert.ToDecimal(0.998);
                                 break;
                             case "LTC":
-                                total_balance += userinfo.Funds.Ltc * usd_rates[j].Last;
+                                total_balance += userinfo.Funds.Ltc * usd_rates[j].Last * Convert.ToDecimal(0.998);
                                 break;
                             case "NMC":
-                                total_balance += userinfo.Funds.Nmc * usd_rates[j].Last;
+                                total_balance += userinfo.Funds.Nmc * usd_rates[j].Last * Convert.ToDecimal(0.998);
                                 break;
                             case "NVC":
-                                total_balance += userinfo.Funds.Nvc * usd_rates[j].Last;
+                                total_balance += userinfo.Funds.Nvc * usd_rates[j].Last * Convert.ToDecimal(0.998);
                                 break;
                             case "PPC":
-                                total_balance += userinfo.Funds.Ppc * usd_rates[j].Last;
+                                total_balance += userinfo.Funds.Ppc * usd_rates[j].Last * Convert.ToDecimal(0.998);
                                 break;
                             default:
                                 break;
@@ -311,10 +311,10 @@ namespace CoinPost
                         switch (formMain.non_usd_pairs[j])
                         {
                             case "FTC":
-                                total_balance += userinfo.Funds.Ftc * non_usd_rates[j].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last;
+                                total_balance += userinfo.Funds.Ftc * non_usd_rates[j].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998) * Convert.ToDecimal(0.998);
                                 break;
                             case "TRC":
-                                total_balance += userinfo.Funds.Trc * non_usd_rates[j].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last;
+                                total_balance += userinfo.Funds.Trc * non_usd_rates[j].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998) * Convert.ToDecimal(0.998);
                                 break;
                             default:
                                 break;
@@ -322,27 +322,43 @@ namespace CoinPost
                     }
                 }
                 OrderList orders = this.btceApi.GetOrderList();
+                this.BeginInvoke(this.cbUpdateOrderList, orders); 
                 if (orders != null)
                 {
                     foreach (KeyValuePair<int,Order> order in orders.List)
                     {
-                        int index=formMain.usd_pairs.IndexOf(order.Value.Pair.ToString().Substring(0,3).ToUpper());
-                        if (index != -1)
+                        if (order.Value.Type == TradeType.Sell)
                         {
-                            total_balance += order.Value.Amount * usd_rates[index].Last;
+                            int index = formMain.usd_pairs.IndexOf(order.Value.Pair.ToString().Substring(0, 3).ToUpper());
+                            if (index != -1)
+                            {
+                                total_balance += order.Value.Amount * usd_rates[index].Last * Convert.ToDecimal(0.998);
+                            }
+                            else
+                            {
+                                index = formMain.non_usd_pairs.IndexOf(order.Value.Pair.ToString().ToUpper().Take(3).ToString());
+                                if (index != -1)
+                                {
+                                    total_balance += order.Value.Amount * non_usd_rates[index].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last*Convert.ToDecimal(0.998);
+                                }
+                            }
                         }
                         else
                         {
-                            index = formMain.non_usd_pairs.IndexOf(order.Value.Pair.ToString().ToUpper().Take(3).ToString());
-                            if(index!=-1)
+                            Console.WriteLine(order.Value.Pair.ToString().Substring(4, 3).ToUpper());
+                            int index = formMain.target_pairs.IndexOf(order.Value.Pair.ToString().Substring(4, 3).ToUpper());
+                            if (index != -1)
                             {
-                                total_balance += order.Value.Amount * non_usd_rates[index].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last;
+                                
+                                if (formMain.target_pairs[index].Contains("USD"))
+                                    total_balance += order.Value.Amount * order.Value.Rate;
+                                else
+                                    total_balance += order.Value.Amount * order.Value.Rate * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998);
+
                             }
                         }
                     }
-                    this.BeginInvoke(this.cbUpdateOrderList, orders);  
                 }
-                total_balance*=Convert.ToDecimal(0.998);
                 this.BeginInvoke(this.cbUpdateTotalBalance, total_balance);
                 mutTradeHistory.WaitOne();
                 this.BeginInvoke(this.cbUpdateTradeHistory, this.btceApi.GetTradeHistory());
