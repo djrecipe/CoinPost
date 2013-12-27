@@ -24,8 +24,10 @@ namespace CoinPost
         #region Constants
         private static readonly double MinimumSellThreshold=1.004012032080192;
         private static readonly double MinimumBuyThreshold = 0.996004;
-        private static readonly string replace_jscript = "<script src=\"/js/main_b.js";//?1387478040\" type=\"text/javascript\"></script>";
-        private static readonly string end_jscript="</script>";
+        private static readonly List<string> non_wisdom_pairs = new List<string>(){ "FTC", "NVC", "PPC", "TRC" };
+        private static readonly List<string> non_usd_pairs = new List<string>() { "FTC", "TRC" };
+        private static readonly List<string> usd_pairs = new List<string>() { "BTC", "LTC", "NMC", "NVC", "PPC" };
+        private static readonly List<string> target_pairs = new List<string>() { "BTC", "USD" };
         #endregion
         #region Mutices
         private static Mutex mutExchangeString = new Mutex();           // to access current currency exchange string (i.e. "ltc_btc")
@@ -41,6 +43,7 @@ namespace CoinPost
 
         private formMain.delDecimal cbUpdateLastPrice;                   // callback for updating current price
         private formMain.delOrderList cbUpdateOrderList;                 // callback for updating active order list    
+        private formMain.delDecimal cbUpdateTotalBalance;
         private formMain.delTradeHistory cbUpdateTradeHistory;           // callback for updating trade history
         private formMain.delUserInfo cbUpdateUserInfo;                   // callback for updating balance info
         #endregion
@@ -50,6 +53,7 @@ namespace CoinPost
         #region BtceApi
         private BtceApi btceApi;                                // primary object for api interaction
         private List<PendingTrade> pendingTrades;               // list of trades to-be-made (used for cancel & reorder)
+        private List<int> canceledOrders;
         private Dictionary<int, Trade> recentPurchases;
         private string current_exchange;                        // current exchange string (see mutExchangeString)
         #endregion
@@ -152,6 +156,7 @@ namespace CoinPost
             }
             this.btceApi = new BtceApi(curr_api_key, curr_api_secret);
             this.pendingTrades = new List<PendingTrade>();
+            this.canceledOrders = new List<int>();
             this.recentPurchases = new Dictionary<int, Trade>();
             return true;
         }
@@ -167,6 +172,7 @@ namespace CoinPost
             this.cbUpdateUserInfo = new delUserInfo(this.UpdateUserInfo);
             this.cbUpdateOrderList = new delOrderList(this.UpdateOrderList);
             this.cbUpdateLastPrice = new delDecimal(this.UpdateLastPrice);
+            this.cbUpdateTotalBalance = new delDecimal(this.UpdateTotalBalance);
             this.cbUpdateTradeHistory = new delTradeHistory(this.UpdateTradeHistory);
             #endregion
             #region Flag Initialization
@@ -238,15 +244,10 @@ namespace CoinPost
                 this.current_exchange = this.comboSourceCurrency.SelectedItem.ToString() + "_" + this.comboTargetCurrency.SelectedItem.ToString();
                 this.exchange_changed = true;
                 mutExchangeString.ReleaseMutex();
-                if (this.browsers_enabled && this.webBrowser.Created && (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC"))
+                if(this.browsers_enabled && this.webBrowser.Created)
                 {
                     this.navigating = true;
-                    this.webBrowser.Navigate("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
-                }
-                else if (this.browsers_enabled && this.webBrowser.Created)
-                {
-                    this.navigating = true;
-                    this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+                    this.webBrowser.Navigate(formMain.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString())?"https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower():"bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
                 }
 
             }
@@ -267,12 +268,85 @@ namespace CoinPost
         {
             while (mutValid.WaitOne() && this.valid)
             {
-               
-                this.BeginInvoke(this.cbUpdateUserInfo,this.btceApi.GetInfo());
+                //
+                Decimal? total_balance = 0;
+                //
+                Ticker[] usd_rates=new Ticker[formMain.usd_pairs.Count];
+                Ticker[] non_usd_rates=new Ticker[formMain.non_usd_pairs.Count];  
+                for(int i=0; i<formMain.usd_pairs.Count; i++)
+                    usd_rates[i]= BtceApi.GetTicker(formMain.usd_pairs[i] + "_" + formMain.target_pairs[1]);
+                for(int i=0; i<formMain.non_usd_pairs.Count; i++)
+                    non_usd_rates[i]= BtceApi.GetTicker(formMain.non_usd_pairs[i] + "_" + formMain.target_pairs[0]);
+                //
+                UserInfo userinfo = this.btceApi.GetInfo();
+                if (userinfo != null)
+                {
+                    this.BeginInvoke(this.cbUpdateUserInfo, userinfo);
+                    total_balance += userinfo.Funds.Usd;
+                    for(int j=0; j<formMain.usd_pairs.Count; j++)
+                    {
+                        switch (formMain.usd_pairs[j])
+                        {
+                            case "BTC":
+                                total_balance += userinfo.Funds.Btc * usd_rates[j].Last;
+                                break;
+                            case "LTC":
+                                total_balance += userinfo.Funds.Ltc * usd_rates[j].Last;
+                                break;
+                            case "NMC":
+                                total_balance += userinfo.Funds.Nmc * usd_rates[j].Last;
+                                break;
+                            case "NVC":
+                                total_balance += userinfo.Funds.Nvc * usd_rates[j].Last;
+                                break;
+                            case "PPC":
+                                total_balance += userinfo.Funds.Ppc * usd_rates[j].Last;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    for(int j=0; j<formMain.non_usd_pairs.Count; j++)
+                    {
+                        switch (formMain.non_usd_pairs[j])
+                        {
+                            case "FTC":
+                                total_balance += userinfo.Funds.Ftc * non_usd_rates[j].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last;
+                                break;
+                            case "TRC":
+                                total_balance += userinfo.Funds.Trc * non_usd_rates[j].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                OrderList orders = this.btceApi.GetOrderList();
+                if (orders != null)
+                {
+                    foreach (KeyValuePair<int,Order> order in orders.List)
+                    {
+                        int index=formMain.usd_pairs.IndexOf(order.Value.Pair.ToString().Substring(0,3).ToUpper());
+                        if (index != -1)
+                        {
+                            total_balance += order.Value.Amount * usd_rates[index].Last;
+                        }
+                        else
+                        {
+                            index = formMain.non_usd_pairs.IndexOf(order.Value.Pair.ToString().ToUpper().Take(3).ToString());
+                            if(index!=-1)
+                            {
+                                total_balance += order.Value.Amount * non_usd_rates[index].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last;
+                            }
+                        }
+                    }
+                    this.BeginInvoke(this.cbUpdateOrderList, orders);  
+                }
+                total_balance*=Convert.ToDecimal(0.998);
+                this.BeginInvoke(this.cbUpdateTotalBalance, total_balance);
                 mutTradeHistory.WaitOne();
                 this.BeginInvoke(this.cbUpdateTradeHistory, this.btceApi.GetTradeHistory());
                 mutTradeHistory.ReleaseMutex();
-                this.BeginInvoke(this.cbUpdateOrderList, this.btceApi.GetOrderList());
                 this.BeginInvoke(this.cbUpdateLastPrice, BtceApi.GetTicker(this.SafeRetrieveExchangeString()).Last);
                 mutValid.ReleaseMutex();
                 Thread.Sleep(1200);
@@ -288,8 +362,14 @@ namespace CoinPost
             this.gridBuy.Rows.Clear();
             if (orders_in == null)
                 return;
+            List<int> new_canceledOrders = new List<int>();
             foreach (KeyValuePair<int, Order> pair in orders_in.List)
             {
+                if (this.canceledOrders.Contains(pair.Key))
+                {
+                    new_canceledOrders.Add(pair.Key);
+                    continue;
+                }
                 string[] units = pair.Value.Pair.ToString().Split('_');
                 ((pair.Value.Type.ToString() == "Sell")?this.gridSell:this.gridBuy).Rows.Add(new object[]
                 { 
@@ -299,6 +379,7 @@ namespace CoinPost
                     "M"
                 });
             }
+            this.canceledOrders = new_canceledOrders;
         }
         private void UpdateUserInfo(UserInfo info_in)
         {
@@ -323,6 +404,11 @@ namespace CoinPost
                 this.txtPrice.Text = this.lklblLastPrice.Text;
             this.exchange_changed = false;
             mutExchangeString.ReleaseMutex();
+        }
+        private void UpdateTotalBalance(Decimal? balance_in)
+        {
+            if(balance_in.HasValue)
+                this.lblTotalBalance.Text = "Total Balance: $ " + Math.Round(balance_in.Value,2).ToString();
         }
         private void UpdateTradeHistory(TradeHistory history_in)
         {
@@ -479,7 +565,8 @@ namespace CoinPost
             DataGridView caller = (DataGridView)sender;
             if (e.ColumnIndex == 4)
             {
-                CancelOrderAnswer answer = this.btceApi.CancelOrder(Convert.ToInt32(caller.Rows[e.RowIndex].Cells[0].Value));
+                this.canceledOrders.Add(Convert.ToInt32(caller.Rows[e.RowIndex].Cells[0].Value));
+                CancelOrderAnswer answer = this.btceApi.CancelOrder(this.canceledOrders.Last());
                 caller.Rows.RemoveAt(e.RowIndex);
             }
             if (e.ColumnIndex == 5)
@@ -493,9 +580,11 @@ namespace CoinPost
                 {
                     if (fModify.Price.Value != initial_price_out || fModify.Quantity.Value != initial_quantity_out)
                     {
-                        this.btceApi.CancelOrder(Convert.ToInt32(caller.Rows[e.RowIndex].Cells[0].Value));
+                        this.canceledOrders.Add(Convert.ToInt32(caller.Rows[e.RowIndex].Cells[0].Value));
+                        this.btceApi.CancelOrder(this.canceledOrders.Last());
                         this.pendingTrades.Add(new PendingTrade(exchange_string_out, caller == this.gridBuy ? TradeType.Buy : TradeType.Sell, fModify.Price.Value, fModify.Quantity.Value));
                         this.timerModifyOrder.Enabled = true;
+                        caller.Rows.RemoveAt(e.RowIndex);
                     }
                 }
             }
@@ -590,16 +679,23 @@ namespace CoinPost
         }
         #endregion
         #region Web Browser Events
+        private void webBrowser_DocumentCompleted(object sender, EventArgs e)
+        {
+            GeckoWebBrowser browser = (GeckoWebBrowser)sender;
+            if (browser.Url.AbsoluteUri.Contains("bitcoinwisdom"))
+            {
+                using (AutoJSContext context = new AutoJSContext(browser.Window.JSContext))
+                {
+                    context.EvaluateScript("$( document ).ready(function(){$( \"#leftbar_outer\" ).hide();$( \"#leftbar\" ).hide();});");
+                    context.EvaluateScript("$( document ).ready(function(){$( \"#canvas_cross\" ).mousewheel();});");
+                }
+            }
+        }
         void webBrowser_Navigating(object sender, Gecko.Events.GeckoNavigatingEventArgs e)
         {
-            if (!this.browsers_enabled)
-            {
-                e.Cancel = true;
-                return;
-            }
             string[] split_string = e.Uri.AbsoluteUri.Split('/');
             int split_string_len = split_string.Length;
-            if (e.Uri.AbsoluteUri == this.webBrowser.Url.AbsoluteUri || split_string_len<2)
+            if (!this.browsers_enabled || e.Uri.AbsoluteUri == this.webBrowser.Url.AbsoluteUri || split_string_len<2)
             {
                 e.Cancel = true;
                 this.navigating = false;
@@ -680,18 +776,7 @@ namespace CoinPost
         }
         #endregion
 
-        private void webBrowser_DocumentCompleted(object sender, EventArgs e)
-        {
-            GeckoWebBrowser browser = (GeckoWebBrowser)sender;
-            if (browser.Url.AbsoluteUri.Contains("bitcoinwisdom"))
-            {
-                using (AutoJSContext context = new AutoJSContext(browser.Window.JSContext))
-                {
-                    context.EvaluateScript("$( document ).ready(function(){$( \"#leftbar_outer\" ).hide();$( \"#leftbar\" ).hide();});");
-                    context.EvaluateScript("$( document ).ready(function(){$( \"#canvas_cross\" ).mousewheel();});");
-                }
-            }
-        }
+
         #endregion
 
     }

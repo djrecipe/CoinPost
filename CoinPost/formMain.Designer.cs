@@ -86,6 +86,7 @@
             this.lklblShowAllHistory = new System.Windows.Forms.ToolStripStatusLabel();
             this.stripMain = new System.Windows.Forms.StatusStrip();
             this.lblBlank = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblTotalBalance = new System.Windows.Forms.ToolStripStatusLabel();
             this.ttipOrderAssist = new System.Windows.Forms.ToolTip(this.components);
             this.ttipTabs = new System.Windows.Forms.ToolTip(this.components);
             this.groupTrade.SuspendLayout();
@@ -745,7 +746,8 @@
             this.stripMain.BackColor = System.Drawing.Color.Transparent;
             this.stripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblBlank,
-            this.lklblShowAllHistory});
+            this.lklblShowAllHistory,
+            this.lblTotalBalance});
             this.stripMain.Location = new System.Drawing.Point(0, 650);
             this.stripMain.Name = "stripMain";
             this.stripMain.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -759,6 +761,18 @@
             this.lblBlank.Name = "lblBlank";
             this.lblBlank.Size = new System.Drawing.Size(19, 17);
             this.lblBlank.Text = "    ";
+            // 
+            // lblTotalBalance
+            // 
+            this.lblTotalBalance.AutoSize = false;
+            this.lblTotalBalance.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.lblTotalBalance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
+            this.lblTotalBalance.Name = "lblTotalBalance";
+            this.lblTotalBalance.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblTotalBalance.Size = new System.Drawing.Size(772, 17);
+            this.lblTotalBalance.Spring = true;
+            this.lblTotalBalance.Text = "Total Balance: $ 0000.00";
+            this.lblTotalBalance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // ttipOrderAssist
             // 
@@ -854,6 +868,7 @@
         private System.Windows.Forms.ContextMenuStrip conmenTabs;
         private System.Windows.Forms.ToolStripMenuItem conitemRemoveTab;
         private System.Windows.Forms.ToolTip ttipTabs;
+        private System.Windows.Forms.ToolStripStatusLabel lblTotalBalance;
     }
 }
 
