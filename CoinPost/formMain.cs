@@ -1,10 +1,13 @@
 ﻿
+#region Using
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -12,17 +15,24 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using BtcE;
-using Microsoft.Win32;
 using Gecko;
-using System.Net;
+using System.Media;
+#endregion
 
 namespace CoinPost
 {
     public partial class formMain : Form
     {
-        #region formMain Members
-        #region Constants
-        private static readonly double MinimumSellThreshold=1.004012032080192;
+        #region Type Definitions
+        private delegate void delDecimal(Decimal? decimal_in);
+        public delegate void delEmpty();
+        private delegate void delOrderList(OrderList info_in);
+        private delegate void delTradeHistory(TradeHistory history_in);
+        private delegate void delUserInfo(Info info_in);
+        #endregion
+        #region Static Members
+        #region Static Numeric Members
+        private static readonly double MinimumSellThreshold = 1.004012032080192;
         private static readonly double MinimumBuyThreshold = 0.996004;
         #endregion
         #region Mutices
@@ -30,48 +40,49 @@ namespace CoinPost
         private static Mutex mutTradeHistory = new Mutex();             // determines whether or not trade history should be shown
         private static Mutex mutValid = new Mutex();                    // for halting information retrieval thread
         #endregion
-        #region Callback Delegates
-        private delegate void delDecimal(Decimal? decimal_in);
-        public delegate void delEmpty();
-        private delegate void delOrderList(OrderList info_in);
-        private delegate void delTradeHistory(TradeHistory history_in);
-        private delegate void delUserInfo(UserInfo info_in);
-
-        private formMain.delDecimal cbUpdateLastPrice;                   // callback for updating current price
-        private formMain.delOrderList cbUpdateOrderList;                 // callback for updating active order list    
-        private formMain.delDecimal cbUpdateTotalBalance;
-        private formMain.delTradeHistory cbUpdateTradeHistory;           // callback for updating trade history
-        private formMain.delUserInfo cbUpdateUserInfo;                   // callback for updating balance info
         #endregion
-        #region Threading
-        private Thread threadInfo;                                      // primary information retrieval thread
+        #region Instance Members
+        #region Control Members
+        formTradeHistory fTradeHistory = null;
         #endregion
-        #region BtceApi
-        private BtceApi btceApi;                                // primary object for api interaction
-        private List<PendingTrade> pendingTrades;               // list of trades to-be-made (used for cancel & reorder)
-        private List<int> canceledOrders;
-        private Dictionary<int, Trade> recentPurchases;
-        private string current_exchange;                        // current exchange string (see mutExchangeString)
+        #region Flag Members
+        private bool browsers_enabled = false;
+        private bool exchange_changed = false;                                  // indicated whether or not our exchange currency has changed
+        private bool get_trade_history = false;
+        private bool navigating = false;
+        private bool valid = false;                                             // halts information retrieval thread
         #endregion
-        #region Flags
-        private bool browsers_enabled;
-        private bool exchange_changed;                                  // indicated whether or not our exchange currency has changed
-        private bool get_trade_history;
-        private bool navigating;
-        private bool valid;                                             // halts information retrieval thread
-        public bool is_valid { get; private set; }
+        #region Numberic Members
+        private List<int> canceledOrders = new List<int>();
+        private Point tabPoint = new Point(0,0);
+        private OrderList recent_active_orders = null;
+        private int most_recent_trade = -1;
         #endregion
-        #region Forms
-        formTradeHistory fTradeHistory;
+        #region Object Members
+        private BtceApi btceApi;                                                        // primary object for api interaction
+        private List<PendingTrade> pendingTrades = new List<PendingTrade>();            // list of trades to-be-made (used for cancel & reorder)
+        private Dictionary<int, Trade> recentPurchases = new Dictionary<int,Trade>();
         #endregion
-        #region Strings
+        #region String Members
+        private string current_exchange = "";                                           // current exchange string (see mutExchangeString)
         private string old_quantity_text = "0.0";
         #endregion
-        #region Numbers
-        private Point tabPoint = new Point(0,0);
+        #region Threading Members
+        private formMain.delDecimal cbUpdateLastPrice = null;                   // callback for updating current price
+        private formMain.delOrderList cbUpdateOrderList = null;                 // callback for updating active order list    
+        private formMain.delDecimal cbUpdateTotalBalance = null;
+        private formMain.delTradeHistory cbUpdateTradeHistory = null;           // callback for updating trade history
+        private formMain.delUserInfo cbUpdateUserInfo = null;                   // callback for updating balance info
+
+        private Thread threadInfo = null;                                       // primary information retrieval thread
         #endregion
         #endregion
-        #region formMain Methods
+        #region Instance Properties
+        #region Flag Properties
+        public bool is_valid { get; private set; }
+        #endregion
+        #endregion
+        #region Instance Methods
         #region Configuration Methods
         private void LoadWindowConfiguration()
         {
@@ -145,18 +156,13 @@ namespace CoinPost
                     return false;
             }
             this.btceApi = new BtceApi(curr_api_key, curr_api_secret);
-            this.pendingTrades = new List<PendingTrade>();
-            this.canceledOrders = new List<int>();
-            this.recentPurchases = new Dictionary<int, Trade>();
             return true;
         }
         public formMain()
         {
-            if (!Exchanges.Initialize("Exchanges.ini"))
-            {
-                this.Close();
+            this.is_valid = false;
+            if (!Exchange.Initialize("Exchanges.ini"))
                 return;
-            }
             try
             {
                 Xpcom.Initialize(@".\xulrunner");
@@ -164,9 +170,9 @@ namespace CoinPost
             catch (Exception e)
             {
                 MessageBox.Show("Could not initialized Xpcom.");
-                this.Close();
                 return;
             }
+            //
             this.InitializeComponent();
             
             #region Child Form Initialization
@@ -189,11 +195,11 @@ namespace CoinPost
             #region Combobox Initialization
             this.comboSourceCurrency.Items.Clear();
             this.comboTargetCurrency.Items.Clear();
-            foreach (string s in Exchanges.usd_pairs)
+            foreach (string s in Exchange.usd_pairs)
                 this.comboSourceCurrency.Items.Add(s);
-            foreach (string s in Exchanges.non_usd_pairs)
+            foreach (string s in Exchange.non_usd_pairs)
                 this.comboSourceCurrency.Items.Add(s);
-            foreach (string s in Exchanges.target_pairs)
+            foreach (string s in Exchange.target_pairs)
                 this.comboTargetCurrency.Items.Add(s);
             this.comboSourceCurrency.SelectedIndex = 0;
             this.comboTargetCurrency.SelectedIndex = 1;
@@ -220,12 +226,10 @@ namespace CoinPost
                 this.threadInfo = new Thread(new ThreadStart(GetInfo));
                 this.threadInfo.Name = "CoinPost_GetInfo";
                 #endregion
+                this.LoadWindowConfiguration();
                 this.is_valid = true;
             }
-            else
-                this.is_valid = false;
             #endregion
-            this.LoadWindowConfiguration();
         }
         #endregion
         #region GridView Methods
@@ -259,7 +263,7 @@ namespace CoinPost
                 if(this.browsers_enabled && this.webBrowser.Created)
                 {
                     this.navigating = true;
-                    this.webBrowser.Navigate(Exchanges.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString())?"https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower():"bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+                    this.webBrowser.Navigate(Exchange.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString())?"https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower():"bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
                     this.tabsMain.SelectedIndex = 0;
                 }
 
@@ -282,104 +286,78 @@ namespace CoinPost
             while (mutValid.WaitOne(3000) && this.valid)
             {
                 //
-                Decimal? total_balance = 0;
+                Decimal? total_balance = 0;;
                 //
-                Ticker[] usd_rates = new Ticker[Exchanges.usd_pairs.Count];
-                Ticker[] non_usd_rates = new Ticker[Exchanges.non_usd_pairs.Count];
-                for (int i = 0; i < Exchanges.usd_pairs.Count; i++)
-                    usd_rates[i] = BtceApi.GetTicker(Exchanges.usd_pairs[i] + "_" + Exchanges.target_pairs[1]);
-                for (int i = 0; i < Exchanges.non_usd_pairs.Count; i++)
-                    non_usd_rates[i] = BtceApi.GetTicker(Exchanges.non_usd_pairs[i] + "_" + Exchanges.target_pairs[0]);
-                //
-                UserInfo userinfo = this.btceApi.GetInfo();
-                this.BeginInvoke(this.cbUpdateUserInfo, userinfo);
-                if (userinfo != null)
+                Info userinfo = this.btceApi.GetInfo();
+                if (userinfo!=null && userinfo.rights.Info)
                 {
-                    total_balance += userinfo.funds.GetBalance(Exchanges.target_pairs[1]);
-                    for (int j = 0; j < Exchanges.usd_pairs.Count; j++)
-                        total_balance += userinfo.funds.GetBalance(Exchanges.usd_pairs[j]) * usd_rates[j].Last * Convert.ToDecimal(0.998);
-                    for (int j = 0; j < Exchanges.non_usd_pairs.Count; j++)
-                        total_balance += userinfo.funds.GetBalance(Exchanges.non_usd_pairs[j]) * non_usd_rates[j].Last * usd_rates[Exchanges.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998) * Convert.ToDecimal(0.998);
-                }
-                OrderList orders = this.btceApi.GetOrderList();
-                this.BeginInvoke(this.cbUpdateOrderList, orders); 
-                if (orders != null)
-                {
-                    foreach (KeyValuePair<int,Order> order in orders.List)
+                    this.BeginInvoke(this.cbUpdateUserInfo, userinfo);
+                    //
+                    Ticker[] usd_rates = new Ticker[Exchange.usd_pairs.Count];
+                    Ticker[] non_usd_rates = new Ticker[Exchange.non_usd_pairs.Count];
+                    for (int i = 0; i < Exchange.usd_pairs.Count; i++)
+                        usd_rates[i] = BtceApi.GetTicker(Exchange.usd_pairs[i] + "_" + Exchange.target_pairs[1]);
+                    for (int i = 0; i < Exchange.non_usd_pairs.Count; i++)
+                        non_usd_rates[i] = BtceApi.GetTicker(Exchange.non_usd_pairs[i] + "_" + Exchange.target_pairs[0]);
+                    //
+                    total_balance += userinfo.funds.GetBalance(Exchange.target_pairs[1]);
+                    for (int j = 0; j < Exchange.usd_pairs.Count; j++)
+                        total_balance += userinfo.funds.GetBalance(Exchange.usd_pairs[j]) * usd_rates[j].Last * Convert.ToDecimal(0.998);
+                    for (int j = 0; j < Exchange.non_usd_pairs.Count; j++)
+                        total_balance += userinfo.funds.GetBalance(Exchange.non_usd_pairs[j]) * non_usd_rates[j].Last * usd_rates[Exchange.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998) * Convert.ToDecimal(0.998);
+                    //
+                    OrderList orders = this.btceApi.GetOrderList();
+                    this.BeginInvoke(this.cbUpdateOrderList, orders);
+                    if (orders != null)
                     {
-                        if (order.Value.Type == "sell")
+                        foreach (KeyValuePair<int, Order> order in orders.List)
                         {
-                            int index = Exchanges.usd_pairs.IndexOf(order.Value.Pair.ToString().Substring(0, 3).ToUpper());
-                            if (index != -1)
-                                total_balance += order.Value.Amount * usd_rates[index].Last * Convert.ToDecimal(0.998);
+                            if (order.Value.Type == "sell")
+                            {
+                                int index = Exchange.usd_pairs.IndexOf(order.Value.Pair.ToString().Substring(0, 3).ToUpper());
+                                if (index != -1)
+                                    total_balance += order.Value.Amount * usd_rates[index].Last * Convert.ToDecimal(0.998);
+                                else
+                                {
+                                    index = Exchange.non_usd_pairs.IndexOf(order.Value.Pair.ToString().ToUpper().Take(3).ToString());
+                                    if (index != -1)
+                                        total_balance += order.Value.Amount * non_usd_rates[index].Last * usd_rates[Exchange.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998);
+                                }
+                            }
                             else
                             {
-                                index = Exchanges.non_usd_pairs.IndexOf(order.Value.Pair.ToString().ToUpper().Take(3).ToString());
+                                int index = Exchange.target_pairs.IndexOf(order.Value.Pair.ToString().Substring(4, 3).ToUpper());
                                 if (index != -1)
-                                    total_balance += order.Value.Amount * non_usd_rates[index].Last * usd_rates[Exchanges.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998);
-                            }
-                        }
-                        else
-                        {
-                            int index = Exchanges.target_pairs.IndexOf(order.Value.Pair.ToString().Substring(4, 3).ToUpper());
-                            if (index != -1)
-                            {
+                                {
 
-                                if (Exchanges.target_pairs[index].Contains("USD"))
-                                    total_balance += order.Value.Amount * order.Value.Rate;
-                                else
-                                    total_balance += order.Value.Amount * order.Value.Rate * usd_rates[Exchanges.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998);
+                                    if (Exchange.target_pairs[index].Contains("USD"))
+                                        total_balance += order.Value.Amount * order.Value.Rate;
+                                    else
+                                        total_balance += order.Value.Amount * order.Value.Rate * usd_rates[Exchange.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998);
 
+                                }
                             }
                         }
                     }
+                    this.BeginInvoke(this.cbUpdateTotalBalance, total_balance);
+                    mutTradeHistory.WaitOne();
+                    this.BeginInvoke(this.cbUpdateTradeHistory, this.btceApi.GetTradeHistory());
+                    mutTradeHistory.ReleaseMutex();
                 }
-                this.BeginInvoke(this.cbUpdateTotalBalance, total_balance);
-                mutTradeHistory.WaitOne();
-                this.BeginInvoke(this.cbUpdateTradeHistory, this.btceApi.GetTradeHistory());
-                mutTradeHistory.ReleaseMutex();
                 this.BeginInvoke(this.cbUpdateLastPrice, BtceApi.GetTicker(this.SafeRetrieveExchangeString()).Last);
                 mutValid.ReleaseMutex();
-                Thread.Sleep(1200);
+                Thread.Sleep(900);
             }
             mutValid.ReleaseMutex();
             return;
         }
         #endregion
         #region Update Callbacks
-        private void UpdateOrderList(OrderList orders_in)
+        private void PlaySound()
         {
-            this.gridSell.Rows.Clear();
-            this.gridBuy.Rows.Clear();
-            if (orders_in == null)
-                return;
-            List<int> new_canceledOrders = new List<int>();
-            foreach (KeyValuePair<int, Order> pair in orders_in.List)
-            {
-                if (this.canceledOrders.Contains(pair.Key))
-                {
-                    new_canceledOrders.Add(pair.Key);
-                    continue;
-                }
-                string[] units = pair.Value.Pair.ToString().Split('_');
-                int index=((pair.Value.Type.ToString() == "Sell")?this.gridSell:this.gridBuy).Rows.Add(new object[]
-                { 
-                    pair.Key, pair.Value.Amount.ToString() + " " + units[0].ToUpper(), pair.Value.Rate.ToString() + " " + units[1].ToUpper(),
-                    (pair.Value.Amount * pair.Value.Rate).ToString() + " " + units[1].ToUpper(),
-                    "X","M"
-                });
-            }
-            this.canceledOrders = new_canceledOrders;
-        }
-        private void UpdateUserInfo(UserInfo info_in)
-        {
-            if (info_in == null)
-                return;
-            foreach (string s in Exchanges.usd_pairs)
-                this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(s)].Cells[1].Value = info_in.funds.GetBalance(s);
-            foreach (string s in Exchanges.non_usd_pairs)
-                this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(s)].Cells[1].Value = info_in.funds.GetBalance(s);
-            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(Exchanges.target_pairs[1])].Cells[1].Value = info_in.funds.GetBalance(Exchanges.target_pairs[1]);
+            Stream str = Properties.Resources.trade;
+            SoundPlayer snd = new SoundPlayer(str);
+            snd.Play();
         }
         private void UpdateLastPrice(Decimal? price_in)
         {
@@ -392,6 +370,48 @@ namespace CoinPost
             this.exchange_changed = false;
             mutExchangeString.ReleaseMutex();
         }
+
+        private void UpdateOrderList(OrderList orders_in)
+        {
+            if (orders_in == null)
+                return;
+            bool change_occured = (this.recent_active_orders==null || this.recent_active_orders.List.Count!=orders_in.List.Count);
+            if (!change_occured)
+            {
+                for (int i = 0; i < orders_in.List.Count; i++)
+                {
+                    if (orders_in.List.Keys.ToArray()[i] != this.recent_active_orders.List.Keys.ToArray()[i] ||
+                        orders_in.List[orders_in.List.Keys.ToArray()[i]].Amount != this.recent_active_orders.List[orders_in.List.Keys.ToArray()[i]].Amount)
+                    {
+                        change_occured = true;
+                        break;
+                    }
+                }
+            }
+            if (change_occured)
+            {
+                this.recent_active_orders = orders_in;
+                this.gridSell.Rows.Clear();
+                this.gridBuy.Rows.Clear();
+                List<int> new_canceledOrders = new List<int>();
+                foreach (KeyValuePair<int, Order> pair in orders_in.List)
+                {
+                    if (this.canceledOrders.Contains(pair.Key))
+                    {
+                        new_canceledOrders.Add(pair.Key);
+                        continue;
+                    }
+                    string[] units = pair.Value.Pair.ToString().Split('_');
+                    int index = (pair.Value.Type.ToString().ToLower().Contains("sell") ? this.gridSell : this.gridBuy).Rows.Add(new object[]
+                { 
+                    pair.Key, pair.Value.Amount.ToString() + " " + units[0].ToUpper(), pair.Value.Rate.ToString() + " " + units[1].ToUpper(),
+                    (pair.Value.Amount * pair.Value.Rate).ToString() + " " + units[1].ToUpper(),
+                    "X","M"
+                });
+                }
+                this.canceledOrders = new_canceledOrders;
+            }
+        }
         private void UpdateTotalBalance(Decimal? balance_in)
         {
             if(balance_in.HasValue)
@@ -399,15 +419,31 @@ namespace CoinPost
         }
         private void UpdateTradeHistory(TradeHistory history_in)
         {
-            foreach(KeyValuePair<int,Trade> pair in history_in.List)
-            { // look for recent buys and sells of current exchange so-as to provide "most recent YOU bought/sold" prices on bottom of window
-            }
-            if(history_in!=null)
+            if (history_in != null && history_in.List.Keys.ToArray()[0] != this.most_recent_trade)
+            {
+                foreach (KeyValuePair<int, Trade> pair in history_in.List)
+                { // look for recent buys and sells of current exchange so-as to provide "most recent YOU bought/sold" prices on bottom of window
+                }
+                if (this.most_recent_trade != -1)
+                    this.PlaySound();
+                this.most_recent_trade = history_in.List.Keys.ToArray()[0];
                 this.fTradeHistory.UpdateTradeHistory(history_in);
+            }
         }
+        private void UpdateUserInfo(Info info_in)
+        {
+            if (info_in == null)
+                return;
+            foreach (string s in Exchange.usd_pairs)
+                this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(s)].Cells[1].Value = info_in.funds.GetBalance(s);
+            foreach (string s in Exchange.non_usd_pairs)
+                this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(s)].Cells[1].Value = info_in.funds.GetBalance(s);
+            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(Exchange.target_pairs[1])].Cells[1].Value = info_in.funds.GetBalance(Exchange.target_pairs[1]);
+        }
+
         #endregion
         #endregion
-        #region formMain Events
+        #region Event Methods
         #region Button Events
         private void btnBuy_Click(object sender, EventArgs e)
         {
@@ -415,6 +451,13 @@ namespace CoinPost
             if (Double.TryParse(txtPrice.Text, out price_out) && Double.TryParse(txtQuantity.Text, out quantity_out) && price_out <= Convert.ToDouble(this.lklblLastPrice.Text)*1.1 && quantity_out != 0.0)
             {
                 TradeAnswer answer = this.btceApi.Trade(this.SafeRetrieveExchangeString(), "buy", price_out, quantity_out);
+                if (answer.Received > 0)
+                {
+                    /*
+                    Stream str = Properties.Resources.trade;
+                    SoundPlayer snd = new SoundPlayer(str);
+                    snd.Play(); */
+                }
             }
         }
 
@@ -424,6 +467,13 @@ namespace CoinPost
             if (Double.TryParse(txtPrice.Text, out price_out) && Double.TryParse(txtQuantity.Text, out quantity_out) && price_out >= Convert.ToDouble(this.lklblLastPrice.Text)*0.9 && quantity_out != 0.0)
             {
                 TradeAnswer answer = this.btceApi.Trade(this.SafeRetrieveExchangeString(), "sell", price_out, quantity_out);
+                if (answer.Received > 0)
+                {
+                    /*
+                    Stream str = Properties.Resources.trade;
+                    SoundPlayer snd = new SoundPlayer(str);
+                    snd.Play(); */
+                }
             }
         }
         private void btnMaxBuy_Click(object sender, EventArgs e)
@@ -450,7 +500,7 @@ namespace CoinPost
         private void comboBidCurrency_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox caller = (ComboBox)sender;
-            if (caller.SelectedIndex != -1 && Exchanges.non_usd_pairs.Contains(caller.SelectedItem.ToString()))
+            if (caller.SelectedIndex != -1 && Exchange.non_usd_pairs.Contains(caller.SelectedItem.ToString()))
             {
                 this.comboTargetCurrency.SelectedIndex = 0;
                 if(this.comboTargetCurrency.Items.Contains("USD"))
@@ -469,7 +519,7 @@ namespace CoinPost
             ComboBox caller = (ComboBox)sender;
             if (caller.SelectedIndex == 0 && this.comboSourceCurrency.SelectedIndex == 0)
                 this.comboSourceCurrency.SelectedIndex = 1;
-            else if (caller.SelectedIndex == 1 && this.comboSourceCurrency.SelectedIndex != -1 && Exchanges.non_usd_pairs.Contains(caller.SelectedItem.ToString()))
+            else if (caller.SelectedIndex == 1 && this.comboSourceCurrency.SelectedIndex != -1 && Exchange.non_usd_pairs.Contains(caller.SelectedItem.ToString()))
                 caller.SelectedIndex = 0;
             this.SafeUpdateExchangeString();
             this.webBrowser.Focus();
@@ -486,7 +536,7 @@ namespace CoinPost
             this.InitializeBrowser();
             if (this.comboSourceCurrency.SelectedIndex != -1 && this.comboTargetCurrency.SelectedIndex != -1)
             {
-                if (Exchanges.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString()))
+                if (Exchange.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString()))
                 {
                     this.navigating = true;
                     this.webBrowser.Navigate("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());

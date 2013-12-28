@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿#region Using
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Web;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
+#endregion
 namespace BtcE
 {
 	public class BtceApi
@@ -20,33 +22,46 @@ namespace BtcE
         string key="";
         System.Security.Cryptography.HMACSHA512 hashMaker=null;
         #endregion
+        #region Static Methods
+        public static bool HandleError(JObject o)
+        {
+            if (o == null)
+                return false;
+            if (o.Value<int>("success") == 0)
+            {
+                string error_str = o.Value<string>("error");
+                if (error_str.Contains("nonce"))
+                {
+                    int first_colon = error_str.IndexOf(':');
+                    BtceApi.nonce = Convert.ToUInt32(error_str.Substring(first_colon + 1, error_str.IndexOf(',', first_colon) - first_colon - 1)) + 1;
+
+                }
+                else if (error_str.Contains("bad status"))
+                    MessageBox.Show("Could not modify the order. The order likely no longer exists.");
+                else if (!error_str.Contains("no orders"))
+                    MessageBox.Show(error_str);
+                return false;
+            }
+            return true;
+        }
+        #endregion
         public BtceApi(string key, string secret)
         {
             this.key = key;
             this.hashMaker = new System.Security.Cryptography.HMACSHA512(Encoding.ASCII.GetBytes(secret));
             return;
         }
-        public UserInfo GetInfo()
+        public Info GetInfo()
         {
-            string resultStr = Query(new Dictionary<string, string>()
+            //
+            string query = this.Query(new Dictionary<string, string>()
             {
                 { "method", "getInfo" }
             });
-			JObject result = JObject.Parse(resultStr);
-            if (result.Value<int>("success") == 0)
-            {
-                string error_str = result.Value<string>("error");
-                if (error_str.Contains("nonce"))
-                {
-                    int first_colon=error_str.IndexOf(':');
-                    BtceApi.nonce = Convert.ToUInt32(error_str.Substring(first_colon + 1, error_str.IndexOf(',', first_colon) - first_colon - 1)) + 1;
-                    
-                }
-                else
-                    MessageBox.Show(error_str);
+            if (query == null)
                 return null;
-            }
-			return new UserInfo(result["return"] as JObject);
+            JObject result = JObject.Parse(query);
+			return BtceApi.HandleError(result)?new Info(result["return"] as JObject):null;
 		}
 
 		public TransHistory GetTransHistory(int? from = null,int? count = null,int? fromId = null,int? endId = null,bool? orderAsc = null,
@@ -60,10 +75,12 @@ namespace BtcE
 			if ( orderAsc != null ) args.Add("order", orderAsc.Value ? "ASC" : "DESC");
 			if ( since != null ) args.Add("since", UnixTime.GetFromDateTime(since.Value).ToString());
 			if ( end != null ) args.Add("end", UnixTime.GetFromDateTime(end.Value).ToString());
-			var result = JObject.Parse(Query(args));
-			if ( result.Value<int>("success") == 0 )
-				throw new Exception(result.Value<string>("error"));
-			return new TransHistory(result["return"] as JObject);
+            //
+            string query = this.Query(args);
+            if (query == null)
+                return null;
+            JObject result = JObject.Parse(query);
+			return BtceApi.HandleError(result)?new TransHistory(result["return"] as JObject):null;
 		}
 
 		public TradeHistory GetTradeHistory(int? from = null,int? count = null,int? fromId = null,int? endId = null,bool? orderAsc = null,
@@ -71,60 +88,49 @@ namespace BtcE
         {
             Dictionary<string, string> args = new Dictionary<string, string>(){{ "method", "TradeHistory" }};
 
-			if ( from != null ) args.Add("from", from.Value.ToString());
-			if ( count != null ) args.Add("count", count.Value.ToString());
-			if ( fromId != null ) args.Add("from_id", fromId.Value.ToString());
-			if ( endId != null ) args.Add("end_id", endId.Value.ToString());
-			if ( orderAsc != null ) args.Add("order", orderAsc.Value ? "ASC" : "DESC");
-			if ( since != null ) args.Add("since", UnixTime.GetFromDateTime(since.Value).ToString());
-			if ( end != null ) args.Add("end", UnixTime.GetFromDateTime(end.Value).ToString());
-			
-			var result = JObject.Parse(Query(args));
-            if (result.Value<int>("success") == 0)
-            {
-                MessageBox.Show(result.Value<string>("error"));
+            if ( from != null ) args.Add("from", from.Value.ToString());
+            if ( count != null ) args.Add("count", count.Value.ToString());
+            if ( fromId != null ) args.Add("from_id", fromId.Value.ToString());
+            if ( endId != null ) args.Add("end_id", endId.Value.ToString());
+            if ( orderAsc != null ) args.Add("order", orderAsc.Value ? "ASC" : "DESC");
+            if ( since != null ) args.Add("since", UnixTime.GetFromDateTime(since.Value).ToString());
+            if ( end != null ) args.Add("end", UnixTime.GetFromDateTime(end.Value).ToString());
+            //
+            string query = this.Query(args);
+            if (query == null)
                 return null;
-            }
-			return new TradeHistory(result["return"] as JObject);
+            JObject result = JObject.Parse(query);
+            return BtceApi.HandleError(result)?new TradeHistory(result["return"] as JObject):null;
 		}
 
-		public OrderList GetOrderList(
-			bool? active = null,
-			int? from = null,
-			int? count = null,
-			int? fromId = null,
-			int? endId = null,
-			bool? orderAsc = null,
-			DateTime? since = null,
-			DateTime? end = null,
-			string pair = null
-			) {
-			var args = new Dictionary<string, string>()
+        public OrderList GetOrderList(bool? active = null,int? from = null,int? count = null,int? fromId = null,int? endId = null,bool? orderAsc = null,
+                                        DateTime? since = null,DateTime? end = null,string pair = null)
+        {
+            Dictionary<string, string> args = new Dictionary<string, string>()
             {
                 { "method", "OrderList" }
             };
             if ( from != null) args.Add("from", from.Value.ToString());
             if ( count!=null) args.Add("count", count.Value.ToString());
             if ( fromId!=null) args.Add("from_id", fromId.Value.ToString());
-			if ( endId != null ) args.Add("end_id", endId.Value.ToString());
-			if ( orderAsc!=null) args.Add("order", orderAsc.Value ?  "ASC" : "DESC" );
+            if ( endId != null ) args.Add("end_id", endId.Value.ToString());
+            if ( orderAsc!=null) args.Add("order", orderAsc.Value ?  "ASC" : "DESC" );
             if ( since != null) args.Add("since", UnixTime.GetFromDateTime(since.Value).ToString());
-			if ( end != null ) args.Add("end", UnixTime.GetFromDateTime(end.Value).ToString());
-			if ( pair != null ) args.Add("pair", pair);
+            if ( end != null ) args.Add("end", UnixTime.GetFromDateTime(end.Value).ToString());
+            if ( pair != null ) args.Add("pair", pair);
             if ( active!=null) args.Add("active", active.Value ? "1" : "0");
-			var result = JObject.Parse(Query(args));
-            if (result.Value<int>("success") == 0)
-            {
-                if(!result.Value<string>("error").Contains("no orders"))
-                    MessageBox.Show(result.Value<string>("error"));
+            //
+            string query = this.Query(args);
+            if (query == null)
                 return null;
-            }
-			return new OrderList(result["return"] as JObject);
+            JObject result = JObject.Parse(query);
+			return BtceApi.HandleError(result)?new OrderList(result["return"] as JObject):null;
 		}
 
-		public TradeAnswer Trade(string pair, string type, double rate, double amount) {
+		public TradeAnswer Trade(string pair, string type, double rate, double amount)
+        {
             pair = pair.ToLower();
-			var args = new Dictionary<string, string>()
+            Dictionary<string, string> args = new Dictionary<string, string>()
             {
                 { "method", "Trade" },
                 { "pair", pair },
@@ -132,55 +138,49 @@ namespace BtcE
                 { "rate", rate.ToString() },
                 { "amount", amount.ToString() }
             };
-			var result = JObject.Parse(Query(args));
-            if (result.Value<int>("success") == 0)
-            {
-                MessageBox.Show(result.Value<string>("error"));
+            string query = this.Query(args);
+            if (query == null)
                 return null;
-            }
-			return new TradeAnswer(result["return"] as JObject);
+            JObject result = JObject.Parse(query);
+			return BtceApi.HandleError(result)?new TradeAnswer(result["return"] as JObject):null;
 		}
 
-		public CancelOrderAnswer CancelOrder(int orderId) {
-			var args = new Dictionary<string, string>()
+		public CancelOrderAnswer CancelOrder(int orderId)
+        {
+            Dictionary<string, string> args = new Dictionary<string, string>()
             {
                 { "method", "CancelOrder" },
                 { "order_id", orderId.ToString() }
             };
-			var result = JObject.Parse(Query(args));
-            if (result.Value<int>("success") == 0)
-            {
-                string error_string = result.Value<string>("error");
-                if (error_string.Contains("bad status"))
-                    error_string = "Could not modify the order. The order likely no longer exists.";
-                MessageBox.Show(error_string);
+            string query = this.Query(args);
+            if (query == null)
                 return null;
-            }
-			return new CancelOrderAnswer(result["return"] as JObject);
+            JObject result = JObject.Parse(query);
+			return BtceApi.HandleError(result)?new CancelOrderAnswer(result["return"] as JObject):null;
 		}
 
-		string Query(Dictionary<string, string> args) {
+		string Query(Dictionary<string, string> args)
+        {
             mutQuery.WaitOne();
-			args.Add("nonce", GetNonce().ToString());
+            args.Add("nonce", GetNonce().ToString());
 
-			var dataStr = BuildPostData(args);
-			var data = Encoding.ASCII.GetBytes(dataStr);
+            byte[] data = Encoding.ASCII.GetBytes(BuildPostData(args));
 
-			var request = WebRequest.Create(new Uri("https://btc-e.com/tapi")) as HttpWebRequest;
-			if ( request == null )
-				throw new Exception("Non HTTP WebRequest");
+            WebRequest request = WebRequest.Create(new Uri("https://btc-e.com/tapi")) as HttpWebRequest;
+            if (request == null)
+                return null;
 
-			request.Method = "POST";
-			request.Timeout = 15000;
-			request.ContentType = "application/x-www-form-urlencoded";
-			request.ContentLength = data.Length;
+            request.Method = "POST";
+            request.Timeout = 15000;
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.ContentLength = data.Length;
 
-			request.Headers.Add("Key", key);
-			request.Headers.Add("Sign", ByteArrayToString(hashMaker.ComputeHash(data)).ToLower());
-			var reqStream = request.GetRequestStream();
-			reqStream.Write(data, 0, data.Length);
-			reqStream.Close();
-            string retval = "";
+            request.Headers.Add("Key", key);
+            request.Headers.Add("Sign", ByteArrayToString(hashMaker.ComputeHash(data)).ToLower());
+            Stream reqStream = request.GetRequestStream();
+            reqStream.Write(data, 0, data.Length);
+            reqStream.Close();
+            string retval = null;
             try
             {
                 retval = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
@@ -189,14 +189,17 @@ namespace BtcE
             {
             }
             mutQuery.ReleaseMutex();
-			return retval;
-		}
-		static string ByteArrayToString(byte[] ba) {
-			return BitConverter.ToString(ba).Replace("-", "");
-		}
-		static string BuildPostData(Dictionary<string, string> d) {
+                return retval;
+        }
+        static string ByteArrayToString(byte[] ba)
+        {
+            return BitConverter.ToString(ba).Replace("-", "");
+        }
+		static string BuildPostData(Dictionary<string, string> d)
+        {
 			StringBuilder s = new StringBuilder();
-			foreach ( var item in d ) {
+			foreach ( var item in d )
+            {
 				s.AppendFormat("{0}={1}", item.Key, HttpUtility.UrlEncode(item.Value));
 				s.Append("&");
 			}
@@ -204,7 +207,7 @@ namespace BtcE
 			return s.ToString();
 		}
 
-		UInt32 GetNonce()
+		uint GetNonce()
         {
             return BtceApi.nonce++;
 		}
@@ -234,12 +237,37 @@ namespace BtcE
 		}
 		static string Query(string url)
         {
-			var request = WebRequest.Create(url);
+            WebRequest request = WebRequest.Create(url);
+            if (request == null)
+                return null;
 			request.Proxy = WebRequest.DefaultWebProxy;
 			request.Proxy.Credentials = System.Net.CredentialCache.DefaultCredentials;
-			if ( request == null )
-				throw new Exception("Non HTTP WebRequest");
 			return new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
 		}
 	}
+    public static class UnixTime
+    {
+        #region Static Members
+        private static DateTime unixEpoch = new DateTime(1970, 1, 1);
+        #endregion
+        #region Static Properties
+        public static uint Now
+        {
+            get
+            {
+                return UnixTime.GetFromDateTime(DateTime.UtcNow);
+            }
+        }
+        #endregion
+        #region Static Methods
+        public static uint GetFromDateTime(DateTime d)
+        {
+            return (uint)(d - unixEpoch).TotalSeconds;
+        }
+        public static DateTime ConvertToDateTime(uint unixtime)
+        {
+            return unixEpoch.AddSeconds(unixtime);
+        }
+        #endregion
+    }
 }

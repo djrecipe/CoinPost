@@ -134,6 +134,7 @@
   <ItemGroup>
     <None Include="Resources\scrooge.ico" />
     <Content Include="Resources\scrooge.jpg" />
+    <Content Include="Resources\trade.wav" />
     <Content Include="Resources\x.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

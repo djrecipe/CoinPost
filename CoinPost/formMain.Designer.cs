@@ -59,6 +59,8 @@
             this.pgTrade = new System.Windows.Forms.TabPage();
             this.webBrowser = new Gecko.GeckoWebBrowser();
             this.gridBalances = new CoinPost.Grid();
+            this.colCurrency = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colBalance = new System.Windows.Forms.DataGridViewLinkColumn();
             this.splitActiveOrders = new System.Windows.Forms.SplitContainer();
             this.gridBuy = new CoinPost.Grid();
             this.colBuyID = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -88,8 +90,6 @@
             this.txtPrice = new System.Windows.Forms.TextBox();
             this.lblAsk = new System.Windows.Forms.Label();
             this.txtQuantity = new System.Windows.Forms.TextBox();
-            this.colCurrency = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colBalance = new System.Windows.Forms.DataGridViewLinkColumn();
             this.conmenTabs.SuspendLayout();
             this.stripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -319,6 +319,23 @@
             this.gridBalances.TabStop = false;
             this.gridBalances.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBalances_CellContentClick);
             this.gridBalances.SelectionChanged += new System.EventHandler(this.gridBalances_SelectionChanged);
+            // 
+            // colCurrency
+            // 
+            this.colCurrency.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.colCurrency.HeaderText = "Currency";
+            this.colCurrency.Name = "colCurrency";
+            this.colCurrency.ReadOnly = true;
+            this.colCurrency.Width = 5;
+            // 
+            // colBalance
+            // 
+            this.colBalance.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colBalance.HeaderText = "Balance";
+            this.colBalance.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
+            this.colBalance.Name = "colBalance";
+            this.colBalance.ReadOnly = true;
+            this.colBalance.TrackVisitedState = false;
             // 
             // splitActiveOrders
             // 
@@ -773,23 +790,6 @@
             this.txtQuantity.Text = "0.0";
             this.txtQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtQuantity.TextChanged += new System.EventHandler(this.txtQuantity_Update);
-            // 
-            // colCurrency
-            // 
-            this.colCurrency.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
-            this.colCurrency.HeaderText = "Currency";
-            this.colCurrency.Name = "colCurrency";
-            this.colCurrency.ReadOnly = true;
-            this.colCurrency.Width = 5;
-            // 
-            // colBalance
-            // 
-            this.colBalance.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colBalance.HeaderText = "Balance";
-            this.colBalance.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
-            this.colBalance.Name = "colBalance";
-            this.colBalance.ReadOnly = true;
-            this.colBalance.TrackVisitedState = false;
             // 
             // formMain
             // 
