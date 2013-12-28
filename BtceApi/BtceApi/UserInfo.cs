@@ -1,26 +1,35 @@
-﻿using Newtonsoft.Json.Linq;
-
+﻿#region Using
+using Newtonsoft.Json.Linq;
+#endregion
 namespace BtcE
 {
     public class UserInfo
     {
-        public Funds Funds { get; private set; }
-        public Rights Rights { get; private set; }
-        public int TransactionCount { get; private set; }
+        #region Instance Properties
+        #region Numeric Properties
         public int OpenOrders { get; private set; }
         public int ServerTime { get; private set; }
-
-        private UserInfo(){}
-        public static UserInfo ReadFromJObject(JObject o)
+        public int TransactionCount { get; private set; }
+        #endregion
+        #region Object Properties
+        public Funds funds { get; private set; }
+        public Rights rights { get; private set; }
+        #endregion
+        #endregion
+        #region Instance Methods
+        #region Initialization Methods
+        public UserInfo(JObject o)
         {
-            return new UserInfo()
-            {
-                Funds = Funds.ReadFromJObject(o["funds"] as JObject),
-                Rights = Rights.ReadFromJObject(o["rights"] as JObject),
-                TransactionCount = o.Value<int>("transaction_count"),
-                OpenOrders = o.Value<int>("open_orders"),
-                ServerTime = o.Value<int>("server_time")
-            };
+            // ~ Initialize Object Properties
+            this.funds = new Funds(o["funds"] as JObject);
+            this.rights = new Rights(o["rights"] as JObject);
+            // ~ Initialize Numeric Properties
+            this.OpenOrders = o.Value<int>("open_orders");
+            this.ServerTime = o.Value<int>("server_time");
+            this.TransactionCount = o.Value<int>("transaction_count");
+            return;
         }
+        #endregion
+        #endregion
     }
 }

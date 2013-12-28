@@ -12,6 +12,13 @@ C:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.Properties.Resources.res
 C:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.csproj.GenerateResource.Cache
 C:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.exe
 C:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.pdb
+D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.csprojResolveAssemblyReference.cache
+D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.formCredentials.resources
+D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.formMain.resources
+D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.formModifyOrder.resources
+D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.formTradeHistory.resources
+D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.Properties.Resources.resources
+D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.csproj.GenerateResource.Cache
 D:\space\vcsharp\CoinPost\CoinPost\bin\Release\CoinPost.exe.config
 D:\space\vcsharp\CoinPost\CoinPost\bin\Release\CoinPost.exe
 D:\space\vcsharp\CoinPost\CoinPost\bin\Release\CoinPost.pdb
@@ -24,12 +31,5 @@ D:\space\vcsharp\CoinPost\CoinPost\bin\Release\BtceApi.pdb
 D:\space\vcsharp\CoinPost\CoinPost\bin\Release\CoinPostGUI.pdb
 D:\space\vcsharp\CoinPost\CoinPost\bin\Release\Geckofx-Core.pdb
 D:\space\vcsharp\CoinPost\CoinPost\bin\Release\Geckofx-Winforms.pdb
-D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.csprojResolveAssemblyReference.cache
-D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.formCredentials.resources
-D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.formMain.resources
-D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.formModifyOrder.resources
-D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.formTradeHistory.resources
-D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.Properties.Resources.resources
-D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.csproj.GenerateResource.Cache
 D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.exe
 D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.pdb

@@ -25,6 +25,7 @@ namespace CoinPost
                 this.txtAPIKey.Text = "";
                 this.txtSecret.Enabled = false;
                 this.txtSecret.Text = "";
+                this.Size = new Size(this.Width, this.Height - this.txtPassword.Top+10);
             }
         }
 

@@ -24,10 +24,6 @@ namespace CoinPost
         #region Constants
         private static readonly double MinimumSellThreshold=1.004012032080192;
         private static readonly double MinimumBuyThreshold = 0.996004;
-        private static readonly List<string> non_wisdom_pairs = new List<string>(){ "FTC", "NVC", "PPC", "TRC" };
-        private static readonly List<string> non_usd_pairs = new List<string>() { "FTC", "TRC" };
-        private static readonly List<string> usd_pairs = new List<string>() { "BTC", "LTC", "NMC", "NVC", "PPC" };
-        private static readonly List<string> target_pairs = new List<string>() { "BTC", "USD" };
         #endregion
         #region Mutices
         private static Mutex mutExchangeString = new Mutex();           // to access current currency exchange string (i.e. "ltc_btc")
@@ -69,9 +65,7 @@ namespace CoinPost
         formTradeHistory fTradeHistory;
         #endregion
         #region Strings
-        private string old_price_text="0.0";
         private string old_quantity_text = "0.0";
-        private string new_javascript = "";
         #endregion
         #region Numbers
         private Point tabPoint = new Point(0,0);
@@ -110,10 +104,6 @@ namespace CoinPost
         #region Initialization Methods
         private void InitializeBrowser()
         {
-        }
-        private void Action(string string_in)
-        {
-            Console.WriteLine("event");
         }
         private bool InitializeBtceApi()
         {
@@ -162,8 +152,22 @@ namespace CoinPost
         }
         public formMain()
         {
+            if (!Exchanges.Initialize("Exchanges.ini"))
+            {
+                this.Close();
+                return;
+            }
+            try
+            {
+                Xpcom.Initialize(@".\xulrunner");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Could not initialized Xpcom.");
+                this.Close();
+                return;
+            }
             this.InitializeComponent();
-            Xpcom.Initialize(@".\xulrunner");
             
             #region Child Form Initialization
             this.fTradeHistory = new formTradeHistory(new delEmpty(this.SafeToggleTradeHistory));
@@ -183,6 +187,14 @@ namespace CoinPost
             this.valid = true;
             #endregion
             #region Combobox Initialization
+            this.comboSourceCurrency.Items.Clear();
+            this.comboTargetCurrency.Items.Clear();
+            foreach (string s in Exchanges.usd_pairs)
+                this.comboSourceCurrency.Items.Add(s);
+            foreach (string s in Exchanges.non_usd_pairs)
+                this.comboSourceCurrency.Items.Add(s);
+            foreach (string s in Exchanges.target_pairs)
+                this.comboTargetCurrency.Items.Add(s);
             this.comboSourceCurrency.SelectedIndex = 0;
             this.comboTargetCurrency.SelectedIndex = 1;
             #endregion
@@ -247,7 +259,8 @@ namespace CoinPost
                 if(this.browsers_enabled && this.webBrowser.Created)
                 {
                     this.navigating = true;
-                    this.webBrowser.Navigate(formMain.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString())?"https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower():"bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+                    this.webBrowser.Navigate(Exchanges.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString())?"https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower():"bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+                    this.tabsMain.SelectedIndex = 0;
                 }
 
             }
@@ -266,60 +279,27 @@ namespace CoinPost
         }
         private void GetInfo()
         {
-            while (mutValid.WaitOne() && this.valid)
+            while (mutValid.WaitOne(3000) && this.valid)
             {
                 //
                 Decimal? total_balance = 0;
                 //
-                Ticker[] usd_rates=new Ticker[formMain.usd_pairs.Count];
-                Ticker[] non_usd_rates=new Ticker[formMain.non_usd_pairs.Count];  
-                for(int i=0; i<formMain.usd_pairs.Count; i++)
-                    usd_rates[i]= BtceApi.GetTicker(formMain.usd_pairs[i] + "_" + formMain.target_pairs[1]);
-                for(int i=0; i<formMain.non_usd_pairs.Count; i++)
-                    non_usd_rates[i]= BtceApi.GetTicker(formMain.non_usd_pairs[i] + "_" + formMain.target_pairs[0]);
+                Ticker[] usd_rates = new Ticker[Exchanges.usd_pairs.Count];
+                Ticker[] non_usd_rates = new Ticker[Exchanges.non_usd_pairs.Count];
+                for (int i = 0; i < Exchanges.usd_pairs.Count; i++)
+                    usd_rates[i] = BtceApi.GetTicker(Exchanges.usd_pairs[i] + "_" + Exchanges.target_pairs[1]);
+                for (int i = 0; i < Exchanges.non_usd_pairs.Count; i++)
+                    non_usd_rates[i] = BtceApi.GetTicker(Exchanges.non_usd_pairs[i] + "_" + Exchanges.target_pairs[0]);
                 //
                 UserInfo userinfo = this.btceApi.GetInfo();
                 this.BeginInvoke(this.cbUpdateUserInfo, userinfo);
                 if (userinfo != null)
                 {
-                    total_balance += userinfo.Funds.Usd;
-                    for(int j=0; j<formMain.usd_pairs.Count; j++)
-                    {
-                        switch (formMain.usd_pairs[j])
-                        {
-                            case "BTC":
-                                total_balance += userinfo.Funds.Btc * usd_rates[j].Last * Convert.ToDecimal(0.998);
-                                break;
-                            case "LTC":
-                                total_balance += userinfo.Funds.Ltc * usd_rates[j].Last * Convert.ToDecimal(0.998);
-                                break;
-                            case "NMC":
-                                total_balance += userinfo.Funds.Nmc * usd_rates[j].Last * Convert.ToDecimal(0.998);
-                                break;
-                            case "NVC":
-                                total_balance += userinfo.Funds.Nvc * usd_rates[j].Last * Convert.ToDecimal(0.998);
-                                break;
-                            case "PPC":
-                                total_balance += userinfo.Funds.Ppc * usd_rates[j].Last * Convert.ToDecimal(0.998);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    for(int j=0; j<formMain.non_usd_pairs.Count; j++)
-                    {
-                        switch (formMain.non_usd_pairs[j])
-                        {
-                            case "FTC":
-                                total_balance += userinfo.Funds.Ftc * non_usd_rates[j].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998) * Convert.ToDecimal(0.998);
-                                break;
-                            case "TRC":
-                                total_balance += userinfo.Funds.Trc * non_usd_rates[j].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998) * Convert.ToDecimal(0.998);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
+                    total_balance += userinfo.funds.GetBalance(Exchanges.target_pairs[1]);
+                    for (int j = 0; j < Exchanges.usd_pairs.Count; j++)
+                        total_balance += userinfo.funds.GetBalance(Exchanges.usd_pairs[j]) * usd_rates[j].Last * Convert.ToDecimal(0.998);
+                    for (int j = 0; j < Exchanges.non_usd_pairs.Count; j++)
+                        total_balance += userinfo.funds.GetBalance(Exchanges.non_usd_pairs[j]) * non_usd_rates[j].Last * usd_rates[Exchanges.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998) * Convert.ToDecimal(0.998);
                 }
                 OrderList orders = this.btceApi.GetOrderList();
                 this.BeginInvoke(this.cbUpdateOrderList, orders); 
@@ -327,33 +307,28 @@ namespace CoinPost
                 {
                     foreach (KeyValuePair<int,Order> order in orders.List)
                     {
-                        if (order.Value.Type == TradeType.Sell)
+                        if (order.Value.Type == "sell")
                         {
-                            int index = formMain.usd_pairs.IndexOf(order.Value.Pair.ToString().Substring(0, 3).ToUpper());
+                            int index = Exchanges.usd_pairs.IndexOf(order.Value.Pair.ToString().Substring(0, 3).ToUpper());
                             if (index != -1)
-                            {
                                 total_balance += order.Value.Amount * usd_rates[index].Last * Convert.ToDecimal(0.998);
-                            }
                             else
                             {
-                                index = formMain.non_usd_pairs.IndexOf(order.Value.Pair.ToString().ToUpper().Take(3).ToString());
+                                index = Exchanges.non_usd_pairs.IndexOf(order.Value.Pair.ToString().ToUpper().Take(3).ToString());
                                 if (index != -1)
-                                {
-                                    total_balance += order.Value.Amount * non_usd_rates[index].Last * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last*Convert.ToDecimal(0.998);
-                                }
+                                    total_balance += order.Value.Amount * non_usd_rates[index].Last * usd_rates[Exchanges.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998);
                             }
                         }
                         else
                         {
-                            Console.WriteLine(order.Value.Pair.ToString().Substring(4, 3).ToUpper());
-                            int index = formMain.target_pairs.IndexOf(order.Value.Pair.ToString().Substring(4, 3).ToUpper());
+                            int index = Exchanges.target_pairs.IndexOf(order.Value.Pair.ToString().Substring(4, 3).ToUpper());
                             if (index != -1)
                             {
-                                
-                                if (formMain.target_pairs[index].Contains("USD"))
+
+                                if (Exchanges.target_pairs[index].Contains("USD"))
                                     total_balance += order.Value.Amount * order.Value.Rate;
                                 else
-                                    total_balance += order.Value.Amount * order.Value.Rate * usd_rates[formMain.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998);
+                                    total_balance += order.Value.Amount * order.Value.Rate * usd_rates[Exchanges.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998);
 
                             }
                         }
@@ -387,12 +362,11 @@ namespace CoinPost
                     continue;
                 }
                 string[] units = pair.Value.Pair.ToString().Split('_');
-                ((pair.Value.Type.ToString() == "Sell")?this.gridSell:this.gridBuy).Rows.Add(new object[]
+                int index=((pair.Value.Type.ToString() == "Sell")?this.gridSell:this.gridBuy).Rows.Add(new object[]
                 { 
                     pair.Key, pair.Value.Amount.ToString() + " " + units[0].ToUpper(), pair.Value.Rate.ToString() + " " + units[1].ToUpper(),
                     (pair.Value.Amount * pair.Value.Rate).ToString() + " " + units[1].ToUpper(),
-                    "X",
-                    "M"
+                    "X","M"
                 });
             }
             this.canceledOrders = new_canceledOrders;
@@ -401,14 +375,11 @@ namespace CoinPost
         {
             if (info_in == null)
                 return;
-            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("btc")].Cells[1].Value = info_in.Funds.Btc;
-            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("ftc")].Cells[1].Value = info_in.Funds.Ftc;
-            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("ltc")].Cells[1].Value = info_in.Funds.Ltc;
-            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("nmc")].Cells[1].Value = info_in.Funds.Nmc;
-            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("nvc")].Cells[1].Value = info_in.Funds.Nvc;
-            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("ppc")].Cells[1].Value = info_in.Funds.Ppc;
-            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("trc")].Cells[1].Value = info_in.Funds.Trc;
-            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair("usd")].Cells[1].Value = info_in.Funds.Usd;
+            foreach (string s in Exchanges.usd_pairs)
+                this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(s)].Cells[1].Value = info_in.funds.GetBalance(s);
+            foreach (string s in Exchanges.non_usd_pairs)
+                this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(s)].Cells[1].Value = info_in.funds.GetBalance(s);
+            this.gridBalances.Rows[this.gridBalances_FindIndexOfPair(Exchanges.target_pairs[1])].Cells[1].Value = info_in.funds.GetBalance(Exchanges.target_pairs[1]);
         }
         private void UpdateLastPrice(Decimal? price_in)
         {
@@ -443,7 +414,7 @@ namespace CoinPost
             double price_out = 0.0, quantity_out = 0.0;
             if (Double.TryParse(txtPrice.Text, out price_out) && Double.TryParse(txtQuantity.Text, out quantity_out) && price_out <= Convert.ToDouble(this.lklblLastPrice.Text)*1.1 && quantity_out != 0.0)
             {
-                TradeAnswer answer = this.btceApi.Trade(this.SafeRetrieveExchangeString(), TradeType.Buy, price_out, quantity_out);
+                TradeAnswer answer = this.btceApi.Trade(this.SafeRetrieveExchangeString(), "buy", price_out, quantity_out);
             }
         }
 
@@ -452,7 +423,7 @@ namespace CoinPost
             double price_out = 0.0, quantity_out = 0.0;
             if (Double.TryParse(txtPrice.Text, out price_out) && Double.TryParse(txtQuantity.Text, out quantity_out) && price_out >= Convert.ToDouble(this.lklblLastPrice.Text)*0.9 && quantity_out != 0.0)
             {
-                TradeAnswer answer = this.btceApi.Trade(this.SafeRetrieveExchangeString(), TradeType.Sell, price_out, quantity_out);
+                TradeAnswer answer = this.btceApi.Trade(this.SafeRetrieveExchangeString(), "sell", price_out, quantity_out);
             }
         }
         private void btnMaxBuy_Click(object sender, EventArgs e)
@@ -479,7 +450,7 @@ namespace CoinPost
         private void comboBidCurrency_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox caller = (ComboBox)sender;
-            if (caller.SelectedIndex != -1 && (caller.SelectedItem.ToString() == "FTC" || caller.SelectedItem.ToString() == "TRC"))
+            if (caller.SelectedIndex != -1 && Exchanges.non_usd_pairs.Contains(caller.SelectedItem.ToString()))
             {
                 this.comboTargetCurrency.SelectedIndex = 0;
                 if(this.comboTargetCurrency.Items.Contains("USD"))
@@ -498,7 +469,7 @@ namespace CoinPost
             ComboBox caller = (ComboBox)sender;
             if (caller.SelectedIndex == 0 && this.comboSourceCurrency.SelectedIndex == 0)
                 this.comboSourceCurrency.SelectedIndex = 1;
-            else if (caller.SelectedIndex == 1 && this.comboSourceCurrency.SelectedIndex != -1 && (this.comboSourceCurrency.SelectedItem.ToString() == "FTC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC"))
+            else if (caller.SelectedIndex == 1 && this.comboSourceCurrency.SelectedIndex != -1 && Exchanges.non_usd_pairs.Contains(caller.SelectedItem.ToString()))
                 caller.SelectedIndex = 0;
             this.SafeUpdateExchangeString();
             this.webBrowser.Focus();
@@ -513,15 +484,18 @@ namespace CoinPost
             if (!this.browsers_enabled)
                 return;
             this.InitializeBrowser();
-            if (this.comboSourceCurrency.SelectedItem.ToString() == "PPC" || this.comboSourceCurrency.SelectedItem.ToString() == "NVC" || this.comboSourceCurrency.SelectedItem.ToString() == "TRC" || this.comboSourceCurrency.SelectedItem.ToString() == "FTC")
+            if (this.comboSourceCurrency.SelectedIndex != -1 && this.comboTargetCurrency.SelectedIndex != -1)
             {
-                this.navigating = true;
-                this.webBrowser.Navigate("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
-            }
-            else
-            {
-                this.navigating = true;
-                this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+                if (Exchanges.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString()))
+                {
+                    this.navigating = true;
+                    this.webBrowser.Navigate("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+                }
+                else
+                {
+                    this.navigating = true;
+                    this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
+                }
             }
         }
 
@@ -606,7 +580,7 @@ namespace CoinPost
                                 caller.Rows.RemoveAt(i);
                                 this.canceledOrders.Add(order_number);
                                 this.btceApi.CancelOrder(order_number);
-                                this.pendingTrades.Add(new PendingTrade(exchange_string_out, caller == this.gridBuy ? TradeType.Buy : TradeType.Sell, fModify.Price.Value, fModify.Quantity.Value));
+                                this.pendingTrades.Add(new PendingTrade(exchange_string_out, caller == this.gridBuy ? "buy" : "sell", fModify.Price.Value, fModify.Quantity.Value));
                                 this.timerModifyOrder.Enabled = true;
                                 break;
                             }
@@ -712,8 +686,7 @@ namespace CoinPost
             {
                 using (AutoJSContext context = new AutoJSContext(browser.Window.JSContext))
                 {
-                    context.EvaluateScript("$( document ).ready(function(){$( \"#leftbar_outer\" ).hide();$( \"#leftbar\" ).hide();});");
-                    context.EvaluateScript("$( document ).ready(function(){$( \"#canvas_cross\" ).mousewheel();});");
+                    context.EvaluateScript("$( document ).ready(function(){$( \"#leftbar_outer\" ).hide();$( \"#leftbar\" ).hide();$( \"#footer\" ).hide();$( \"div.difficulty\" ).hide();$( \"#canvas_cross\" ).mousewheel();});");
                 }
             }
         }
@@ -801,6 +774,11 @@ namespace CoinPost
 
         }
         #endregion
+
+        private void tabsMain_DrawItem(object sender, DrawItemEventArgs e)
+        {
+
+        }
 
 
         #endregion

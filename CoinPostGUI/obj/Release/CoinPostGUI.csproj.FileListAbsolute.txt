@@ -3,4 +3,3 @@ D:\space\vcsharp\CoinPost\CoinPost\CoinPostGUI.dll
 D:\space\vcsharp\CoinPost\CoinPost\CoinPostGUI.pdb
 D:\space\vcsharp\CoinPost\CoinPostGUI\obj\Release\CoinPostGUI.dll
 D:\space\vcsharp\CoinPost\CoinPostGUI\obj\Release\CoinPostGUI.pdb
-D:\space\vcsharp\CoinPost\CoinPostGUI\obj\Release\CoinPostGUI.csprojResolveAssemblyReference.cache

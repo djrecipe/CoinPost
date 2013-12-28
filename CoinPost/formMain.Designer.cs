@@ -43,29 +43,22 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.btnBuy = new System.Windows.Forms.Button();
-            this.lblBid = new System.Windows.Forms.Label();
-            this.txtQuantity = new System.Windows.Forms.TextBox();
-            this.txtPrice = new System.Windows.Forms.TextBox();
-            this.groupTrade = new System.Windows.Forms.GroupBox();
-            this.lklblLastPrice = new System.Windows.Forms.LinkLabel();
-            this.lblCurrentPrice = new System.Windows.Forms.Label();
-            this.txtTotal = new System.Windows.Forms.TextBox();
-            this.lblTotal = new System.Windows.Forms.Label();
-            this.btnMaxBuy = new System.Windows.Forms.Button();
-            this.btnMaxSell = new System.Windows.Forms.Button();
-            this.btnSell = new System.Windows.Forms.Button();
-            this.comboTargetCurrency = new System.Windows.Forms.ComboBox();
-            this.comboSourceCurrency = new System.Windows.Forms.ComboBox();
-            this.lblAsk = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formMain));
             this.timerModifyOrder = new System.Windows.Forms.Timer(this.components);
+            this.conmenTabs = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.conitemRemoveTab = new System.Windows.Forms.ToolStripMenuItem();
+            this.lklblShowAllHistory = new System.Windows.Forms.ToolStripStatusLabel();
+            this.stripMain = new System.Windows.Forms.StatusStrip();
+            this.lblBlank = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblTotalBalance = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ttipOrderAssist = new System.Windows.Forms.ToolTip(this.components);
+            this.btnSell = new System.Windows.Forms.Button();
+            this.ttipTabs = new System.Windows.Forms.ToolTip(this.components);
             this.splitMain = new System.Windows.Forms.SplitContainer();
-            this.tabsMain = new System.Windows.Forms.TabControl();
-            this.pgMain = new System.Windows.Forms.TabPage();
+            this.tabsMain = new CoinPostGUI.Tabs();
+            this.pgTrade = new System.Windows.Forms.TabPage();
             this.webBrowser = new Gecko.GeckoWebBrowser();
             this.gridBalances = new CoinPost.Grid();
-            this.colCurrency = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colBalance = new System.Windows.Forms.DataGridViewLinkColumn();
             this.splitActiveOrders = new System.Windows.Forms.SplitContainer();
             this.gridBuy = new CoinPost.Grid();
             this.colBuyID = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -81,21 +74,30 @@
             this.colSellTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCancelSell = new System.Windows.Forms.DataGridViewButtonColumn();
             this.colModifySell = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.conmenTabs = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.conitemRemoveTab = new System.Windows.Forms.ToolStripMenuItem();
-            this.lklblShowAllHistory = new System.Windows.Forms.ToolStripStatusLabel();
-            this.stripMain = new System.Windows.Forms.StatusStrip();
-            this.lblBlank = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lblTotalBalance = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ttipOrderAssist = new System.Windows.Forms.ToolTip(this.components);
-            this.ttipTabs = new System.Windows.Forms.ToolTip(this.components);
-            this.groupTrade.SuspendLayout();
+            this.groupTrade = new System.Windows.Forms.GroupBox();
+            this.lklblLastPrice = new System.Windows.Forms.LinkLabel();
+            this.lblCurrentPrice = new System.Windows.Forms.Label();
+            this.txtTotal = new System.Windows.Forms.TextBox();
+            this.lblTotal = new System.Windows.Forms.Label();
+            this.btnMaxBuy = new System.Windows.Forms.Button();
+            this.btnMaxSell = new System.Windows.Forms.Button();
+            this.comboTargetCurrency = new System.Windows.Forms.ComboBox();
+            this.btnBuy = new System.Windows.Forms.Button();
+            this.comboSourceCurrency = new System.Windows.Forms.ComboBox();
+            this.lblBid = new System.Windows.Forms.Label();
+            this.txtPrice = new System.Windows.Forms.TextBox();
+            this.lblAsk = new System.Windows.Forms.Label();
+            this.txtQuantity = new System.Windows.Forms.TextBox();
+            this.colCurrency = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colBalance = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.conmenTabs.SuspendLayout();
+            this.stripMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
             this.splitMain.SuspendLayout();
             this.tabsMain.SuspendLayout();
-            this.pgMain.SuspendLayout();
+            this.pgTrade.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridBalances)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitActiveOrders)).BeginInit();
             this.splitActiveOrders.Panel1.SuspendLayout();
@@ -103,184 +105,92 @@
             this.splitActiveOrders.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridBuy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSell)).BeginInit();
-            this.conmenTabs.SuspendLayout();
-            this.stripMain.SuspendLayout();
+            this.groupTrade.SuspendLayout();
             this.SuspendLayout();
             // 
-            // btnBuy
+            // timerModifyOrder
             // 
-            this.btnBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnBuy.AutoEllipsis = true;
-            this.btnBuy.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnBuy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBuy.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBuy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.btnBuy.Location = new System.Drawing.Point(224, 126);
-            this.btnBuy.Name = "btnBuy";
-            this.btnBuy.Size = new System.Drawing.Size(69, 29);
-            this.btnBuy.TabIndex = 5;
-            this.btnBuy.Text = "Buy";
-            this.btnBuy.UseVisualStyleBackColor = true;
-            this.btnBuy.Click += new System.EventHandler(this.btnBuy_Click);
+            this.timerModifyOrder.Interval = 2000;
+            this.timerModifyOrder.Tick += new System.EventHandler(this.timerModifyOrder_Tick);
             // 
-            // lblBid
+            // conmenTabs
             // 
-            this.lblBid.AutoSize = true;
-            this.lblBid.Font = new System.Drawing.Font("Arial", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBid.Location = new System.Drawing.Point(7, 47);
-            this.lblBid.Name = "lblBid";
-            this.lblBid.Size = new System.Drawing.Size(64, 16);
-            this.lblBid.TabIndex = 6;
-            this.lblBid.Text = "Quantity:";
+            this.conmenTabs.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.conitemRemoveTab});
+            this.conmenTabs.Name = "conmenTabs";
+            this.conmenTabs.ShowImageMargin = false;
+            this.conmenTabs.Size = new System.Drawing.Size(159, 26);
             // 
-            // txtQuantity
+            // conitemRemoveTab
             // 
-            this.txtQuantity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(125)))), ((int)(((byte)(125)))));
-            this.txtQuantity.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtQuantity.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.txtQuantity.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtQuantity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(40)))), ((int)(((byte)(0)))));
-            this.txtQuantity.Location = new System.Drawing.Point(77, 49);
-            this.txtQuantity.Name = "txtQuantity";
-            this.txtQuantity.Size = new System.Drawing.Size(140, 15);
-            this.txtQuantity.TabIndex = 8;
-            this.txtQuantity.Text = "0.0";
-            this.txtQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtQuantity.TextChanged += new System.EventHandler(this.txtQuantity_Update);
+            this.conitemRemoveTab.Name = "conitemRemoveTab";
+            this.conitemRemoveTab.Size = new System.Drawing.Size(158, 22);
+            this.conitemRemoveTab.Text = "&Remove Current Tab";
+            this.conitemRemoveTab.Click += new System.EventHandler(this.conitemRemoveTab_Click);
             // 
-            // txtPrice
+            // lklblShowAllHistory
             // 
-            this.txtPrice.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(125)))), ((int)(((byte)(125)))));
-            this.txtPrice.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtPrice.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPrice.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(40)))), ((int)(((byte)(0)))));
-            this.txtPrice.Location = new System.Drawing.Point(77, 76);
-            this.txtPrice.Name = "txtPrice";
-            this.txtPrice.Size = new System.Drawing.Size(140, 15);
-            this.txtPrice.TabIndex = 9;
-            this.txtPrice.Text = "0.0";
-            this.txtPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtPrice.TextChanged += new System.EventHandler(this.txtPrice_Update);
+            this.lklblShowAllHistory.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.lklblShowAllHistory.IsLink = true;
+            this.lklblShowAllHistory.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
+            this.lklblShowAllHistory.Name = "lklblShowAllHistory";
+            this.lklblShowAllHistory.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lklblShowAllHistory.Size = new System.Drawing.Size(116, 17);
+            this.lklblShowAllHistory.Text = "SHOW Trade History";
+            this.lklblShowAllHistory.Click += new System.EventHandler(this.lklblShowAllHistory_Click);
             // 
-            // groupTrade
+            // stripMain
             // 
-            this.groupTrade.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupTrade.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            this.groupTrade.Controls.Add(this.lklblLastPrice);
-            this.groupTrade.Controls.Add(this.lblCurrentPrice);
-            this.groupTrade.Controls.Add(this.txtTotal);
-            this.groupTrade.Controls.Add(this.lblTotal);
-            this.groupTrade.Controls.Add(this.btnMaxBuy);
-            this.groupTrade.Controls.Add(this.btnMaxSell);
-            this.groupTrade.Controls.Add(this.btnSell);
-            this.groupTrade.Controls.Add(this.comboTargetCurrency);
-            this.groupTrade.Controls.Add(this.btnBuy);
-            this.groupTrade.Controls.Add(this.comboSourceCurrency);
-            this.groupTrade.Controls.Add(this.lblBid);
-            this.groupTrade.Controls.Add(this.txtPrice);
-            this.groupTrade.Controls.Add(this.lblAsk);
-            this.groupTrade.Controls.Add(this.txtQuantity);
-            this.groupTrade.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupTrade.Font = new System.Drawing.Font("Arial", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupTrade.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.groupTrade.Location = new System.Drawing.Point(11, 3);
-            this.groupTrade.MaximumSize = new System.Drawing.Size(474, 9000);
-            this.groupTrade.MinimumSize = new System.Drawing.Size(305, 182);
-            this.groupTrade.Name = "groupTrade";
-            this.groupTrade.Size = new System.Drawing.Size(305, 182);
-            this.groupTrade.TabIndex = 11;
-            this.groupTrade.TabStop = false;
-            this.groupTrade.Text = "Trade";
+            this.stripMain.BackColor = System.Drawing.Color.Transparent;
+            this.stripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblBlank,
+            this.lklblShowAllHistory,
+            this.lblTotalBalance});
+            this.stripMain.Location = new System.Drawing.Point(0, 650);
+            this.stripMain.Name = "stripMain";
+            this.stripMain.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.stripMain.Size = new System.Drawing.Size(953, 22);
+            this.stripMain.SizingGrip = false;
+            this.stripMain.TabIndex = 14;
+            this.stripMain.Text = "statusStrip1";
             // 
-            // lklblLastPrice
+            // lblBlank
             // 
-            this.lklblLastPrice.Font = new System.Drawing.Font("Arial Black", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lklblLastPrice.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
-            this.lklblLastPrice.Location = new System.Drawing.Point(111, 21);
-            this.lklblLastPrice.Name = "lklblLastPrice";
-            this.lklblLastPrice.Size = new System.Drawing.Size(93, 21);
-            this.lklblLastPrice.TabIndex = 19;
-            this.lklblLastPrice.TabStop = true;
-            this.lklblLastPrice.Text = "0.115";
-            this.lklblLastPrice.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lklblLastPrice.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lklblLastPrice_LinkClicked);
+            this.lblBlank.Name = "lblBlank";
+            this.lblBlank.Size = new System.Drawing.Size(19, 17);
+            this.lblBlank.Text = "    ";
             // 
-            // lblCurrentPrice
+            // lblTotalBalance
             // 
-            this.lblCurrentPrice.Font = new System.Drawing.Font("Arial", 11.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCurrentPrice.Location = new System.Drawing.Point(6, 22);
-            this.lblCurrentPrice.Name = "lblCurrentPrice";
-            this.lblCurrentPrice.Size = new System.Drawing.Size(110, 18);
-            this.lblCurrentPrice.TabIndex = 18;
-            this.lblCurrentPrice.Text = "Current Price:";
-            this.lblCurrentPrice.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblTotalBalance.AutoSize = false;
+            this.lblTotalBalance.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.lblTotalBalance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
+            this.lblTotalBalance.Name = "lblTotalBalance";
+            this.lblTotalBalance.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.lblTotalBalance.Size = new System.Drawing.Size(803, 17);
+            this.lblTotalBalance.Spring = true;
+            this.lblTotalBalance.Text = "Total Balance: $ 0000.00";
+            this.lblTotalBalance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // txtTotal
+            // ttipOrderAssist
             // 
-            this.txtTotal.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.txtTotal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.txtTotal.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtTotal.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.txtTotal.Location = new System.Drawing.Point(77, 97);
-            this.txtTotal.Name = "txtTotal";
-            this.txtTotal.ReadOnly = true;
-            this.txtTotal.Size = new System.Drawing.Size(140, 15);
-            this.txtTotal.TabIndex = 16;
-            this.txtTotal.Text = "0.0";
-            this.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // lblTotal
-            // 
-            this.lblTotal.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.lblTotal.AutoSize = true;
-            this.lblTotal.Font = new System.Drawing.Font("Arial", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotal.Location = new System.Drawing.Point(27, 96);
-            this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(43, 16);
-            this.lblTotal.TabIndex = 15;
-            this.lblTotal.Text = "Total:";
-            // 
-            // btnMaxBuy
-            // 
-            this.btnMaxBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnMaxBuy.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnMaxBuy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnMaxBuy.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMaxBuy.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btnMaxBuy.Location = new System.Drawing.Point(176, 126);
-            this.btnMaxBuy.Name = "btnMaxBuy";
-            this.btnMaxBuy.Size = new System.Drawing.Size(41, 29);
-            this.btnMaxBuy.TabIndex = 14;
-            this.btnMaxBuy.Text = "Max";
-            this.btnMaxBuy.UseVisualStyleBackColor = true;
-            this.btnMaxBuy.Click += new System.EventHandler(this.btnMaxBuy_Click);
-            // 
-            // btnMaxSell
-            // 
-            this.btnMaxSell.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnMaxSell.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnMaxSell.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnMaxSell.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMaxSell.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btnMaxSell.Location = new System.Drawing.Point(30, 126);
-            this.btnMaxSell.Name = "btnMaxSell";
-            this.btnMaxSell.Size = new System.Drawing.Size(40, 29);
-            this.btnMaxSell.TabIndex = 13;
-            this.btnMaxSell.Text = "Max";
-            this.btnMaxSell.UseVisualStyleBackColor = true;
-            this.btnMaxSell.Click += new System.EventHandler(this.btnMaxSell_Click);
+            this.ttipOrderAssist.AutoPopDelay = 15000;
+            this.ttipOrderAssist.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.ttipOrderAssist.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.ttipOrderAssist.InitialDelay = 500;
+            this.ttipOrderAssist.ReshowDelay = 100;
+            this.ttipOrderAssist.Tag = "";
             // 
             // btnSell
             // 
             this.btnSell.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnSell.AutoEllipsis = true;
+            this.btnSell.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSell.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnSell.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSell.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSell.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.btnSell.Location = new System.Drawing.Point(77, 126);
+            this.btnSell.Location = new System.Drawing.Point(77, 141);
             this.btnSell.Name = "btnSell";
             this.btnSell.Size = new System.Drawing.Size(69, 29);
             this.btnSell.TabIndex = 12;
@@ -288,62 +198,6 @@
             this.ttipOrderAssist.SetToolTip(this.btnSell, "Recent Purchases (Button)");
             this.btnSell.UseVisualStyleBackColor = true;
             this.btnSell.Click += new System.EventHandler(this.btnSell_Click);
-            // 
-            // comboTargetCurrency
-            // 
-            this.comboTargetCurrency.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            this.comboTargetCurrency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboTargetCurrency.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboTargetCurrency.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboTargetCurrency.ForeColor = System.Drawing.Color.DarkGreen;
-            this.comboTargetCurrency.FormattingEnabled = true;
-            this.comboTargetCurrency.Items.AddRange(new object[] {
-            "BTC",
-            "USD"});
-            this.comboTargetCurrency.Location = new System.Drawing.Point(226, 74);
-            this.comboTargetCurrency.Name = "comboTargetCurrency";
-            this.comboTargetCurrency.Size = new System.Drawing.Size(67, 21);
-            this.comboTargetCurrency.Sorted = true;
-            this.comboTargetCurrency.TabIndex = 11;
-            this.comboTargetCurrency.SelectedIndexChanged += new System.EventHandler(this.comboTargetCurrency_SelectedIndexChanged);
-            // 
-            // comboSourceCurrency
-            // 
-            this.comboSourceCurrency.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            this.comboSourceCurrency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboSourceCurrency.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboSourceCurrency.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboSourceCurrency.ForeColor = System.Drawing.Color.DarkGreen;
-            this.comboSourceCurrency.FormattingEnabled = true;
-            this.comboSourceCurrency.Items.AddRange(new object[] {
-            "BTC",
-            "FTC",
-            "LTC",
-            "NMC",
-            "NVC",
-            "PPC",
-            "TRC"});
-            this.comboSourceCurrency.Location = new System.Drawing.Point(226, 47);
-            this.comboSourceCurrency.Name = "comboSourceCurrency";
-            this.comboSourceCurrency.Size = new System.Drawing.Size(67, 21);
-            this.comboSourceCurrency.Sorted = true;
-            this.comboSourceCurrency.TabIndex = 10;
-            this.comboSourceCurrency.SelectedIndexChanged += new System.EventHandler(this.comboBidCurrency_SelectedIndexChanged);
-            // 
-            // lblAsk
-            // 
-            this.lblAsk.AutoSize = true;
-            this.lblAsk.Font = new System.Drawing.Font("Arial", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAsk.Location = new System.Drawing.Point(28, 75);
-            this.lblAsk.Name = "lblAsk";
-            this.lblAsk.Size = new System.Drawing.Size(43, 16);
-            this.lblAsk.TabIndex = 7;
-            this.lblAsk.Text = "Price:";
-            // 
-            // timerModifyOrder
-            // 
-            this.timerModifyOrder.Interval = 2000;
-            this.timerModifyOrder.Tick += new System.EventHandler(this.timerModifyOrder_Tick);
             // 
             // splitMain
             // 
@@ -359,7 +213,7 @@
             // 
             // splitMain.Panel1
             // 
-            this.splitMain.Panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.splitMain.Panel1.BackColor = System.Drawing.Color.Transparent;
             this.splitMain.Panel1.Controls.Add(this.tabsMain);
             this.splitMain.Panel1MinSize = 1;
             // 
@@ -378,33 +232,35 @@
             // 
             // tabsMain
             // 
-            this.tabsMain.Controls.Add(this.pgMain);
+            this.tabsMain.Appearance = System.Windows.Forms.TabAppearance.Buttons;
+            this.tabsMain.Controls.Add(this.pgTrade);
             this.tabsMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabsMain.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabsMain.Font = new System.Drawing.Font("Arial", 10F);
             this.tabsMain.Location = new System.Drawing.Point(0, 0);
             this.tabsMain.Name = "tabsMain";
             this.tabsMain.SelectedIndex = 0;
             this.tabsMain.Size = new System.Drawing.Size(951, 436);
-            this.tabsMain.TabIndex = 1;
-            this.ttipTabs.SetToolTip(this.tabsMain, "Web browser tabs. Right click a secondary tab to remove it.");
+            this.tabsMain.TabIndex = 2;
             this.tabsMain.SelectedIndexChanged += new System.EventHandler(this.tabsMain_SelectedIndexChanged);
             // 
-            // pgMain
+            // pgTrade
             // 
-            this.pgMain.BackColor = System.Drawing.Color.Transparent;
-            this.pgMain.Controls.Add(this.webBrowser);
-            this.pgMain.Location = new System.Drawing.Point(4, 22);
-            this.pgMain.Name = "pgMain";
-            this.pgMain.Padding = new System.Windows.Forms.Padding(3);
-            this.pgMain.Size = new System.Drawing.Size(943, 410);
-            this.pgMain.TabIndex = 0;
-            this.pgMain.Text = "Trade";
+            this.pgTrade.Controls.Add(this.webBrowser);
+            this.pgTrade.Location = new System.Drawing.Point(4, 28);
+            this.pgTrade.Name = "pgTrade";
+            this.pgTrade.Padding = new System.Windows.Forms.Padding(3);
+            this.pgTrade.Size = new System.Drawing.Size(943, 404);
+            this.pgTrade.TabIndex = 0;
+            this.pgTrade.Text = "Trade";
+            this.pgTrade.UseVisualStyleBackColor = true;
             // 
             // webBrowser
             // 
             this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webBrowser.Location = new System.Drawing.Point(3, 3);
             this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(937, 404);
+            this.webBrowser.Size = new System.Drawing.Size(937, 398);
             this.webBrowser.TabIndex = 0;
             this.webBrowser.UseHttpActivityObserver = false;
             this.webBrowser.Navigating += new System.EventHandler<Gecko.Events.GeckoNavigatingEventArgs>(this.webBrowser_Navigating);
@@ -463,22 +319,6 @@
             this.gridBalances.TabStop = false;
             this.gridBalances.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBalances_CellContentClick);
             this.gridBalances.SelectionChanged += new System.EventHandler(this.gridBalances_SelectionChanged);
-            // 
-            // colCurrency
-            // 
-            this.colCurrency.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
-            this.colCurrency.HeaderText = "Currency";
-            this.colCurrency.Name = "colCurrency";
-            this.colCurrency.ReadOnly = true;
-            this.colCurrency.Width = 5;
-            // 
-            // colBalance
-            // 
-            this.colBalance.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colBalance.HeaderText = "Balance";
-            this.colBalance.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
-            this.colBalance.Name = "colBalance";
-            this.colBalance.ReadOnly = true;
             // 
             // splitActiveOrders
             // 
@@ -715,73 +555,241 @@
             this.colModifySell.ReadOnly = true;
             this.colModifySell.Width = 5;
             // 
-            // conmenTabs
+            // groupTrade
             // 
-            this.conmenTabs.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.conitemRemoveTab});
-            this.conmenTabs.Name = "conmenTabs";
-            this.conmenTabs.ShowImageMargin = false;
-            this.conmenTabs.Size = new System.Drawing.Size(159, 26);
+            this.groupTrade.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupTrade.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.groupTrade.Controls.Add(this.lklblLastPrice);
+            this.groupTrade.Controls.Add(this.lblCurrentPrice);
+            this.groupTrade.Controls.Add(this.txtTotal);
+            this.groupTrade.Controls.Add(this.lblTotal);
+            this.groupTrade.Controls.Add(this.btnMaxBuy);
+            this.groupTrade.Controls.Add(this.btnMaxSell);
+            this.groupTrade.Controls.Add(this.btnSell);
+            this.groupTrade.Controls.Add(this.comboTargetCurrency);
+            this.groupTrade.Controls.Add(this.btnBuy);
+            this.groupTrade.Controls.Add(this.comboSourceCurrency);
+            this.groupTrade.Controls.Add(this.lblBid);
+            this.groupTrade.Controls.Add(this.txtPrice);
+            this.groupTrade.Controls.Add(this.lblAsk);
+            this.groupTrade.Controls.Add(this.txtQuantity);
+            this.groupTrade.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupTrade.Font = new System.Drawing.Font("Arial", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupTrade.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.groupTrade.Location = new System.Drawing.Point(11, 3);
+            this.groupTrade.MaximumSize = new System.Drawing.Size(474, 9000);
+            this.groupTrade.MinimumSize = new System.Drawing.Size(305, 182);
+            this.groupTrade.Name = "groupTrade";
+            this.groupTrade.Size = new System.Drawing.Size(305, 182);
+            this.groupTrade.TabIndex = 11;
+            this.groupTrade.TabStop = false;
+            this.groupTrade.Text = "Trade";
             // 
-            // conitemRemoveTab
+            // lklblLastPrice
             // 
-            this.conitemRemoveTab.Name = "conitemRemoveTab";
-            this.conitemRemoveTab.Size = new System.Drawing.Size(158, 22);
-            this.conitemRemoveTab.Text = "&Remove Current Tab";
-            this.conitemRemoveTab.Click += new System.EventHandler(this.conitemRemoveTab_Click);
+            this.lklblLastPrice.Font = new System.Drawing.Font("Arial Black", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lklblLastPrice.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
+            this.lklblLastPrice.Location = new System.Drawing.Point(111, 21);
+            this.lklblLastPrice.Name = "lklblLastPrice";
+            this.lklblLastPrice.Size = new System.Drawing.Size(93, 21);
+            this.lklblLastPrice.TabIndex = 19;
+            this.lklblLastPrice.TabStop = true;
+            this.lklblLastPrice.Text = "0.115";
+            this.lklblLastPrice.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lklblLastPrice.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lklblLastPrice_LinkClicked);
             // 
-            // lklblShowAllHistory
+            // lblCurrentPrice
             // 
-            this.lklblShowAllHistory.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.lklblShowAllHistory.IsLink = true;
-            this.lklblShowAllHistory.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
-            this.lklblShowAllHistory.Name = "lklblShowAllHistory";
-            this.lklblShowAllHistory.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lklblShowAllHistory.Size = new System.Drawing.Size(116, 17);
-            this.lklblShowAllHistory.Text = "SHOW Trade History";
-            this.lklblShowAllHistory.Click += new System.EventHandler(this.lklblShowAllHistory_Click);
+            this.lblCurrentPrice.Font = new System.Drawing.Font("Arial", 11.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCurrentPrice.Location = new System.Drawing.Point(6, 22);
+            this.lblCurrentPrice.Name = "lblCurrentPrice";
+            this.lblCurrentPrice.Size = new System.Drawing.Size(110, 18);
+            this.lblCurrentPrice.TabIndex = 18;
+            this.lblCurrentPrice.Text = "Current Price:";
+            this.lblCurrentPrice.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // stripMain
+            // txtTotal
             // 
-            this.stripMain.BackColor = System.Drawing.Color.Transparent;
-            this.stripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lblBlank,
-            this.lklblShowAllHistory,
-            this.lblTotalBalance});
-            this.stripMain.Location = new System.Drawing.Point(0, 650);
-            this.stripMain.Name = "stripMain";
-            this.stripMain.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.stripMain.Size = new System.Drawing.Size(953, 22);
-            this.stripMain.SizingGrip = false;
-            this.stripMain.TabIndex = 14;
-            this.stripMain.Text = "statusStrip1";
+            this.txtTotal.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.txtTotal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.txtTotal.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtTotal.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.txtTotal.Location = new System.Drawing.Point(77, 110);
+            this.txtTotal.Name = "txtTotal";
+            this.txtTotal.ReadOnly = true;
+            this.txtTotal.Size = new System.Drawing.Size(140, 15);
+            this.txtTotal.TabIndex = 16;
+            this.txtTotal.Text = "0.0";
+            this.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // lblBlank
+            // lblTotal
             // 
-            this.lblBlank.Name = "lblBlank";
-            this.lblBlank.Size = new System.Drawing.Size(19, 17);
-            this.lblBlank.Text = "    ";
+            this.lblTotal.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.lblTotal.AutoSize = true;
+            this.lblTotal.Font = new System.Drawing.Font("Arial", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotal.Location = new System.Drawing.Point(27, 109);
+            this.lblTotal.Name = "lblTotal";
+            this.lblTotal.Size = new System.Drawing.Size(43, 16);
+            this.lblTotal.TabIndex = 15;
+            this.lblTotal.Text = "Total:";
             // 
-            // lblTotalBalance
+            // btnMaxBuy
             // 
-            this.lblTotalBalance.AutoSize = false;
-            this.lblTotalBalance.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.lblTotalBalance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
-            this.lblTotalBalance.Name = "lblTotalBalance";
-            this.lblTotalBalance.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblTotalBalance.Size = new System.Drawing.Size(772, 17);
-            this.lblTotalBalance.Spring = true;
-            this.lblTotalBalance.Text = "Total Balance: $ 0000.00";
-            this.lblTotalBalance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnMaxBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnMaxBuy.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnMaxBuy.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnMaxBuy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMaxBuy.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMaxBuy.ForeColor = System.Drawing.Color.DarkGreen;
+            this.btnMaxBuy.Location = new System.Drawing.Point(176, 141);
+            this.btnMaxBuy.Name = "btnMaxBuy";
+            this.btnMaxBuy.Size = new System.Drawing.Size(41, 29);
+            this.btnMaxBuy.TabIndex = 14;
+            this.btnMaxBuy.Text = "Max";
+            this.btnMaxBuy.UseVisualStyleBackColor = true;
+            this.btnMaxBuy.Click += new System.EventHandler(this.btnMaxBuy_Click);
             // 
-            // ttipOrderAssist
+            // btnMaxSell
             // 
-            this.ttipOrderAssist.AutoPopDelay = 15000;
-            this.ttipOrderAssist.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            this.ttipOrderAssist.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.ttipOrderAssist.InitialDelay = 500;
-            this.ttipOrderAssist.ReshowDelay = 100;
-            this.ttipOrderAssist.Tag = "";
+            this.btnMaxSell.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnMaxSell.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnMaxSell.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnMaxSell.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMaxSell.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMaxSell.ForeColor = System.Drawing.Color.DarkGreen;
+            this.btnMaxSell.Location = new System.Drawing.Point(30, 141);
+            this.btnMaxSell.Name = "btnMaxSell";
+            this.btnMaxSell.Size = new System.Drawing.Size(40, 29);
+            this.btnMaxSell.TabIndex = 13;
+            this.btnMaxSell.Text = "Max";
+            this.btnMaxSell.UseVisualStyleBackColor = true;
+            this.btnMaxSell.Click += new System.EventHandler(this.btnMaxSell_Click);
+            // 
+            // comboTargetCurrency
+            // 
+            this.comboTargetCurrency.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.comboTargetCurrency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboTargetCurrency.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboTargetCurrency.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboTargetCurrency.ForeColor = System.Drawing.Color.DarkGreen;
+            this.comboTargetCurrency.FormattingEnabled = true;
+            this.comboTargetCurrency.Items.AddRange(new object[] {
+            "BTC",
+            "USD"});
+            this.comboTargetCurrency.Location = new System.Drawing.Point(226, 74);
+            this.comboTargetCurrency.Name = "comboTargetCurrency";
+            this.comboTargetCurrency.Size = new System.Drawing.Size(67, 21);
+            this.comboTargetCurrency.Sorted = true;
+            this.comboTargetCurrency.TabIndex = 11;
+            this.comboTargetCurrency.SelectedIndexChanged += new System.EventHandler(this.comboTargetCurrency_SelectedIndexChanged);
+            // 
+            // btnBuy
+            // 
+            this.btnBuy.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnBuy.AutoEllipsis = true;
+            this.btnBuy.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnBuy.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnBuy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBuy.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBuy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.btnBuy.Location = new System.Drawing.Point(224, 141);
+            this.btnBuy.Name = "btnBuy";
+            this.btnBuy.Size = new System.Drawing.Size(69, 29);
+            this.btnBuy.TabIndex = 5;
+            this.btnBuy.Text = "Buy";
+            this.btnBuy.UseVisualStyleBackColor = true;
+            this.btnBuy.Click += new System.EventHandler(this.btnBuy_Click);
+            // 
+            // comboSourceCurrency
+            // 
+            this.comboSourceCurrency.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.comboSourceCurrency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboSourceCurrency.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboSourceCurrency.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboSourceCurrency.ForeColor = System.Drawing.Color.DarkGreen;
+            this.comboSourceCurrency.FormattingEnabled = true;
+            this.comboSourceCurrency.Items.AddRange(new object[] {
+            "BTC",
+            "FTC",
+            "LTC",
+            "NMC",
+            "NVC",
+            "PPC",
+            "TRC"});
+            this.comboSourceCurrency.Location = new System.Drawing.Point(226, 47);
+            this.comboSourceCurrency.Name = "comboSourceCurrency";
+            this.comboSourceCurrency.Size = new System.Drawing.Size(67, 21);
+            this.comboSourceCurrency.Sorted = true;
+            this.comboSourceCurrency.TabIndex = 10;
+            this.comboSourceCurrency.SelectedIndexChanged += new System.EventHandler(this.comboBidCurrency_SelectedIndexChanged);
+            // 
+            // lblBid
+            // 
+            this.lblBid.AutoSize = true;
+            this.lblBid.Font = new System.Drawing.Font("Arial", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBid.Location = new System.Drawing.Point(7, 47);
+            this.lblBid.Name = "lblBid";
+            this.lblBid.Size = new System.Drawing.Size(64, 16);
+            this.lblBid.TabIndex = 6;
+            this.lblBid.Text = "Quantity:";
+            // 
+            // txtPrice
+            // 
+            this.txtPrice.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(125)))), ((int)(((byte)(125)))));
+            this.txtPrice.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtPrice.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPrice.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(40)))), ((int)(((byte)(0)))));
+            this.txtPrice.Location = new System.Drawing.Point(77, 76);
+            this.txtPrice.Name = "txtPrice";
+            this.txtPrice.Size = new System.Drawing.Size(140, 15);
+            this.txtPrice.TabIndex = 9;
+            this.txtPrice.Text = "0.0";
+            this.txtPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtPrice.TextChanged += new System.EventHandler(this.txtPrice_Update);
+            // 
+            // lblAsk
+            // 
+            this.lblAsk.AutoSize = true;
+            this.lblAsk.Font = new System.Drawing.Font("Arial", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAsk.Location = new System.Drawing.Point(28, 75);
+            this.lblAsk.Name = "lblAsk";
+            this.lblAsk.Size = new System.Drawing.Size(43, 16);
+            this.lblAsk.TabIndex = 7;
+            this.lblAsk.Text = "Price:";
+            // 
+            // txtQuantity
+            // 
+            this.txtQuantity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(125)))), ((int)(((byte)(125)))));
+            this.txtQuantity.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtQuantity.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.txtQuantity.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtQuantity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(40)))), ((int)(((byte)(0)))));
+            this.txtQuantity.Location = new System.Drawing.Point(77, 49);
+            this.txtQuantity.Name = "txtQuantity";
+            this.txtQuantity.Size = new System.Drawing.Size(140, 15);
+            this.txtQuantity.TabIndex = 8;
+            this.txtQuantity.Text = "0.0";
+            this.txtQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtQuantity.TextChanged += new System.EventHandler(this.txtQuantity_Update);
+            // 
+            // colCurrency
+            // 
+            this.colCurrency.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.colCurrency.HeaderText = "Currency";
+            this.colCurrency.Name = "colCurrency";
+            this.colCurrency.ReadOnly = true;
+            this.colCurrency.Width = 5;
+            // 
+            // colBalance
+            // 
+            this.colBalance.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colBalance.HeaderText = "Balance";
+            this.colBalance.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
+            this.colBalance.Name = "colBalance";
+            this.colBalance.ReadOnly = true;
+            this.colBalance.TrackVisitedState = false;
             // 
             // formMain
             // 
@@ -791,6 +799,7 @@
             this.ClientSize = new System.Drawing.Size(953, 672);
             this.Controls.Add(this.stripMain);
             this.Controls.Add(this.splitMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(900, 270);
             this.Name = "formMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
@@ -798,14 +807,15 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formMain_FormClosing);
             this.Load += new System.EventHandler(this.formMain_Load);
             this.ResizeEnd += new System.EventHandler(this.formMain_ResizeEnd);
-            this.groupTrade.ResumeLayout(false);
-            this.groupTrade.PerformLayout();
+            this.conmenTabs.ResumeLayout(false);
+            this.stripMain.ResumeLayout(false);
+            this.stripMain.PerformLayout();
             this.splitMain.Panel1.ResumeLayout(false);
             this.splitMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
             this.splitMain.ResumeLayout(false);
             this.tabsMain.ResumeLayout(false);
-            this.pgMain.ResumeLayout(false);
+            this.pgTrade.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridBalances)).EndInit();
             this.splitActiveOrders.Panel1.ResumeLayout(false);
             this.splitActiveOrders.Panel2.ResumeLayout(false);
@@ -813,9 +823,8 @@
             this.splitActiveOrders.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridBuy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridSell)).EndInit();
-            this.conmenTabs.ResumeLayout(false);
-            this.stripMain.ResumeLayout(false);
-            this.stripMain.PerformLayout();
+            this.groupTrade.ResumeLayout(false);
+            this.groupTrade.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -847,8 +856,6 @@
         private Grid gridBalances;
         private Grid gridBuy;
         private Grid gridSell;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colCurrency;
-        private System.Windows.Forms.DataGridViewLinkColumn colBalance;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSellID;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSelling;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSellPrice;
@@ -863,12 +870,14 @@
         private System.Windows.Forms.DataGridViewButtonColumn colModifyBuy;
         private System.Windows.Forms.ToolTip ttipOrderAssist;
         private Gecko.GeckoWebBrowser webBrowser;
-        private System.Windows.Forms.TabControl tabsMain;
-        private System.Windows.Forms.TabPage pgMain;
         private System.Windows.Forms.ContextMenuStrip conmenTabs;
         private System.Windows.Forms.ToolStripMenuItem conitemRemoveTab;
         private System.Windows.Forms.ToolTip ttipTabs;
         private System.Windows.Forms.ToolStripStatusLabel lblTotalBalance;
+        private CoinPostGUI.Tabs tabsMain;
+        private System.Windows.Forms.TabPage pgTrade;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCurrency;
+        private System.Windows.Forms.DataGridViewLinkColumn colBalance;
     }
 }
 

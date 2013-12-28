@@ -1,37 +1,39 @@
-﻿using Newtonsoft.Json.Linq;
-
+﻿#region Using
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+#endregion
 namespace BtcE
 {
 	public class Funds
-	{
+    {
+        #region Instance Members
+        public Dictionary<string, decimal> funds { get; private set; }
+        #endregion
+        #region Instance Methods
+        #region Initialization Methods
+        public Funds(JObject o)
+        {
+            this.funds = new Dictionary<string, decimal>();
+            if (o == null)
+                return;
+            foreach (string s in Exchanges.usd_pairs)
+                this.funds.Add(s, o.Value<decimal>(s.ToLower()));
+            foreach (string s in Exchanges.non_usd_pairs)
+                this.funds.Add(s, o.Value<decimal>(s.ToLower()));
+            this.funds.Add(Exchanges.target_pairs[1], o.Value<decimal>(Exchanges.target_pairs[1].ToLower()));
+            return;
+        }
+        #endregion
+        #region Getter Methods
+        public decimal GetBalance(string key)
+        {
+            if (this.funds != null && this.funds.ContainsKey(key))
+                return this.funds[key];
+            else
+                return 0;
+        }
+        #endregion
+        #endregion
 
-        public decimal Btc { get; private set; }
-        public decimal Ltc { get; private set; }
-        public decimal Nmc { get; private set; }
-        public decimal Nvc { get; private set; }
-        public decimal Trc { get; private set; }
-        public decimal Ppc { get; private set; }
-        public decimal Ftc { get; private set; }
-		public decimal Usd { get; private set; }
-		public decimal Rur { get; private set; }
-        public decimal Eur { get; private set; }
-
-		public static Funds ReadFromJObject(JObject o) {
-			if ( o == null )
-				return null;
-			return new Funds() {
-                Btc = o.Value<decimal>("btc"),
-                Ltc = o.Value<decimal>("ltc"),
-                Nmc = o.Value<decimal>("nmc"),
-                Nvc = o.Value<decimal>("nvc"),
-                Trc = o.Value<decimal>("trc"),
-                Ppc = o.Value<decimal>("ppc"),
-                Ftc = o.Value<decimal>("ftc"),
-                Usd = o.Value<decimal>("usd"),
-                Rur = o.Value<decimal>("rur"),
-                Eur = o.Value<decimal>("eur")
-			};
-		}
-	};
-
+    };
 }

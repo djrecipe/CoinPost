@@ -372,10 +372,10 @@ namespace CoinPost
     public class PendingTrade
     {
         public string exchange { get; private set; }
-        public TradeType type { get; private set; }
+        public string type { get; private set; }
         public double price { get; private set; }
         public double quantity { get; private set; }
-        public PendingTrade(string exchange_in, TradeType type_in, double price_in, double quantity_in)
+        public PendingTrade(string exchange_in, string type_in, double price_in, double quantity_in)
         {
             this.exchange = exchange_in;
             this.type = type_in;
