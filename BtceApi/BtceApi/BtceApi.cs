@@ -38,6 +38,8 @@ namespace BtcE
                 }
                 else if (error_str.Contains("bad status"))
                     MessageBox.Show("Could not modify the order. The order likely no longer exists.");
+                else if (error_str.Contains("incorrectly entered"))
+                    MessageBox.Show("You entered a field incorrectly (likely too many digits after the decimal point).");
                 else if (!error_str.Contains("no orders"))
                     MessageBox.Show(error_str);
                 return false;

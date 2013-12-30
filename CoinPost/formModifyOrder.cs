@@ -22,6 +22,8 @@ namespace CoinPost
         private double base_quantity;
         private double max_balance;
         private bool is_buy_order;
+        private decimal recent_quantity = 0;
+        private decimal recent_price = 0;
         public formModifyOrder(double initial_price, double initial_quantity,double balance, string unit_string, bool buy_order)
         {
             InitializeComponent();
@@ -49,9 +51,7 @@ namespace CoinPost
         }
         private void UpdateTotal()
         {
-            double dbl_price = 0.0, dbl_quantity = 0.0;
-            if (double.TryParse(this.txtPrice.Text, out dbl_price) && double.TryParse(this.txtQuantity.Text, out dbl_quantity))
-                this.txtTotal.Text = (dbl_price * dbl_quantity).ToString() + " " + price_units ;
+            this.txtTotal.Text = (this.recent_price * this.recent_quantity).ToString() + " " + price_units ;
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
@@ -98,6 +98,8 @@ namespace CoinPost
             string temp = caller.Text;
             if (temp.Length == 0)
                 return;
+            if (temp.First() == ' ')
+                temp = "0" + temp;
             if (temp.Last() == '.')
                 temp += "0";
             decimal value = 0;
@@ -105,12 +107,25 @@ namespace CoinPost
             if (decimal.TryParse(temp, out value))
             {
                 new_value = Decimal.Truncate(value * 1000000) / 1000000;
+                this.recent_price = new_value;
                 if (caller.Text.Last() != '.' && new_value != value && value != 0)
+                {
+                    int old_selection_start = caller.SelectionStart;
+                    int old_selection_length = caller.SelectionLength;
                     caller.Text = new_value.ToString();
+                    caller.SelectionStart = Math.Min(old_selection_start, caller.Text.Length - 1);
+                    caller.SelectionLength = Math.Min(old_selection_length, caller.Text.Length - 1 - caller.SelectionStart);
+                }
             }
             else
-                caller.Text = old_quantity_text;
-            old_quantity_text = caller.Text;
+            {
+                int old_selection_start = caller.SelectionStart;
+                int old_selection_length = caller.SelectionLength;
+                caller.Text = old_price_text;
+                caller.SelectionStart = Math.Min(old_selection_start, caller.Text.Length - 1);
+                caller.SelectionLength = Math.Min(old_selection_length, caller.Text.Length - 1 - caller.SelectionStart);
+            }
+            old_price_text = caller.Text;
             this.UpdateTotal();
         }
 
@@ -120,6 +135,8 @@ namespace CoinPost
             string temp = caller.Text;
             if (temp.Length == 0)
                 return;
+            if (temp.First() == ' ')
+                temp = "0" + temp;
             if (temp.Last() == '.')
                 temp += "0";
             decimal value = 0;
@@ -127,11 +144,24 @@ namespace CoinPost
             if (decimal.TryParse(temp, out value))
             {
                 new_value = Decimal.Truncate(value * 1000000) / 1000000;
+                this.recent_quantity = new_value;
                 if (caller.Text.Last() != '.' && new_value != value && value != 0)
+                {
+                    int old_selection_start = caller.SelectionStart;
+                    int old_selection_length = caller.SelectionLength;
                     caller.Text = new_value.ToString();
+                    caller.SelectionStart = Math.Min(old_selection_start, caller.Text.Length - 1);
+                    caller.SelectionLength = Math.Min(old_selection_length, caller.Text.Length - 1 - caller.SelectionStart);
+                }
             }
             else
+            {
+                int old_selection_start = caller.SelectionStart;
+                int old_selection_length = caller.SelectionLength;
                 caller.Text = old_quantity_text;
+                caller.SelectionStart = Math.Min(old_selection_start, caller.Text.Length - 1);
+                caller.SelectionLength = Math.Min(old_selection_length, caller.Text.Length - 1 - caller.SelectionStart);
+            }
             old_quantity_text = caller.Text;
             this.UpdateTotal();
         }

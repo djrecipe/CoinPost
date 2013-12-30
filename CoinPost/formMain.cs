@@ -57,6 +57,8 @@ namespace CoinPost
         private Point tabPoint = new Point(0,0);
         private OrderList recent_active_orders = null;
         private int most_recent_trade = -1;
+        private decimal recent_quantity = 0;
+        private decimal recent_price = 0;
         #endregion
         #region Object Members
         private BtceApi btceApi;                                                        // primary object for api interaction
@@ -64,8 +66,9 @@ namespace CoinPost
         private Dictionary<int, Trade> recentPurchases = new Dictionary<int,Trade>();
         #endregion
         #region String Members
-        private string current_exchange = "";                                           // current exchange string (see mutExchangeString)
+        private string current_exchange = "";                                           // current exchange string (see mutExchangeString)      
         private string old_quantity_text = "0.0";
+        private string old_price_text = "0.0";
         #endregion
         #region Threading Members
         private formMain.delDecimal cbUpdateLastPrice = null;                   // callback for updating current price
@@ -373,10 +376,8 @@ namespace CoinPost
 
         private void UpdateOrderList(OrderList orders_in)
         {
-            if (orders_in == null)
-                return;
-            bool change_occured = (this.recent_active_orders==null || this.recent_active_orders.List.Count!=orders_in.List.Count);
-            if (!change_occured)
+            bool change_occured = (this.recent_active_orders!=orders_in);
+            if (!change_occured && this.recent_active_orders!=null && orders_in!=null)
             {
                 for (int i = 0; i < orders_in.List.Count; i++)
                 {
@@ -394,20 +395,23 @@ namespace CoinPost
                 this.gridSell.Rows.Clear();
                 this.gridBuy.Rows.Clear();
                 List<int> new_canceledOrders = new List<int>();
-                foreach (KeyValuePair<int, Order> pair in orders_in.List)
+                if(orders_in!=null)
                 {
-                    if (this.canceledOrders.Contains(pair.Key))
+                    foreach (KeyValuePair<int, Order> pair in orders_in.List)
                     {
-                        new_canceledOrders.Add(pair.Key);
-                        continue;
+                        if (this.canceledOrders.Contains(pair.Key))
+                        {
+                            new_canceledOrders.Add(pair.Key);
+                            continue;
+                        }
+                        string[] units = pair.Value.Pair.ToString().Split('_');
+                        int index = (pair.Value.Type.ToString().ToLower().Contains("sell") ? this.gridSell : this.gridBuy).Rows.Add(new object[]
+                        { 
+                            pair.Key, pair.Value.Amount.ToString() + " " + units[0].ToUpper(), pair.Value.Rate.ToString() + " " + units[1].ToUpper(),
+                            (pair.Value.Amount * pair.Value.Rate).ToString() + " " + units[1].ToUpper(),
+                            "X","M"
+                        });
                     }
-                    string[] units = pair.Value.Pair.ToString().Split('_');
-                    int index = (pair.Value.Type.ToString().ToLower().Contains("sell") ? this.gridSell : this.gridBuy).Rows.Add(new object[]
-                { 
-                    pair.Key, pair.Value.Amount.ToString() + " " + units[0].ToUpper(), pair.Value.Rate.ToString() + " " + units[1].ToUpper(),
-                    (pair.Value.Amount * pair.Value.Rate).ToString() + " " + units[1].ToUpper(),
-                    "X","M"
-                });
                 }
                 this.canceledOrders = new_canceledOrders;
             }
@@ -451,7 +455,7 @@ namespace CoinPost
             if (Double.TryParse(txtPrice.Text, out price_out) && Double.TryParse(txtQuantity.Text, out quantity_out) && price_out <= Convert.ToDouble(this.lklblLastPrice.Text)*1.1 && quantity_out != 0.0)
             {
                 TradeAnswer answer = this.btceApi.Trade(this.SafeRetrieveExchangeString(), "buy", price_out, quantity_out);
-                if (answer.Received > 0)
+                if (answer!=null && answer.Received > 0)
                 {
                     /*
                     Stream str = Properties.Resources.trade;
@@ -467,7 +471,7 @@ namespace CoinPost
             if (Double.TryParse(txtPrice.Text, out price_out) && Double.TryParse(txtQuantity.Text, out quantity_out) && price_out >= Convert.ToDouble(this.lklblLastPrice.Text)*0.9 && quantity_out != 0.0)
             {
                 TradeAnswer answer = this.btceApi.Trade(this.SafeRetrieveExchangeString(), "sell", price_out, quantity_out);
-                if (answer.Received > 0)
+                if (answer!=null && answer.Received > 0)
                 {
                     /*
                     Stream str = Properties.Resources.trade;
@@ -669,6 +673,8 @@ namespace CoinPost
             string temp = caller.Text;
             if (temp.Length == 0)
                 return;
+            if (temp.First() == ' ')
+                temp = "0" + temp;
             if (temp.Last() == '.')
                 temp += "0";
             decimal value = 0;
@@ -676,11 +682,24 @@ namespace CoinPost
             if (decimal.TryParse(temp, out value))
             {
                 new_value = Decimal.Truncate(value * 1000000) / 1000000;
+                this.recent_quantity = new_value;
                 if (caller.Text.Last() != '.' && new_value != value && value != 0)
+                {
+                    int old_selection_start = caller.SelectionStart;
+                    int old_selection_length = caller.SelectionLength;
                     caller.Text = new_value.ToString();
+                    caller.SelectionStart = Math.Min(old_selection_start, caller.Text.Length - 1);
+                    caller.SelectionLength = Math.Min(old_selection_length, caller.Text.Length - 1 - caller.SelectionStart);
+                }
             }
             else
+            {
+                int old_selection_start = caller.SelectionStart;
+                int old_selection_length = caller.SelectionLength;
                 caller.Text = old_quantity_text;
+                caller.SelectionStart = Math.Min(old_selection_start, caller.Text.Length - 1);
+                caller.SelectionLength = Math.Min(old_selection_length, caller.Text.Length - 1 - caller.SelectionStart);
+            }
             old_quantity_text = caller.Text;
             this.UpdateTotal();
         }
@@ -690,6 +709,8 @@ namespace CoinPost
             string temp = caller.Text;
             if (temp.Length == 0)
                 return;
+            if (temp.First() == ' ')
+                temp = "0" + temp;
             if (temp.Last() == '.')
                 temp += "0";
             decimal value = 0;
@@ -697,33 +718,48 @@ namespace CoinPost
             if (decimal.TryParse(temp, out value))
             {
                 new_value = Decimal.Truncate(value * 1000000) / 1000000;
+                this.recent_price = new_value;
                 if (caller.Text.Last() != '.' && new_value != value && value != 0)
+                {
+                    int old_selection_start = caller.SelectionStart;
+                    int old_selection_length = caller.SelectionLength;
                     caller.Text = new_value.ToString();
+                    caller.SelectionStart = Math.Min(old_selection_start,caller.Text.Length-1);
+                    caller.SelectionLength = Math.Min(old_selection_length, caller.Text.Length - 1 - caller.SelectionStart);
+                }
             }
             else
-                caller.Text = old_quantity_text;
-            old_quantity_text = caller.Text;
+            {
+                int old_selection_start = caller.SelectionStart;
+                int old_selection_length = caller.SelectionLength;
+                caller.Text = old_price_text;
+                caller.SelectionStart = Math.Min(old_selection_start, caller.Text.Length - 1);
+                caller.SelectionLength = Math.Min(old_selection_length, caller.Text.Length - 1 - caller.SelectionStart);
+            }
+            old_price_text = caller.Text;
             this.UpdateTotal();
         }
         private void UpdateTotal()
         {
-            double? new_total = Convert.ToDouble(this.txtPrice.Text) * Convert.ToDouble(this.txtQuantity.Text) * 0.998;
-            this.txtTotal.Text = new_total.ToString() + " " + comboTargetCurrency.SelectedItem.ToString();
-            this.ttipOrderAssist.SetToolTip(this.btnBuy, "0.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold,6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                            "\n0.5%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                            "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                            "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumSellThreshold * 1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
-            this.ttipOrderAssist.SetToolTip(this.btnSell, "0.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                            "\n0.5%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                            "\n1.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
-                                            "\n2.0%: " + Math.Round(Convert.ToDouble(this.txtPrice.Text) * formMain.MinimumBuyThreshold * 1/1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
+            this.txtTotal.Text = (this.recent_price * this.recent_quantity * (decimal)0.998).ToString() + " " + comboTargetCurrency.SelectedItem.ToString();
+            this.ttipOrderAssist.SetToolTip(this.btnBuy, "0.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumSellThreshold, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n0.5%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumSellThreshold * 1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n1.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumSellThreshold * 1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n2.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumSellThreshold * 1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
+            this.ttipOrderAssist.SetToolTip(this.btnSell, "0.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumBuyThreshold).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n0.5%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumBuyThreshold * 1 / 1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n1.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumBuyThreshold * 1 / 1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+                                            "\n2.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumBuyThreshold * 1 / 1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
         }
         #endregion
         #region Timer Events
         private void timerModifyOrder_Tick(object sender, EventArgs e)
         {
-            TradeAnswer answer = this.btceApi.Trade(this.pendingTrades[0].exchange, this.pendingTrades[0].type, this.pendingTrades[0].price, this.pendingTrades[0].quantity);
-            this.pendingTrades.RemoveAt(0);
+            if (this.pendingTrades.Count > 0)
+            {
+                TradeAnswer answer = this.btceApi.Trade(this.pendingTrades[0].exchange, this.pendingTrades[0].type, this.pendingTrades[0].price, this.pendingTrades[0].quantity);
+                this.pendingTrades.RemoveAt(0);
+            }
             if (this.pendingTrades.Count < 1)
                 this.timerModifyOrder.Enabled = false;
         }
