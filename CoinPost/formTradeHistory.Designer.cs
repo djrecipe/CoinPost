@@ -30,13 +30,13 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -44,12 +44,12 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitMain = new System.Windows.Forms.SplitContainer();
             this.gridBuy = new CoinPost.Grid();
-            this.gridSell = new CoinPost.Grid();
             this.colBuyID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colBuyTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.gridSell = new CoinPost.Grid();
             this.colSellID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSellTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSellQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -65,9 +65,11 @@
             // 
             // splitMain
             // 
+            this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.splitMain.BackColor = System.Drawing.Color.Transparent;
-            this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitMain.Location = new System.Drawing.Point(0, 0);
+            this.splitMain.Location = new System.Drawing.Point(1, 30);
             this.splitMain.Name = "splitMain";
             // 
             // splitMain.Panel1
@@ -77,8 +79,8 @@
             // splitMain.Panel2
             // 
             this.splitMain.Panel2.Controls.Add(this.gridSell);
-            this.splitMain.Size = new System.Drawing.Size(1123, 219);
-            this.splitMain.SplitterDistance = 575;
+            this.splitMain.Size = new System.Drawing.Size(1121, 188);
+            this.splitMain.SplitterDistance = 573;
             this.splitMain.SplitterWidth = 8;
             this.splitMain.TabIndex = 1;
             // 
@@ -129,60 +131,12 @@
             this.gridBuy.ShowCellToolTips = false;
             this.gridBuy.ShowEditingIcon = false;
             this.gridBuy.ShowRowErrors = false;
-            this.gridBuy.Size = new System.Drawing.Size(575, 219);
+            this.gridBuy.Size = new System.Drawing.Size(573, 188);
             this.gridBuy.TabIndex = 0;
             this.gridBuy.TabStop = false;
-            // 
-            // gridSell
-            // 
-            this.gridSell.AllowUserToAddRows = false;
-            this.gridSell.AllowUserToDeleteRows = false;
-            this.gridSell.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.gridSell.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.gridSell.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            this.gridSell.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.gridSell.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.gridSell.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridSell.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
-            this.gridSell.ColumnHeadersHeight = 20;
-            this.gridSell.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.gridSell.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colSellID,
-            this.colSellTime,
-            this.colSellQuantity,
-            this.colSellPrice,
-            this.colSellTotal});
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.DarkGreen;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.Gray;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.Color.Chartreuse;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridSell.DefaultCellStyle = dataGridViewCellStyle14;
-            this.gridSell.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridSell.EnableHeadersVisualStyles = false;
-            this.gridSell.Location = new System.Drawing.Point(0, 0);
-            this.gridSell.MultiSelect = false;
-            this.gridSell.Name = "gridSell";
-            this.gridSell.ReadOnly = true;
-            this.gridSell.RowHeadersVisible = false;
-            this.gridSell.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.gridSell.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.gridSell.ShowCellErrors = false;
-            this.gridSell.ShowCellToolTips = false;
-            this.gridSell.ShowEditingIcon = false;
-            this.gridSell.ShowRowErrors = false;
-            this.gridSell.Size = new System.Drawing.Size(540, 219);
-            this.gridSell.TabIndex = 1;
-            this.gridSell.TabStop = false;
+            this.gridBuy.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuy_CellClick);
+            this.gridBuy.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuy_CellMouseEnter);
+            this.gridBuy.MouseEnter += new System.EventHandler(this.gridBuy_MouseEnter);
             // 
             // colBuyID
             // 
@@ -232,6 +186,60 @@
             this.colBuyTotal.HeaderText = "Total";
             this.colBuyTotal.Name = "colBuyTotal";
             this.colBuyTotal.ReadOnly = true;
+            // 
+            // gridSell
+            // 
+            this.gridSell.AllowUserToAddRows = false;
+            this.gridSell.AllowUserToDeleteRows = false;
+            this.gridSell.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.gridSell.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.gridSell.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.gridSell.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.gridSell.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.gridSell.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridSell.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
+            this.gridSell.ColumnHeadersHeight = 20;
+            this.gridSell.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.gridSell.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colSellID,
+            this.colSellTime,
+            this.colSellQuantity,
+            this.colSellPrice,
+            this.colSellTotal});
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.DarkGreen;
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.Color.Chartreuse;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridSell.DefaultCellStyle = dataGridViewCellStyle14;
+            this.gridSell.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gridSell.EnableHeadersVisualStyles = false;
+            this.gridSell.Location = new System.Drawing.Point(0, 0);
+            this.gridSell.MultiSelect = false;
+            this.gridSell.Name = "gridSell";
+            this.gridSell.ReadOnly = true;
+            this.gridSell.RowHeadersVisible = false;
+            this.gridSell.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.gridSell.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.gridSell.ShowCellErrors = false;
+            this.gridSell.ShowCellToolTips = false;
+            this.gridSell.ShowEditingIcon = false;
+            this.gridSell.ShowRowErrors = false;
+            this.gridSell.Size = new System.Drawing.Size(540, 188);
+            this.gridSell.TabIndex = 1;
+            this.gridSell.TabStop = false;
+            this.gridSell.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridSell_CellClick);
+            this.gridSell.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridSell_CellMouseEnter);
+            this.gridSell.MouseEnter += new System.EventHandler(this.gridSell_MouseEnter);
             // 
             // colSellID
             // 
@@ -290,9 +298,7 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             this.ClientSize = new System.Drawing.Size(1123, 219);
             this.Controls.Add(this.splitMain);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "formTradeHistory";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Trade History";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formTradeHistory_FormClosing);
             this.splitMain.Panel1.ResumeLayout(false);

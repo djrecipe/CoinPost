@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinPost", "CoinPost\CoinPost.csproj", "{C1CC3B27-74AC-4381-A112-07C358D6D2A2}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -14,21 +14,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtceApi", "BtceApi\BtceApi\BtceApi.csproj", "{266935B5-B5B2-462C-8308-20E2BD1360B5}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://djrecipe.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = CoinPost\\CoinPost.csproj
-		SccProjectName1 = CoinPost
-		SccLocalPath1 = CoinPost
-		SccProjectUniqueName2 = CoinPostGUI\\CoinPostGUI.csproj
-		SccProjectName2 = CoinPostGUI
-		SccLocalPath2 = CoinPostGUI
-		SccProjectUniqueName3 = BtceApi\\BtceApi\\BtceApi.csproj
-		SccProjectName3 = BtceApi/BtceApi
-		SccLocalPath3 = BtceApi\\BtceApi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|X64 = Debug|X64

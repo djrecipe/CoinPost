@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 using BtcE;
 using Gecko;
 using System.Media;
@@ -21,7 +22,7 @@ using System.Media;
 
 namespace CoinPost
 {
-    public partial class formMain : Form
+    public partial class formMain : CoinPostGUI.Window
     {
         #region Type Definitions
         private delegate void delDecimal(Decimal? decimal_in);
@@ -48,21 +49,24 @@ namespace CoinPost
         #region Flag Members
         private bool browsers_enabled = false;
         private bool exchange_changed = false;                                  // indicated whether or not our exchange currency has changed
+        private bool first_btce_page = true;
         private bool get_trade_history = false;
-        private bool navigating = false;
+        private bool user_nav = false;
         private bool valid = false;                                             // halts information retrieval thread
         #endregion
         #region Numberic Members
         private List<int> canceledOrders = new List<int>();
         private Point tabPoint = new Point(0,0);
-        private OrderList recent_active_orders = null;
+        private DateTime last_log_time=new DateTime();
         private int most_recent_trade = -1;
         private decimal recent_quantity = 0;
         private decimal recent_price = 0;
         #endregion
         #region Object Members
         private BtceApi btceApi;                                                        // primary object for api interaction
+        private BtceDatabase btceDatabase;
         private List<PendingTrade> pendingTrades = new List<PendingTrade>();            // list of trades to-be-made (used for cancel & reorder)
+        private OrderList recent_active_orders = null;
         private Dictionary<int, Trade> recentPurchases = new Dictionary<int,Trade>();
         #endregion
         #region String Members
@@ -124,40 +128,70 @@ namespace CoinPost
             string curr_api_key = null, curr_api_secret = null;
             if (File.Exists("CoinPost.key"))
             {
+                string base_text = File.ReadAllText("CoinPost.key"),
+                    encrypted_text =Convert.ToBase64String(File.ReadAllBytes("CoinPost.key"));
+                bool already_decrypted = base_text.Contains("encrypted"),
+                    save_password = Convert.ToBoolean((string)Registry.GetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "SavePassword", "False"));
                 formCredentials fLogin = new formCredentials(false);
-                if (fLogin.ShowDialog() != DialogResult.OK || fLogin.APIPassword == null)
-                    return false;
-                string encrypted_text = Convert.ToBase64String(File.ReadAllBytes("CoinPost.key"));
-                string decrypted_text = Crypto.SimpleDecryptWithPassword(encrypted_text, fLogin.APIPassword);
-                if(decrypted_text==null || !decrypted_text.Contains("encrypted"))
-                    return false;
-                string[] text_elements = decrypted_text.Split('|');
+                if (!already_decrypted)
+                {
+                    DialogResult dlg_result = fLogin.ShowDialog();
+                    if (dlg_result == DialogResult.Retry)
+                    {
+                        if (!this.PromptLogIn(out curr_api_key, out curr_api_secret))
+                            return false;
+                    }
+                    else
+                    {
+                        if (dlg_result != DialogResult.OK || fLogin.APIPassword == null)
+                            return false;
+                        base_text = Crypto.SimpleDecryptWithPassword(encrypted_text, fLogin.APIPassword);
+                        if (base_text == null || !base_text.Contains("encrypted"))
+                            return false;
+                    }
+                }
+                string[] text_elements = base_text.Split('|');
                 curr_api_key = text_elements[1];
                 curr_api_secret = text_elements[2];
-            }
-            else
-            {
-                formCredentials fLogin = new formCredentials();
-                if (fLogin.ShowDialog()==DialogResult.OK && fLogin.APIKey!=null && fLogin.APISecret!=null)
+                if(already_decrypted && !save_password)
                 {
-                    FileStream fstream = File.Create("CoinPost.key");
-                    string output = "encrypted|"+fLogin.APIKey + "|" + fLogin.APISecret;
-                    curr_api_key = fLogin.APIKey;
-                    curr_api_secret = fLogin.APISecret;
-                    output = Crypto.SimpleEncryptWithPassword(output, fLogin.APIPassword);
-                    if (output == null)
+                    DialogResult dlg_result = fLogin.ShowDialog();
+                    if (dlg_result == DialogResult.Retry)
                     {
-                        fstream.Close();
-                        File.Delete("CoinPost.key");
-                        return false;
+                        if (!this.PromptLogIn(out curr_api_key, out curr_api_secret))
+                            return false;
                     }
-                    byte[] bytes = Convert.FromBase64String(output);
+                    else
+                    {
+                        if (dlg_result != DialogResult.OK || fLogin.APIPassword == null)
+                            return false;
+                        int original_hash = (int)Registry.GetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "PasswordHash", -1);
+                        if (original_hash == -1 || fLogin.APIPassword.GetHashCode() != original_hash)
+                            return false;
+                        FileStream fstream = File.Create("CoinPost.key");
+                        encrypted_text = Crypto.SimpleEncryptWithPassword("encrypted|" + curr_api_key + "|" + curr_api_secret, fLogin.APIPassword);
+                        if (encrypted_text == null)
+                        {
+                            fstream.Close();
+                            File.Delete("CoinPost.key");
+                            return false;
+                        }
+                        byte[] bytes = Convert.FromBase64String(encrypted_text);
+                        fstream.Write(bytes, 0, bytes.Length);
+                        fstream.Close();
+                    }
+                }
+                else if(!already_decrypted && save_password)
+                {
+                    Registry.SetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "PasswordHash", fLogin.APIPassword.GetHashCode());
+                    FileStream fstream = File.Create("CoinPost.key");
+                    byte[] bytes = Encoding.ASCII.GetBytes(base_text);
                     fstream.Write(bytes, 0, bytes.Length);
                     fstream.Close();
                 }
-                else
-                    return false;
             }
+            else if (!this.PromptLogIn(out curr_api_key, out curr_api_secret))
+                return false;
             this.btceApi = new BtceApi(curr_api_key, curr_api_secret);
             return true;
         }
@@ -192,7 +226,6 @@ namespace CoinPost
             this.browsers_enabled = true;
             this.exchange_changed = true;
             this.get_trade_history = false;
-            this.navigating = false;
             this.valid = true;
             #endregion
             #region Combobox Initialization
@@ -221,6 +254,7 @@ namespace CoinPost
             #endregion
             #region Current Orders Grid Initialization
             this.gridSell.Rows.Clear();
+            this.gridBuy.Rows.Clear();
             #endregion
             #region BtceApi Initialization
             if (this.InitializeBtceApi())
@@ -233,6 +267,34 @@ namespace CoinPost
                 this.is_valid = true;
             }
             #endregion
+        }
+        private bool PromptLogIn(out string api_key, out string api_Secret)
+        {
+            api_key = null;
+            api_Secret = null;
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "SavePassword", false);
+            formCredentials fLogin = new formCredentials(true);
+            if (fLogin.ShowDialog() == DialogResult.OK && fLogin.APIKey != null && fLogin.APISecret != null)
+            {
+                FileStream fstream = File.Create("CoinPost.key");
+                string output = "encrypted|" + fLogin.APIKey + "|" + fLogin.APISecret;
+                api_key = fLogin.APIKey;
+                api_Secret = fLogin.APISecret;
+                output = Crypto.SimpleEncryptWithPassword(output, fLogin.APIPassword);
+                if (output == null)
+                {
+                    Registry.SetValue(@"HKEY_CURRENT_USER\Software\CoinPost\Initialization", "PasswordHash", fLogin.APIPassword.GetHashCode());
+                    fstream.Close();
+                    File.Delete("CoinPost.key");
+                    return false;
+                }
+                byte[] bytes = Convert.FromBase64String(output);
+                fstream.Write(bytes, 0, bytes.Length);
+                fstream.Close();
+            }
+            else
+                return false;
+            return true;
         }
         #endregion
         #region GridView Methods
@@ -247,52 +309,34 @@ namespace CoinPost
 
         }
         #endregion
-        #region Information Retrieval / Multithreading
-        private string SafeRetrieveExchangeString()
+        #region Information Recording
+        private void LogBalance(bool force_log=false)
         {
-            mutExchangeString.WaitOne();
-            string retval = this.current_exchange;
-            mutExchangeString.ReleaseMutex();
-            return retval;
-        }
-        private void SafeUpdateExchangeString()
-        {
-            if (this.comboSourceCurrency.SelectedIndex > -1 && this.comboTargetCurrency.SelectedIndex > -1)
+            DateTime now = DateTime.UtcNow;
+            if (force_log || now.Subtract(this.last_log_time).TotalHours > 1.0)
             {
-                mutExchangeString.WaitOne();
-                this.current_exchange = this.comboSourceCurrency.SelectedItem.ToString() + "_" + this.comboTargetCurrency.SelectedItem.ToString();
-                this.exchange_changed = true;
-                mutExchangeString.ReleaseMutex();
-                if(this.browsers_enabled && this.webBrowser.Created)
+                double value_out = 0.0;
+                Console.WriteLine("Attempting to log... ({0})\nText: {1}", now.Subtract(this.last_log_time).TotalHours,this.lblTotalBalance.Text);
+                if (Double.TryParse(this.lblTotalBalance.Text.Replace(" ","").Split('$')[1], out value_out))
                 {
-                    this.navigating = true;
-                    this.webBrowser.Navigate(Exchange.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString())?"https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower():"bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
-                    this.tabsMain.SelectedIndex = 0;
+                    force_log = true;
+                    this.btceDatabase.AddBalanceEntry(UnixTime.GetFromDateTime(now), value_out);
+                    this.last_log_time = now;
                 }
-
             }
-        }
-        private void SafeToggleTradeHistory()
-        {
-            bool new_val = this.get_trade_history = !this.get_trade_history;
-            mutTradeHistory.WaitOne();
-            if (new_val)
-                this.fTradeHistory.Show();
-            else
-                this.fTradeHistory.Hide();
-            mutTradeHistory.ReleaseMutex();
-            this.lklblShowAllHistory.Text = new_val ? "HIDE Trade History" : "SHOW Trade History";
             return;
         }
+        #endregion
+        #region Information Retrieval / Multithreading
         private void GetInfo()
         {
             while (mutValid.WaitOne(3000) && this.valid)
             {
                 //
-                Decimal? total_balance = 0;;
+                Decimal? total_balance = 0; ;
                 //
                 Info userinfo = this.btceApi.GetInfo();
-                if (userinfo!=null && userinfo.rights.Info)
+                if (userinfo != null && userinfo.rights.Info)
                 {
                     this.BeginInvoke(this.cbUpdateUserInfo, userinfo);
                     //
@@ -315,43 +359,92 @@ namespace CoinPost
                     {
                         foreach (KeyValuePair<int, Order> order in orders.List)
                         {
+                            string pair_str = order.Value.Pair.ToString().ToUpper();
                             if (order.Value.Type == "sell")
                             {
-                                int index = Exchange.usd_pairs.IndexOf(order.Value.Pair.ToString().Substring(0, 3).ToUpper());
+                                int index = Exchange.usd_pairs.IndexOf(pair_str.Substring(0, 3));
                                 if (index != -1)
                                     total_balance += order.Value.Amount * usd_rates[index].Last * Convert.ToDecimal(0.998);
                                 else
                                 {
-                                    index = Exchange.non_usd_pairs.IndexOf(order.Value.Pair.ToString().ToUpper().Take(3).ToString());
+                                    index = Exchange.non_usd_pairs.IndexOf(pair_str.Take(3).ToString());
                                     if (index != -1)
                                         total_balance += order.Value.Amount * non_usd_rates[index].Last * usd_rates[Exchange.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998);
                                 }
                             }
                             else
                             {
-                                int index = Exchange.target_pairs.IndexOf(order.Value.Pair.ToString().Substring(4, 3).ToUpper());
-                                if (index != -1)
+                                if (pair_str.Length > 7)
                                 {
-
-                                    if (Exchange.target_pairs[index].Contains("USD"))
-                                        total_balance += order.Value.Amount * order.Value.Rate;
-                                    else
-                                        total_balance += order.Value.Amount * order.Value.Rate * usd_rates[Exchange.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998);
-
+                                    try
+                                    {
+                                        throw new Exception("Pair string (" + pair_str + ") was not of expected length (> 7).");
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        MessageBox.Show("Exception in 'formMain.GetInfo()' with message: '"+e.Message+"'");
+                                    }
                                 }
+                                else
+                                {
+                                    int index = Exchange.target_pairs.IndexOf(pair_str.Substring(4, 3));
+                                    if (index != -1)
+                                        total_balance += order.Value.Amount * order.Value.Rate * (Exchange.target_pairs[index].Contains("USD") ? 1 : usd_rates[Exchange.usd_pairs.IndexOf("BTC")].Last * Convert.ToDecimal(0.998));
+                                }
+
                             }
                         }
                     }
+                    this.SafeUpdateTradeHistory();
                     this.BeginInvoke(this.cbUpdateTotalBalance, total_balance);
-                    mutTradeHistory.WaitOne();
-                    this.BeginInvoke(this.cbUpdateTradeHistory, this.btceApi.GetTradeHistory());
-                    mutTradeHistory.ReleaseMutex();
                 }
                 this.BeginInvoke(this.cbUpdateLastPrice, BtceApi.GetTicker(this.SafeRetrieveExchangeString()).Last);
                 mutValid.ReleaseMutex();
                 Thread.Sleep(900);
             }
             mutValid.ReleaseMutex();
+            return;
+        }
+        private string SafeRetrieveExchangeString()
+        {
+            mutExchangeString.WaitOne();
+            string retval = this.current_exchange;
+            mutExchangeString.ReleaseMutex();
+            return retval;
+        }
+        private void SafeToggleTradeHistory()
+        {
+            bool new_val = this.get_trade_history = !this.get_trade_history;
+            mutTradeHistory.WaitOne();
+            if (new_val)
+                this.fTradeHistory.Show();
+            else
+                this.fTradeHistory.Hide();
+            mutTradeHistory.ReleaseMutex();
+            this.lklblShowAllHistory.Text = new_val ? "HIDE Trade History" : "SHOW Trade History";
+            return;
+        }
+        private void SafeUpdateExchangeString()
+        {
+            if (this.comboSourceCurrency.SelectedIndex > -1 && this.comboTargetCurrency.SelectedIndex > -1)
+            {
+                mutExchangeString.WaitOne();
+                this.current_exchange = this.comboSourceCurrency.SelectedItem.ToString() + "_" + this.comboTargetCurrency.SelectedItem.ToString();
+                this.exchange_changed = true;
+                mutExchangeString.ReleaseMutex();
+                if(this.browsers_enabled && this.webBrowser.Created)
+                {
+                    this.webBrowser.Navigate(Exchange.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString()) ? "https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower() : "bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower(), GeckoLoadFlags.AllowThirdPartyFixup | GeckoLoadFlags.FirstLoad | GeckoLoadFlags.BypassCache | GeckoLoadFlags.BypassHistory | GeckoLoadFlags.BypassProxy | GeckoLoadFlags.ReplaceHistory);
+                    this.tabsMain.SelectedIndex = 0;
+                }
+
+            }
+        }
+        private void SafeUpdateTradeHistory()
+        {
+            mutTradeHistory.WaitOne();
+            this.BeginInvoke(this.cbUpdateTradeHistory, this.btceApi.GetTradeHistory());
+            mutTradeHistory.ReleaseMutex();
             return;
         }
         #endregion
@@ -415,11 +508,16 @@ namespace CoinPost
                 }
                 this.canceledOrders = new_canceledOrders;
             }
+            return;
         }
         private void UpdateTotalBalance(Decimal? balance_in)
         {
             if(balance_in.HasValue)
+            {
                 this.lblTotalBalance.Text = "Total Balance: $ " + Math.Round(balance_in.Value,2).ToString();
+                this.LogBalance();
+            }
+            return;
         }
         private void UpdateTradeHistory(TradeHistory history_in)
         {
@@ -429,7 +527,10 @@ namespace CoinPost
                 { // look for recent buys and sells of current exchange so-as to provide "most recent YOU bought/sold" prices on bottom of window
                 }
                 if (this.most_recent_trade != -1)
+                {
                     this.PlaySound();
+                    this.LogBalance(true);
+                }
                 this.most_recent_trade = history_in.List.Keys.ToArray()[0];
                 this.fTradeHistory.UpdateTradeHistory(history_in);
             }
@@ -541,16 +642,15 @@ namespace CoinPost
             if (this.comboSourceCurrency.SelectedIndex != -1 && this.comboTargetCurrency.SelectedIndex != -1)
             {
                 if (Exchange.non_wisdom_pairs.Contains(this.comboSourceCurrency.SelectedItem.ToString()))
-                {
-                    this.navigating = true;
                     this.webBrowser.Navigate("https://btc-e.com/exchange/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + "_" + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
-                }
                 else
-                {
-                    this.navigating = true;
                     this.webBrowser.Navigate("bitcoinwisdom.com/markets/btce/" + this.comboSourceCurrency.SelectedItem.ToString().ToLower() + this.comboTargetCurrency.SelectedItem.ToString().ToLower());
-                }
             }
+            this.btceDatabase = new BtceDatabase("Main.db");
+            BtceData data=this.btceDatabase.Query("select Time from Balance limit 1");
+            this.last_log_time=data.GetLastTime();
+            Console.WriteLine("Last Log Time: {0}", this.last_log_time.ToString());
+            return;
         }
 
         private void formMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -768,25 +868,30 @@ namespace CoinPost
         private void webBrowser_DocumentCompleted(object sender, EventArgs e)
         {
             GeckoWebBrowser browser = (GeckoWebBrowser)sender;
-            if (browser.Url.AbsoluteUri.Contains("bitcoinwisdom"))
+            if (this.first_btce_page && browser.DocumentTitle.Contains("loading"))
+            {
+                this.first_btce_page = false;
+                this.SafeUpdateExchangeString();
+            }
+            else if (browser.Url.AbsoluteUri.Contains("bitcoinwisdom.com"))
             {
                 using (AutoJSContext context = new AutoJSContext(browser.Window.JSContext))
                 {
                     context.EvaluateScript("$( document ).ready(function(){$( \"#leftbar_outer\" ).hide();$( \"#leftbar\" ).hide();$( \"#footer\" ).hide();$( \"div.difficulty\" ).hide();$( \"#canvas_cross\" ).mousewheel();});");
                 }
             }
+            return;
         }
         void webBrowser_Navigating(object sender, Gecko.Events.GeckoNavigatingEventArgs e)
         {
             string[] split_string = e.Uri.AbsoluteUri.Split('/');
             int split_string_len = split_string.Length;
-            if (!this.browsers_enabled || e.Uri.AbsoluteUri == this.webBrowser.Url.AbsoluteUri || split_string_len<2)
+            if (!this.browsers_enabled || !(e.Uri.AbsoluteUri.Contains("btc-e.com") || e.Uri.AbsoluteUri.Contains("bitcoinwisdom.com")) || split_string_len<2)
             {
                 e.Cancel = true;
-                this.navigating = false;
                 return;
             }
-            if (!this.navigating && !e.Uri.AbsoluteUri.Contains("about:blank") && !e.Uri.AbsoluteUri.Contains("twitter"))
+            if (this.user_nav)
             {
                 string tab_name = split_string[split_string_len - 2] + "/" + split_string[split_string_len - 1];
                 bool tab_exists=false;
@@ -812,8 +917,8 @@ namespace CoinPost
                     this.tabsMain.SelectedIndex = this.tabsMain.TabPages.Count - 1;
                 }
                 e.Cancel = true;
+                this.user_nav = false;
             }
-            this.navigating = false;
             return;
         }
         void otherBrowsers_Navigating(object sender, Gecko.Events.GeckoNavigatingEventArgs e)
@@ -827,7 +932,7 @@ namespace CoinPost
             string[] split_string = e.Uri.AbsoluteUri.Split('/');
             int split_string_len = split_string.Length;
             e.Cancel = true;
-            if (e.Uri.AbsoluteUri == caller.Url.AbsoluteUri || e.Uri.AbsoluteUri.Contains("about:blank") || e.Uri.AbsoluteUri.Contains("twitter") || split_string_len < 2)
+            if (e.Uri.AbsoluteUri.Contains("about:blank") || e.Uri.AbsoluteUri.Contains("twitter") || split_string_len < 2)
                 return;
             string source_currency = split_string[split_string_len - 1].Substring(0, 3).ToUpper();
             string target_currency = split_string[split_string_len - 1].Substring(3, 3).ToUpper();
@@ -846,6 +951,7 @@ namespace CoinPost
                 }
             }
             this.tabsMain.TabPages.Add("???");
+            this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Disposed += formMain_TabDisposed;
             Gecko.GeckoWebBrowser newBrowser = new GeckoWebBrowser();
             newBrowser.Dock = DockStyle.Fill;
             newBrowser.Navigate(e.Uri.AbsoluteUri);
@@ -854,20 +960,44 @@ namespace CoinPost
             this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Text = tab_name;
             this.tabsMain.TabPages[this.tabsMain.TabPages.Count - 1].Controls.Add(newBrowser);
             this.tabsMain.SelectedIndex = this.tabsMain.TabPages.Count - 1;
+            return;
+        }
+
+        void formMain_TabDisposed(object sender, EventArgs e)
+        {
+            TabPage caller = (TabPage)sender;
+            for (int i = 0; i < caller.Controls.Count; i++)
+            {
+                if (caller.Controls[i] as GeckoWebBrowser != null)
+                {
+                    caller.Controls[i].Dispose();
+                    break;
+                }
+            }
+            return;
         }
         private void webBrowser_CreateWindow(object sender, GeckoCreateWindowEventArgs e)
         {
 
         }
         #endregion
-
-        private void tabsMain_DrawItem(object sender, DrawItemEventArgs e)
+        private void imgSettings_Click(object sender, EventArgs e)
         {
-
+            formSettings fSettings = new formSettings();
+            fSettings.ShowDialog();
+        }
+        private void imgSettings_MouseEnter(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.Hand;
+            return;
+        }
+        #endregion
+        private void webBrowser_DomClick(object sender, DomEventArgs e)
+        {
+            this.user_nav = true;
+            return;
         }
 
-
-        #endregion
 
     }
 }

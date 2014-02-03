@@ -53,6 +53,7 @@
             this.lblTotalBalance = new System.Windows.Forms.ToolStripStatusLabel();
             this.ttipOrderAssist = new System.Windows.Forms.ToolTip(this.components);
             this.btnSell = new System.Windows.Forms.Button();
+            this.imgSettings = new System.Windows.Forms.PictureBox();
             this.ttipTabs = new System.Windows.Forms.ToolTip(this.components);
             this.splitMain = new System.Windows.Forms.SplitContainer();
             this.tabsMain = new CoinPostGUI.Tabs();
@@ -92,6 +93,7 @@
             this.txtQuantity = new System.Windows.Forms.TextBox();
             this.conmenTabs.SuspendLayout();
             this.stripMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imgSettings)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
@@ -199,6 +201,22 @@
             this.btnSell.UseVisualStyleBackColor = true;
             this.btnSell.Click += new System.EventHandler(this.btnSell_Click);
             // 
+            // imgSettings
+            // 
+            this.imgSettings.BackColor = System.Drawing.Color.Transparent;
+            this.imgSettings.BackgroundImage = global::CoinPost.Properties.Resources.Gear;
+            this.imgSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.imgSettings.InitialImage = null;
+            this.imgSettings.Location = new System.Drawing.Point(9, 4);
+            this.imgSettings.Margin = new System.Windows.Forms.Padding(5);
+            this.imgSettings.Name = "imgSettings";
+            this.imgSettings.Size = new System.Drawing.Size(31, 25);
+            this.imgSettings.TabIndex = 15;
+            this.imgSettings.TabStop = false;
+            this.ttipOrderAssist.SetToolTip(this.imgSettings, "Opens a window which contains various program settings.");
+            this.imgSettings.Click += new System.EventHandler(this.imgSettings_Click);
+            this.imgSettings.MouseEnter += new System.EventHandler(this.imgSettings_MouseEnter);
+            // 
             // splitMain
             // 
             this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -206,7 +224,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             this.splitMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitMain.Location = new System.Drawing.Point(0, 0);
+            this.splitMain.Location = new System.Drawing.Point(1, 30);
             this.splitMain.Margin = new System.Windows.Forms.Padding(0);
             this.splitMain.Name = "splitMain";
             this.splitMain.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -224,8 +242,8 @@
             this.splitMain.Panel2.Controls.Add(this.splitActiveOrders);
             this.splitMain.Panel2.Controls.Add(this.groupTrade);
             this.splitMain.Panel2MinSize = 200;
-            this.splitMain.Size = new System.Drawing.Size(953, 650);
-            this.splitMain.SplitterDistance = 438;
+            this.splitMain.Size = new System.Drawing.Size(951, 620);
+            this.splitMain.SplitterDistance = 412;
             this.splitMain.SplitterWidth = 8;
             this.splitMain.TabIndex = 13;
             this.splitMain.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitMain_SplitterMoved);
@@ -240,7 +258,7 @@
             this.tabsMain.Location = new System.Drawing.Point(0, 0);
             this.tabsMain.Name = "tabsMain";
             this.tabsMain.SelectedIndex = 0;
-            this.tabsMain.Size = new System.Drawing.Size(951, 436);
+            this.tabsMain.Size = new System.Drawing.Size(949, 410);
             this.tabsMain.TabIndex = 2;
             this.tabsMain.SelectedIndexChanged += new System.EventHandler(this.tabsMain_SelectedIndexChanged);
             // 
@@ -250,7 +268,7 @@
             this.pgTrade.Location = new System.Drawing.Point(4, 28);
             this.pgTrade.Name = "pgTrade";
             this.pgTrade.Padding = new System.Windows.Forms.Padding(3);
-            this.pgTrade.Size = new System.Drawing.Size(943, 404);
+            this.pgTrade.Size = new System.Drawing.Size(941, 378);
             this.pgTrade.TabIndex = 0;
             this.pgTrade.Text = "Trade";
             this.pgTrade.UseVisualStyleBackColor = true;
@@ -260,12 +278,13 @@
             this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webBrowser.Location = new System.Drawing.Point(3, 3);
             this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(937, 398);
+            this.webBrowser.Size = new System.Drawing.Size(935, 372);
             this.webBrowser.TabIndex = 0;
             this.webBrowser.UseHttpActivityObserver = false;
             this.webBrowser.Navigating += new System.EventHandler<Gecko.Events.GeckoNavigatingEventArgs>(this.webBrowser_Navigating);
             this.webBrowser.DocumentCompleted += new System.EventHandler(this.webBrowser_DocumentCompleted);
             this.webBrowser.CreateWindow += new System.EventHandler<Gecko.GeckoCreateWindowEventArgs>(this.webBrowser_CreateWindow);
+            this.webBrowser.DomClick += new System.EventHandler<Gecko.DomEventArgs>(this.webBrowser_DomClick);
             // 
             // gridBalances
             // 
@@ -356,8 +375,8 @@
             // 
             this.splitActiveOrders.Panel2.Controls.Add(this.gridSell);
             this.splitActiveOrders.Panel2MinSize = 100;
-            this.splitActiveOrders.Size = new System.Drawing.Size(443, 176);
-            this.splitActiveOrders.SplitterDistance = 220;
+            this.splitActiveOrders.Size = new System.Drawing.Size(441, 176);
+            this.splitActiveOrders.SplitterDistance = 219;
             this.splitActiveOrders.TabIndex = 13;
             // 
             // gridBuy
@@ -408,7 +427,7 @@
             this.gridBuy.ShowCellToolTips = false;
             this.gridBuy.ShowEditingIcon = false;
             this.gridBuy.ShowRowErrors = false;
-            this.gridBuy.Size = new System.Drawing.Size(218, 174);
+            this.gridBuy.Size = new System.Drawing.Size(217, 174);
             this.gridBuy.TabIndex = 0;
             this.gridBuy.TabStop = false;
             this.gridBuy.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);
@@ -514,7 +533,7 @@
             this.gridSell.ShowCellToolTips = false;
             this.gridSell.ShowEditingIcon = false;
             this.gridSell.ShowRowErrors = false;
-            this.gridSell.Size = new System.Drawing.Size(217, 174);
+            this.gridSell.Size = new System.Drawing.Size(216, 174);
             this.gridSell.TabIndex = 0;
             this.gridSell.TabStop = false;
             this.gridSell.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridBuySell_CellContentClick);
@@ -797,6 +816,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             this.ClientSize = new System.Drawing.Size(953, 672);
+            this.Controls.Add(this.imgSettings);
             this.Controls.Add(this.stripMain);
             this.Controls.Add(this.splitMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -810,6 +830,7 @@
             this.conmenTabs.ResumeLayout(false);
             this.stripMain.ResumeLayout(false);
             this.stripMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imgSettings)).EndInit();
             this.splitMain.Panel1.ResumeLayout(false);
             this.splitMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
@@ -878,6 +899,7 @@
         private System.Windows.Forms.TabPage pgTrade;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCurrency;
         private System.Windows.Forms.DataGridViewLinkColumn colBalance;
+        private System.Windows.Forms.PictureBox imgSettings;
     }
 }
 

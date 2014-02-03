@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Windows.Forms;
 
 namespace CoinPost
 {
-    public partial class formCredentials : Form
+    public partial class formCredentials : CoinPostGUI.Window
     {
         public string APIKey { get; private set; }
         public string APISecret { get; private set; }
@@ -21,11 +22,11 @@ namespace CoinPost
             this.validate_password = initial_login;
             if (!initial_login)
             {
-                this.txtAPIKey.Enabled = false;
+                this.txtAPIKey.Enabled = this.txtAPIKey.Visible = false;
                 this.txtAPIKey.Text = "";
-                this.txtSecret.Enabled = false;
+                this.txtSecret.Enabled = this.txtSecret.Visible = false;
                 this.txtSecret.Text = "";
-                this.Size = new Size(this.Width, this.Height - this.txtPassword.Top+10);
+                this.Size = new Size(this.Width, this.Height - this.txtPassword.Top+30);
             }
         }
 
@@ -41,6 +42,7 @@ namespace CoinPost
             this.APIPassword = this.txtPassword.Text;
             this.DialogResult = DialogResult.OK;
             this.Close();
+            return;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -83,6 +85,13 @@ namespace CoinPost
             {
                 caller.Text = "";
             }
+        }
+
+        private void imgNew_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Retry;
+            this.Close();
+            return;
         }
 
 

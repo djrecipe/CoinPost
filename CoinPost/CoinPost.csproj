@@ -12,10 +12,14 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,12 +54,24 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>C:\SQLite.NET\bin\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BtceData.cs" />
+    <Compile Include="formBalance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="formBalance.Designer.cs">
+      <DependentUpon>formBalance.cs</DependentUpon>
+    </Compile>
     <Compile Include="formCredentials.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,6 +90,12 @@
     <Compile Include="formModifyOrder.Designer.cs">
       <DependentUpon>formModifyOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="formSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="formSettings.Designer.cs">
+      <DependentUpon>formSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="formTradeHistory.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,6 +105,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
+    <EmbeddedResource Include="formBalance.resx">
+      <DependentUpon>formBalance.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="formCredentials.resx">
       <DependentUpon>formCredentials.cs</DependentUpon>
     </EmbeddedResource>
@@ -91,6 +116,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="formModifyOrder.resx">
       <DependentUpon>formModifyOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="formSettings.resx">
+      <DependentUpon>formSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="formTradeHistory.resx">
       <DependentUpon>formTradeHistory.cs</DependentUpon>
@@ -133,6 +161,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\scrooge.ico" />
+    <Content Include="Resources\add.png" />
+    <Content Include="Resources\Gear.png" />
     <Content Include="Resources\scrooge.jpg" />
     <Content Include="Resources\trade.wav" />
     <Content Include="Resources\x.bmp" />

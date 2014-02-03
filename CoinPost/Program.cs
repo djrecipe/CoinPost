@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using BtcE;
+using System.Runtime.InteropServices;
 
 namespace CoinPost
 {
@@ -393,6 +394,24 @@ namespace CoinPost
             formMain fMain=new formMain();
             if(fMain.is_valid)
                 Application.Run(fMain);
+        }
+    }
+    class Graphics
+    {
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, Int32 wMsg, bool wParam, Int32 lParam);
+
+        private const int WM_SETREDRAW = 11;
+
+        public static void Suspend(Control parent)
+        {
+            SendMessage(parent.Handle, WM_SETREDRAW, false, 0);
+        }
+
+        public static void Resume(Control parent)
+        {
+            SendMessage(parent.Handle, WM_SETREDRAW, true, 0);
+            parent.Refresh();
         }
     }
 }
