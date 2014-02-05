@@ -20,6 +20,7 @@ namespace CoinPost
         public formTradeHistory(formMain.delEmpty callback_in)
         {
             this.timerHighlight.Elapsed += timerHighlight_Elapsed;
+            this.timerHighlight.Enabled = false;
             this.InitializeComponent();
             this.cbToggle = callback_in;
             this.gridBuy.ClearSelection();
@@ -34,7 +35,7 @@ namespace CoinPost
             string pair0 = row.Cells[2].Value.ToString().Split(' ')[1], pair1 = row.Cells[3].Value.ToString().Split(' ')[1];
             double price = Convert.ToDouble(row.Cells[3].Value.ToString().Split(' ')[0]);
             int order_id = Convert.ToInt32(row.Cells[0].Value);
-            Graphics.Suspend(this.is_sell_grid ? this.gridBuy : this.gridSell);
+            //Graphics.Suspend(this.is_sell_grid ? this.gridBuy : this.gridSell);
             foreach (DataGridViewRow r in (this.is_sell_grid?this.gridBuy.Rows:this.gridSell.Rows))
             {
                 if (Convert.ToInt32(r.Cells[0].Value) > order_id && pair0 == r.Cells[2].Value.ToString().Split(' ')[1] && pair1 == r.Cells[3].Value.ToString().Split(' ')[1])
@@ -42,7 +43,8 @@ namespace CoinPost
                     double new_price = Convert.ToDouble(r.Cells[3].Value.ToString().Split(' ')[0]);
                     foreach (DataGridViewCell cell in r.Cells)
                     {
-                        cell.Style.BackColor = Color.FromArgb(price * 0.998 < new_price ? 15 : 0, price * 0.998 >= new_price ? 15 : 0, 0);
+                        bool good_price = ((price * 0.998 >= new_price && this.is_sell_grid) || (price * 0.998 < new_price && !this.is_sell_grid));
+                        cell.Style.BackColor = Color.FromArgb(!good_price ? 15 : 0, good_price ? 15 : 0, 0);
                         cell.Style.ForeColor = cell.ColumnIndex == 3 ? Color.FromArgb(122, 224, 122) : Color.FromArgb(0, 174, 0);
                     }
                 }
@@ -55,7 +57,7 @@ namespace CoinPost
                     }
                 }
             }
-            Graphics.Resume(this.is_sell_grid ? this.gridBuy : this.gridSell);
+            //Graphics.Resume(this.is_sell_grid ? this.gridBuy : this.gridSell);
             return;
         }
         private void HighlightOppositeRows(bool target_sell)
