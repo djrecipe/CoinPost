@@ -167,12 +167,15 @@
             this.lblTotalBalance.AutoSize = false;
             this.lblTotalBalance.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.lblTotalBalance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
+            this.lblTotalBalance.IsLink = true;
+            this.lblTotalBalance.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
             this.lblTotalBalance.Name = "lblTotalBalance";
             this.lblTotalBalance.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblTotalBalance.Size = new System.Drawing.Size(803, 17);
+            this.lblTotalBalance.Size = new System.Drawing.Size(772, 17);
             this.lblTotalBalance.Spring = true;
             this.lblTotalBalance.Text = "Total Balance: $ 0000.00";
             this.lblTotalBalance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTotalBalance.Click += new System.EventHandler(this.lblTotalBalance_Click);
             // 
             // ttipOrderAssist
             // 

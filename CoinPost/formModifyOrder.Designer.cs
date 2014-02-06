@@ -44,7 +44,7 @@
             // 
             // lklblPrice
             // 
-            this.lklblPrice.Location = new System.Drawing.Point(54, 28);
+            this.lklblPrice.Location = new System.Drawing.Point(58, 51);
             this.lklblPrice.Name = "lklblPrice";
             this.lklblPrice.Size = new System.Drawing.Size(110, 20);
             this.lklblPrice.TabIndex = 0;
@@ -55,7 +55,7 @@
             // 
             // lklblQuantity
             // 
-            this.lklblQuantity.Location = new System.Drawing.Point(54, 51);
+            this.lklblQuantity.Location = new System.Drawing.Point(58, 74);
             this.lklblQuantity.Name = "lklblQuantity";
             this.lklblQuantity.Size = new System.Drawing.Size(110, 20);
             this.lklblQuantity.TabIndex = 1;
@@ -67,8 +67,10 @@
             // lblPrice
             // 
             this.lblPrice.AutoSize = true;
+            this.lblPrice.BackColor = System.Drawing.Color.Transparent;
             this.lblPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPrice.Location = new System.Drawing.Point(18, 32);
+            this.lblPrice.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.lblPrice.Location = new System.Drawing.Point(22, 55);
             this.lblPrice.Name = "lblPrice";
             this.lblPrice.Size = new System.Drawing.Size(34, 13);
             this.lblPrice.TabIndex = 2;
@@ -77,8 +79,10 @@
             // lblQuantity
             // 
             this.lblQuantity.AutoSize = true;
+            this.lblQuantity.BackColor = System.Drawing.Color.Transparent;
             this.lblQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblQuantity.Location = new System.Drawing.Point(3, 55);
+            this.lblQuantity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.lblQuantity.Location = new System.Drawing.Point(7, 78);
             this.lblQuantity.Name = "lblQuantity";
             this.lblQuantity.Size = new System.Drawing.Size(49, 13);
             this.lblQuantity.TabIndex = 3;
@@ -86,7 +90,7 @@
             // 
             // txtPrice
             // 
-            this.txtPrice.Location = new System.Drawing.Point(170, 28);
+            this.txtPrice.Location = new System.Drawing.Point(174, 51);
             this.txtPrice.Name = "txtPrice";
             this.txtPrice.Size = new System.Drawing.Size(111, 20);
             this.txtPrice.TabIndex = 4;
@@ -94,7 +98,7 @@
             // 
             // txtQuantity
             // 
-            this.txtQuantity.Location = new System.Drawing.Point(170, 51);
+            this.txtQuantity.Location = new System.Drawing.Point(174, 74);
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(111, 20);
             this.txtQuantity.TabIndex = 5;
@@ -103,8 +107,10 @@
             // lblOld
             // 
             this.lblOld.AutoSize = true;
+            this.lblOld.BackColor = System.Drawing.Color.Transparent;
             this.lblOld.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOld.Location = new System.Drawing.Point(87, 7);
+            this.lblOld.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.lblOld.Location = new System.Drawing.Point(91, 30);
             this.lblOld.Name = "lblOld";
             this.lblOld.Size = new System.Drawing.Size(41, 13);
             this.lblOld.TabIndex = 6;
@@ -113,8 +119,10 @@
             // lblNew
             // 
             this.lblNew.AutoSize = true;
+            this.lblNew.BackColor = System.Drawing.Color.Transparent;
             this.lblNew.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNew.Location = new System.Drawing.Point(210, 7);
+            this.lblNew.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.lblNew.Location = new System.Drawing.Point(214, 30);
             this.lblNew.Name = "lblNew";
             this.lblNew.Size = new System.Drawing.Size(29, 13);
             this.lblNew.TabIndex = 7;
@@ -123,7 +131,7 @@
             // btnCancel
             // 
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancel.Location = new System.Drawing.Point(57, 105);
+            this.btnCancel.Location = new System.Drawing.Point(61, 128);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(92, 23);
             this.btnCancel.TabIndex = 8;
@@ -134,7 +142,7 @@
             // btnAccept
             // 
             this.btnAccept.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAccept.Location = new System.Drawing.Point(179, 105);
+            this.btnAccept.Location = new System.Drawing.Point(183, 128);
             this.btnAccept.Name = "btnAccept";
             this.btnAccept.Size = new System.Drawing.Size(92, 23);
             this.btnAccept.TabIndex = 9;
@@ -144,7 +152,9 @@
             // 
             // lblOrderType
             // 
-            this.lblOrderType.Location = new System.Drawing.Point(80, 139);
+            this.lblOrderType.BackColor = System.Drawing.Color.Transparent;
+            this.lblOrderType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
+            this.lblOrderType.Location = new System.Drawing.Point(84, 162);
             this.lblOrderType.Name = "lblOrderType";
             this.lblOrderType.Size = new System.Drawing.Size(150, 18);
             this.lblOrderType.TabIndex = 10;
@@ -153,10 +163,10 @@
             // 
             // txtTotal
             // 
-            this.txtTotal.Location = new System.Drawing.Point(83, 77);
+            this.txtTotal.Location = new System.Drawing.Point(106, 100);
             this.txtTotal.Name = "txtTotal";
             this.txtTotal.ReadOnly = true;
-            this.txtTotal.Size = new System.Drawing.Size(196, 20);
+            this.txtTotal.Size = new System.Drawing.Size(180, 20);
             this.txtTotal.TabIndex = 11;
             this.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -164,7 +174,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(301, 166);
+            this.ClientSize = new System.Drawing.Size(301, 186);
             this.Controls.Add(this.txtTotal);
             this.Controls.Add(this.lblOrderType);
             this.Controls.Add(this.btnAccept);
@@ -177,9 +187,8 @@
             this.Controls.Add(this.lblPrice);
             this.Controls.Add(this.lklblQuantity);
             this.Controls.Add(this.lklblPrice);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "formModifyOrder";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Resizable = false;
             this.Text = "Modify an Existing Order";
             this.ResumeLayout(false);
             this.PerformLayout();

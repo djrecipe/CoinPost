@@ -28,47 +28,46 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            this.chartBalance = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            ((System.ComponentModel.ISupportInitialize)(this.chartBalance)).BeginInit();
+            this.components = new System.ComponentModel.Container();
+            this.graphMain = new ZedGraph.ZedGraphControl();
             this.SuspendLayout();
             // 
-            // chartBalance
+            // graphMain
             // 
-            this.chartBalance.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.graphMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.chartBalance.BackColor = System.Drawing.Color.Transparent;
-            this.chartBalance.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            chartArea1.BackColor = System.Drawing.Color.Transparent;
-            chartArea1.BorderColor = System.Drawing.Color.White;
-            chartArea1.Name = "areaMain";
-            this.chartBalance.ChartAreas.Add(chartArea1);
-            this.chartBalance.Location = new System.Drawing.Point(1, 30);
-            this.chartBalance.Name = "chartBalance";
-            this.chartBalance.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Grayscale;
-            series1.ChartArea = "areaMain";
-            series1.Name = "Series1";
-            this.chartBalance.Series.Add(series1);
-            this.chartBalance.Size = new System.Drawing.Size(282, 231);
-            this.chartBalance.TabIndex = 0;
+            this.graphMain.BackColor = System.Drawing.Color.Transparent;
+            this.graphMain.Location = new System.Drawing.Point(1, 30);
+            this.graphMain.Margin = new System.Windows.Forms.Padding(0);
+            this.graphMain.Name = "graphMain";
+            this.graphMain.ScrollGrace = 0D;
+            this.graphMain.ScrollMaxX = 0D;
+            this.graphMain.ScrollMaxY = 0D;
+            this.graphMain.ScrollMaxY2 = 0D;
+            this.graphMain.ScrollMinX = 0D;
+            this.graphMain.ScrollMinY = 0D;
+            this.graphMain.ScrollMinY2 = 0D;
+            this.graphMain.Size = new System.Drawing.Size(283, 232);
+            this.graphMain.TabIndex = 1;
+            this.graphMain.DoubleClick += new System.EventHandler(this.graphMain_DoubleClick);
             // 
             // formBalance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
-            this.Controls.Add(this.chartBalance);
+            this.Controls.Add(this.graphMain);
             this.Name = "formBalance";
             this.Text = "formBalance";
-            ((System.ComponentModel.ISupportInitialize)(this.chartBalance)).EndInit();
+            this.Load += new System.EventHandler(this.formBalance_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartBalance;
+        private ZedGraph.ZedGraphControl graphMain;
+
     }
 }

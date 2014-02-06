@@ -37,3 +37,4 @@ D:\space\vcsharp\CoinPost\CoinPost\bin\Release\System.Data.SQLite.dll
 D:\space\vcsharp\CoinPost\CoinPost\bin\Release\System.Data.SQLite.xml
 D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.formSettings.resources
 D:\space\vcsharp\CoinPost\CoinPost\obj\Release\CoinPost.formBalance.resources
+D:\space\vcsharp\CoinPost\CoinPost\bin\Release\ZedGraph.dll

@@ -316,7 +316,6 @@ namespace CoinPost
             if (force_log || now.Subtract(this.last_log_time).TotalHours > 1.0)
             {
                 double value_out = 0.0;
-                Console.WriteLine("Attempting to log... ({0})\nText: {1}", now.Subtract(this.last_log_time).TotalHours,this.lblTotalBalance.Text);
                 if (Double.TryParse(this.lblTotalBalance.Text.Replace(" ","").Split('$')[1], out value_out))
                 {
                     force_log = true;
@@ -649,7 +648,6 @@ namespace CoinPost
             this.btceDatabase = new BtceDatabase("Main.db");
             BtceData data=this.btceDatabase.Query("select Time from Balance limit 1");
             this.last_log_time=data.GetLastTime();
-            Console.WriteLine("Last Log Time: {0}", this.last_log_time.ToString());
             return;
         }
 
@@ -995,6 +993,13 @@ namespace CoinPost
         private void webBrowser_DomClick(object sender, DomEventArgs e)
         {
             this.user_nav = true;
+            return;
+        }
+
+        private void lblTotalBalance_Click(object sender, EventArgs e)
+        {
+            formBalance fBalance = new formBalance(this.btceDatabase);
+            fBalance.ShowDialog();
             return;
         }
 

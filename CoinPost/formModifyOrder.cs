@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace CoinPost
 {
-    public partial class formModifyOrder : Form
+    public partial class formModifyOrder : CoinPostGUI.Window
     {
         public double? Price { get; private set; }
         public double? Quantity { get; private set; }
