@@ -71,6 +71,7 @@ namespace CoinPost
         #endregion
         #region String Members
         private string current_exchange = "";                                           // current exchange string (see mutExchangeString)      
+        private string last_url = "";
         private string old_quantity_text = "0.0";
         private string old_price_text = "0.0";
         #endregion
@@ -878,20 +879,23 @@ namespace CoinPost
                     context.EvaluateScript("$( document ).ready(function(){$( \"#leftbar_outer\" ).hide();$( \"#leftbar\" ).hide();$( \"#footer\" ).hide();$( \"div.difficulty\" ).hide();$( \"#canvas_cross\" ).mousewheel();});");
                 }
             }
+            this.last_url = this.webBrowser.Url.AbsoluteUri;
             return;
         }
         void webBrowser_Navigating(object sender, Gecko.Events.GeckoNavigatingEventArgs e)
         {
             string[] split_string = e.Uri.AbsoluteUri.Split('/');
             int split_string_len = split_string.Length;
-            if (!this.browsers_enabled || !(e.Uri.AbsoluteUri.Contains("btc-e.com") || e.Uri.AbsoluteUri.Contains("bitcoinwisdom.com")) || split_string_len<2)
+            if (!this.browsers_enabled || !(e.Uri.AbsoluteUri.Contains("btc-e.com/exchange/") || e.Uri.AbsoluteUri.Contains("bitcoinwisdom.com/markets/")) || split_string_len<2 || e.Uri.AbsoluteUri == this.last_url)
             {
                 e.Cancel = true;
                 return;
             }
+            string source_currency = split_string[split_string_len - 1].Substring(0, 3).ToUpper();
+            string target_currency = split_string[split_string_len - 1].Substring(3, 3).ToUpper();
             if (this.user_nav)
             {
-                string tab_name = split_string[split_string_len - 2] + "/" + split_string[split_string_len - 1];
+                string tab_name = (e.Uri.AbsoluteUri.Contains("bitcoinwisdom.com/markets/") ? split_string[split_string_len - 2] : "btce") + " | " + source_currency+"/"+target_currency;
                 bool tab_exists=false;
                 foreach (TabPage t in this.tabsMain.TabPages)
                 {
@@ -930,16 +934,16 @@ namespace CoinPost
             string[] split_string = e.Uri.AbsoluteUri.Split('/');
             int split_string_len = split_string.Length;
             e.Cancel = true;
-            if (e.Uri.AbsoluteUri.Contains("about:blank") || e.Uri.AbsoluteUri.Contains("twitter") || split_string_len < 2)
+            if (!this.browsers_enabled || !(e.Uri.AbsoluteUri.Contains("btc-e.com/exchange/") || e.Uri.AbsoluteUri.Contains("bitcoinwisdom.com/markets/")) || split_string_len < 2)
                 return;
             string source_currency = split_string[split_string_len - 1].Substring(0, 3).ToUpper();
             string target_currency = split_string[split_string_len - 1].Substring(3, 3).ToUpper();
-            if (split_string[split_string_len - 2]=="btce" && source_currency == this.comboSourceCurrency.SelectedItem.ToString() && target_currency == this.comboTargetCurrency.SelectedItem.ToString())
+            if (split_string[split_string_len - 2].Contains("btce") && source_currency == this.comboSourceCurrency.SelectedItem.ToString() && target_currency == this.comboTargetCurrency.SelectedItem.ToString())
             {
                 this.tabsMain.SelectedIndex = 0;
                 return;
             }
-            string tab_name = split_string[split_string_len - 2] + "/" + split_string[split_string_len - 1];
+            string tab_name = (e.Uri.AbsoluteUri.Contains("bitcoinwisdom.com/markets/") ? split_string[split_string_len - 2] : "btce") + " | " + source_currency + "/" + target_currency;
             foreach (TabPage t in this.tabsMain.TabPages)
             {
                 if (t.Text == tab_name)
