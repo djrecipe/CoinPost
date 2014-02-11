@@ -15,14 +15,15 @@ USAGE
 ==========================================================================
 * Change the two drop-down lists (in the lower bottom-left corner) to reflect the two currencies you wish to trade. A bitcoinwisdom chart will be displayed if one exists for that currency.
 * Try clicking the 'Max' buttons to see what they do. Also, you can try clicking your balance for any given currency and your price/quantity fields will be intelligently updated depending on your currently selected currencies.
+* Hover over the 'Buy' or 'Sell' button to see the prices required to make a minimum gain.
 * Cancel or modify an already existing order by clicking on the "X" (cancel) or "M" (modify) buttons next to the order.
 
 
 NOTES
 ==========================================================================
 * Once you close your web browser your API key and secret will be hidden FOREVER. If you lose the CoinPost.key file, you will have to disable your old API key and generate a new one (which is a painless process, thankfully).
-* You will have to generate a new API key and secret and a new CoinPost.key file for every computer you run the application on.
+* You should generate a new API key and secret and a new CoinPost.key file for every computer you run the application on.
 
 KNOWN ISSUES
 ==========================================================================
-* None, at the moment.
+* Leaving the program open for a long period of time can cause the program to crash and it must be re-opened.
