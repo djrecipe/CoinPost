@@ -5,4 +5,3 @@ D:\space\vcsharp\CoinPost\CoinPostGUI\obj\Release\CoinPostGUI.dll
 D:\space\vcsharp\CoinPost\CoinPostGUI\obj\Release\CoinPostGUI.pdb
 D:\space\vcsharp\CoinPost\CoinPostGUI\obj\Release\CoinPostGUI.Window.resources
 D:\space\vcsharp\CoinPost\CoinPostGUI\obj\Release\CoinPostGUI.csproj.GenerateResource.Cache
-D:\space\vcsharp\CoinPost\CoinPostGUI\obj\Release\CoinPostGUI.csprojResolveAssemblyReference.cache

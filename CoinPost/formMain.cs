@@ -605,6 +605,7 @@ namespace CoinPost
         private void comboBidCurrency_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox caller = (ComboBox)sender;
+            this.user_nav = false;
             if (caller.SelectedIndex != -1 && Exchange.non_usd_pairs.Contains(caller.SelectedItem.ToString()))
             {
                 this.comboTargetCurrency.SelectedIndex = 0;
@@ -622,6 +623,7 @@ namespace CoinPost
         private void comboTargetCurrency_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox caller = (ComboBox)sender;
+            this.user_nav = false;
             if (caller.SelectedIndex == 0 && this.comboSourceCurrency.SelectedIndex == 0)
                 this.comboSourceCurrency.SelectedIndex = 1;
             else if (caller.SelectedIndex == 1 && this.comboSourceCurrency.SelectedIndex != -1 && Exchange.non_usd_pairs.Contains(caller.SelectedItem.ToString()))
