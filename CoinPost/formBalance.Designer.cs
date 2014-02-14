@@ -48,7 +48,7 @@
             this.graphMain.ScrollMinX = 0D;
             this.graphMain.ScrollMinY = 0D;
             this.graphMain.ScrollMinY2 = 0D;
-            this.graphMain.Size = new System.Drawing.Size(283, 232);
+            this.graphMain.Size = new System.Drawing.Size(581, 416);
             this.graphMain.TabIndex = 1;
             this.graphMain.DoubleClick += new System.EventHandler(this.graphMain_DoubleClick);
             // 
@@ -56,7 +56,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.ClientSize = new System.Drawing.Size(582, 446);
             this.Controls.Add(this.graphMain);
             this.Name = "formBalance";
             this.Text = "formBalance";

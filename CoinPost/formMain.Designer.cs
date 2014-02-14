@@ -171,7 +171,7 @@
             this.lblTotalBalance.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
             this.lblTotalBalance.Name = "lblTotalBalance";
             this.lblTotalBalance.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.lblTotalBalance.Size = new System.Drawing.Size(772, 17);
+            this.lblTotalBalance.Size = new System.Drawing.Size(803, 17);
             this.lblTotalBalance.Spring = true;
             this.lblTotalBalance.Text = "Total Balance: $ 0000.00";
             this.lblTotalBalance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -413,7 +413,7 @@
             dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             dataGridViewCellStyle8.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle8.ForeColor = System.Drawing.Color.DarkGreen;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.DimGray;
             dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Chartreuse;
             dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.gridBuy.DefaultCellStyle = dataGridViewCellStyle8;
@@ -519,7 +519,7 @@
             dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             dataGridViewCellStyle14.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle14.ForeColor = System.Drawing.Color.DarkGreen;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.Gray;
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.DimGray;
             dataGridViewCellStyle14.SelectionForeColor = System.Drawing.Color.Chartreuse;
             dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.gridSell.DefaultCellStyle = dataGridViewCellStyle14;
@@ -655,7 +655,7 @@
             this.txtTotal.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtTotal.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.txtTotal.Location = new System.Drawing.Point(77, 110);
+            this.txtTotal.Location = new System.Drawing.Point(77, 120);
             this.txtTotal.Name = "txtTotal";
             this.txtTotal.ReadOnly = true;
             this.txtTotal.Size = new System.Drawing.Size(140, 15);

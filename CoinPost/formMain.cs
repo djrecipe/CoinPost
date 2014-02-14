@@ -847,7 +847,7 @@ namespace CoinPost
                                             "\n0.5%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumSellThreshold * 1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
                                             "\n1.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumSellThreshold * 1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
                                             "\n2.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumSellThreshold * 1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());
-            this.ttipOrderAssist.SetToolTip(this.btnSell, "0.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumBuyThreshold).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
+            this.ttipOrderAssist.SetToolTip(this.btnSell, "0.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumBuyThreshold, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
                                             "\n0.5%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumBuyThreshold * 1 / 1.005, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
                                             "\n1.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumBuyThreshold * 1 / 1.01, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString() +
                                             "\n2.0%: " + Math.Round(Convert.ToDouble(this.recent_price) * formMain.MinimumBuyThreshold * 1 / 1.02, 6).ToString() + " " + this.comboTargetCurrency.SelectedItem.ToString());

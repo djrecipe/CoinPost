@@ -81,15 +81,20 @@ namespace CoinPost
         private void lklblQuantity_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             double dbl_price = 0.0;
-            if (this.is_buy_order && Double.TryParse(this.txtPrice.Text, out dbl_price))
-                this.txtQuantity.Text = (this.max_balance / dbl_price).ToString();
-            else
-                this.txtQuantity.Text = this.lklblQuantity.Text.Split(' ')[0];
+            this.txtQuantity.Text = ( this.is_buy_order && Double.TryParse(this.txtPrice.Text, out dbl_price) ? (this.max_balance / dbl_price).ToString() : this.lklblQuantity.Text.Split(' ')[0] );
+            this.txtQuantity.Focus();
+            this.txtQuantity.SelectionStart = this.txtQuantity.TextLength;
+            this.txtQuantity.SelectionLength = 0;
+            return;
         }
 
         private void lklblPrice_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             this.txtPrice.Text = this.lklblPrice.Text.Split(' ')[0];
+            this.txtPrice.Focus();
+            this.txtPrice.SelectionStart = this.txtPrice.TextLength;
+            this.txtPrice.SelectionLength = 0;
+            return;
         }
 
         private void txtPrice_TextChanged(object sender, EventArgs e)

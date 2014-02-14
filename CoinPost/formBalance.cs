@@ -44,7 +44,7 @@ namespace CoinPost
             double[] x_out = new double[data.Data.Rows.Count], y_out = new double[data.Data.Rows.Count];
             for (int i = 0; i < data.Data.Rows.Count; i++)
             {
-                DateTime dt = UnixTime.ConvertToDateTime(Convert.ToUInt32(data.Data.Rows[i][0]));
+                DateTime dt = UnixTime.ConvertToDateTime(Convert.ToUInt32(data.Data.Rows[i][0])).ToLocalTime();
                 x_out[i] = new XDate(dt.Year,dt.Month,dt.Day,dt.Hour,dt.Minute,dt.Second,dt.Millisecond);
                 y_out[i] = Convert.ToDouble(data.Data.Rows[i][1]);
             }

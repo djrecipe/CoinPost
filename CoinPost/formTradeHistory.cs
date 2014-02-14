@@ -44,8 +44,8 @@ namespace CoinPost
                     foreach (DataGridViewCell cell in r.Cells)
                     {
                         bool good_price = ((price * 0.998 >= new_price && this.is_sell_grid) || (price * 0.998 < new_price && !this.is_sell_grid));
-                        cell.Style.BackColor = Color.FromArgb(!good_price ? 15 : 0, good_price ? 15 : 0, 0);
-                        cell.Style.ForeColor = cell.ColumnIndex == 3 ? Color.FromArgb(122, 224, 122) : Color.FromArgb(0, 174, 0);
+                        cell.Style.BackColor = Color.FromArgb(!good_price ? 237 : 100, good_price ? 215 : 100, 120);
+                        cell.Style.ForeColor = (cell.ColumnIndex == 3 ? Color.FromArgb(0,46,0) : Color.Black);
                     }
                 }
                 else if (r.Cells[0].Style.BackColor.B != 10)
