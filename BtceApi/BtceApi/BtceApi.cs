@@ -34,7 +34,6 @@ namespace BtcE
                 {
                     int first_colon = error_str.IndexOf(':');
                     BtceApi.nonce = Convert.ToUInt32(error_str.Substring(first_colon + 1, error_str.IndexOf(',', first_colon) - first_colon - 1)) + 1;
-
                 }
                 else if (error_str.Contains("bad status"))
                     MessageBox.Show("Could not modify the order. The order likely no longer exists.");
@@ -168,30 +167,39 @@ namespace BtcE
 
             byte[] data = Encoding.ASCII.GetBytes(BuildPostData(args));
 
-            WebRequest request = WebRequest.Create(new Uri("https://btc-e.com/tapi")) as HttpWebRequest;
-            if (request == null)
-                return null;
-
-            request.Method = "POST";
-            request.Timeout = 15000;
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = data.Length;
-
-            request.Headers.Add("Key", key);
-            request.Headers.Add("Sign", ByteArrayToString(hashMaker.ComputeHash(data)).ToLower());
-            Stream reqStream = request.GetRequestStream();
-            reqStream.Write(data, 0, data.Length);
-            reqStream.Close();
-            string retval = null;
+            WebRequest request = null;
             try
             {
-                retval = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+                request = WebRequest.Create(new Uri("https://btc-e.com/tapi")) as HttpWebRequest;
             }
-            catch (Exception e)
+            catch(Exception e)
             {
+                request = null;
+            }
+            string retval = null;
+            if (request != null)
+            {
+                request.Method = "POST";
+                request.Timeout = 15000;
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentLength = data.Length;
+
+                request.Headers.Add("Key", key);
+                request.Headers.Add("Sign", ByteArrayToString(hashMaker.ComputeHash(data)).ToLower());
+                Stream reqStream = request.GetRequestStream();
+                reqStream.Write(data, 0, data.Length);
+                reqStream.Close();
+                try
+                {
+                    retval = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+                }
+                catch (Exception e)
+                {
+                    retval = null;
+                }
             }
             mutQuery.ReleaseMutex();
-                return retval;
+            return retval;
         }
         static string ByteArrayToString(byte[] ba)
         {
@@ -239,7 +247,15 @@ namespace BtcE
 		}
 		static string Query(string url)
         {
-            WebRequest request = WebRequest.Create(url);
+            WebRequest request = null;
+            try
+            {
+                request = WebRequest.Create(url);
+            }
+            catch(Exception e)
+            {
+                request = null;
+            }
             if (request == null)
                 return null;
 			request.Proxy = WebRequest.DefaultWebProxy;
