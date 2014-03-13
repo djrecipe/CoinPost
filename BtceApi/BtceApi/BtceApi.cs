@@ -176,7 +176,7 @@ namespace BtcE
             {
                 request = null;
             }
-            string retval = null;
+            string retval = null, exception_msg = null;
             if (request != null)
             {
                 request.Method = "POST";
@@ -186,19 +186,32 @@ namespace BtcE
 
                 request.Headers.Add("Key", key);
                 request.Headers.Add("Sign", ByteArrayToString(hashMaker.ComputeHash(data)).ToLower());
-                Stream reqStream = request.GetRequestStream();
-                reqStream.Write(data, 0, data.Length);
-                reqStream.Close();
+                Stream reqStream = null;
+                try
+                {
+                    reqStream = request.GetRequestStream();
+                    reqStream.Write(data, 0, data.Length);
+                    reqStream.Close();
+                }
+                catch(System.Net.WebException e)
+                {
+                    exception_msg = "Please make sure you are connected to the internet. Exception message: \n\n'" + e.Message + "'";
+                    retval = null;
+                    reqStream = null;
+                }
                 try
                 {
                     retval = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
                 }
                 catch (Exception e)
                 {
+                    exception_msg = "Please make sure you are connected to the internet. Exception message: \n\n'" + e.Message + "'";
                     retval = null;
                 }
             }
             mutQuery.ReleaseMutex();
+            if(exception_msg!=null)
+                MessageBox.Show(exception_msg);
             return retval;
         }
         static string ByteArrayToString(byte[] ba)
@@ -227,23 +240,27 @@ namespace BtcE
 		}
 		public static Depth GetDepth(string pair)
         {
-			string queryStr = string.Format("https://btc-e.com/api/2/{0}/depth", pair);
-			return new Depth(JObject.Parse(Query(queryStr)));
+            string queryStr = string.Format("https://btc-e.com/api/2/{0}/depth", pair);
+            queryStr = Query(queryStr);
+			return queryStr == null ? null : new Depth(JObject.Parse(Query(queryStr)));
 		}
 		public static Ticker GetTicker(string pair)
         {
 			string queryStr = string.Format("https://btc-e.com/api/2/{0}/ticker", pair.ToLower());
-			return new Ticker(JObject.Parse(Query(queryStr))["ticker"] as JObject);
+            queryStr = Query(queryStr);
+            return queryStr == null ? null : new Ticker(JObject.Parse(queryStr)["ticker"] as JObject);
 		}
 		public static List<TradeInfo> GetTrades(string pair)
         {
 			string queryStr = string.Format("https://btc-e.com/api/2/{0}/trades", pair);
-			return JArray.Parse(Query(queryStr)).OfType<JObject>().Select(TradeInfo.CreateInstance).ToList();
+            queryStr = Query(queryStr);
+            return queryStr == null ? null : JArray.Parse(queryStr).OfType<JObject>().Select(TradeInfo.CreateInstance).ToList();
 		}
 		public static decimal GetFee(string pair)
         {
-			string queryStr = string.Format("https://btc-e.com/api/2/{0}/fee", pair);
-			return JObject.Parse(Query(queryStr)).Value<decimal>("trade");
+            string queryStr = string.Format("https://btc-e.com/api/2/{0}/fee", pair);
+            queryStr = Query(queryStr);
+            return queryStr == null ? new decimal(0.0) : JObject.Parse(Query(queryStr)).Value<decimal>("trade");
 		}
 		static string Query(string url)
         {
@@ -260,7 +277,15 @@ namespace BtcE
                 return null;
 			request.Proxy = WebRequest.DefaultWebProxy;
 			request.Proxy.Credentials = System.Net.CredentialCache.DefaultCredentials;
-			return new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+            try
+            {
+                return new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+            }
+            catch(System.Net.WebException e)
+            {
+                MessageBox.Show("Please make sure you are connected to the internet. Exception message: \n\n'"+e.Message+"'");
+                return null;
+            }
 		}
 	}
     public static class UnixTime

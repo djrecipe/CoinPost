@@ -40,6 +40,11 @@
             this.btnAccept = new System.Windows.Forms.Button();
             this.lblOrderType = new System.Windows.Forms.Label();
             this.txtTotal = new System.Windows.Forms.TextBox();
+            this.btnPriceUp = new System.Windows.Forms.Button();
+            this.btnPriceDown = new System.Windows.Forms.Button();
+            this.btnQuantityUp = new System.Windows.Forms.Button();
+            this.btnQuantityDown = new System.Windows.Forms.Button();
+            this.lblTotal = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lklblPrice
@@ -59,7 +64,7 @@
             // 
             this.lklblQuantity.BackColor = System.Drawing.Color.Transparent;
             this.lklblQuantity.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(182)))), ((int)(((byte)(255)))));
-            this.lklblQuantity.Location = new System.Drawing.Point(76, 81);
+            this.lklblQuantity.Location = new System.Drawing.Point(76, 133);
             this.lklblQuantity.Name = "lklblQuantity";
             this.lklblQuantity.Size = new System.Drawing.Size(110, 20);
             this.lklblQuantity.TabIndex = 1;
@@ -86,7 +91,8 @@
             this.lblQuantity.BackColor = System.Drawing.Color.Transparent;
             this.lblQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblQuantity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.lblQuantity.Location = new System.Drawing.Point(21, 85);
+            this.lblQuantity.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblQuantity.Location = new System.Drawing.Point(21, 137);
             this.lblQuantity.Name = "lblQuantity";
             this.lblQuantity.Size = new System.Drawing.Size(49, 13);
             this.lblQuantity.TabIndex = 3;
@@ -112,7 +118,7 @@
             this.txtQuantity.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtQuantity.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtQuantity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(40)))), ((int)(((byte)(0)))));
-            this.txtQuantity.Location = new System.Drawing.Point(194, 83);
+            this.txtQuantity.Location = new System.Drawing.Point(194, 135);
             this.txtQuantity.Margin = new System.Windows.Forms.Padding(5, 5, 5, 10);
             this.txtQuantity.Name = "txtQuantity";
             this.txtQuantity.Size = new System.Drawing.Size(111, 15);
@@ -150,8 +156,8 @@
             this.btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.btnCancel.Location = new System.Drawing.Point(91, 143);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(5);
+            this.btnCancel.Location = new System.Drawing.Point(68, 229);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(20, 10, 5, 10);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(92, 23);
             this.btnCancel.TabIndex = 8;
@@ -165,8 +171,8 @@
             this.btnAccept.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnAccept.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAccept.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.btnAccept.Location = new System.Drawing.Point(213, 143);
-            this.btnAccept.Margin = new System.Windows.Forms.Padding(5, 5, 20, 5);
+            this.btnAccept.Location = new System.Drawing.Point(202, 229);
+            this.btnAccept.Margin = new System.Windows.Forms.Padding(5, 10, 20, 10);
             this.btnAccept.Name = "btnAccept";
             this.btnAccept.Size = new System.Drawing.Size(92, 23);
             this.btnAccept.TabIndex = 9;
@@ -178,7 +184,8 @@
             // 
             this.lblOrderType.BackColor = System.Drawing.Color.Transparent;
             this.lblOrderType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.lblOrderType.Location = new System.Drawing.Point(114, 177);
+            this.lblOrderType.Location = new System.Drawing.Point(106, 267);
+            this.lblOrderType.Margin = new System.Windows.Forms.Padding(5);
             this.lblOrderType.Name = "lblOrderType";
             this.lblOrderType.Size = new System.Drawing.Size(150, 18);
             this.lblOrderType.TabIndex = 10;
@@ -191,19 +198,93 @@
             this.txtTotal.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtTotal.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
-            this.txtTotal.Location = new System.Drawing.Point(125, 118);
-            this.txtTotal.Margin = new System.Windows.Forms.Padding(5, 10, 5, 5);
+            this.txtTotal.Location = new System.Drawing.Point(99, 195);
+            this.txtTotal.Margin = new System.Windows.Forms.Padding(5, 10, 5, 10);
             this.txtTotal.Name = "txtTotal";
             this.txtTotal.ReadOnly = true;
-            this.txtTotal.Size = new System.Drawing.Size(180, 15);
+            this.txtTotal.Size = new System.Drawing.Size(206, 15);
             this.txtTotal.TabIndex = 11;
             this.txtTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // btnPriceUp
+            // 
+            this.btnPriceUp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.btnPriceUp.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnPriceUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPriceUp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.btnPriceUp.Location = new System.Drawing.Point(315, 39);
+            this.btnPriceUp.Margin = new System.Windows.Forms.Padding(5, 5, 20, 5);
+            this.btnPriceUp.Name = "btnPriceUp";
+            this.btnPriceUp.Size = new System.Drawing.Size(25, 23);
+            this.btnPriceUp.TabIndex = 12;
+            this.btnPriceUp.Text = "^";
+            this.btnPriceUp.UseVisualStyleBackColor = false;
+            // 
+            // btnPriceDown
+            // 
+            this.btnPriceDown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.btnPriceDown.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnPriceDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPriceDown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.btnPriceDown.Location = new System.Drawing.Point(315, 72);
+            this.btnPriceDown.Margin = new System.Windows.Forms.Padding(5, 5, 20, 10);
+            this.btnPriceDown.Name = "btnPriceDown";
+            this.btnPriceDown.Size = new System.Drawing.Size(25, 23);
+            this.btnPriceDown.TabIndex = 13;
+            this.btnPriceDown.Text = "v";
+            this.btnPriceDown.UseVisualStyleBackColor = false;
+            // 
+            // btnQuantityUp
+            // 
+            this.btnQuantityUp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.btnQuantityUp.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnQuantityUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnQuantityUp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.btnQuantityUp.Location = new System.Drawing.Point(315, 115);
+            this.btnQuantityUp.Margin = new System.Windows.Forms.Padding(5, 10, 20, 5);
+            this.btnQuantityUp.Name = "btnQuantityUp";
+            this.btnQuantityUp.Size = new System.Drawing.Size(25, 23);
+            this.btnQuantityUp.TabIndex = 14;
+            this.btnQuantityUp.Text = "^";
+            this.btnQuantityUp.UseVisualStyleBackColor = false;
+            // 
+            // btnQuantityDown
+            // 
+            this.btnQuantityDown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.btnQuantityDown.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnQuantityDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnQuantityDown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.btnQuantityDown.Location = new System.Drawing.Point(315, 148);
+            this.btnQuantityDown.Margin = new System.Windows.Forms.Padding(5, 5, 20, 5);
+            this.btnQuantityDown.Name = "btnQuantityDown";
+            this.btnQuantityDown.Size = new System.Drawing.Size(25, 23);
+            this.btnQuantityDown.TabIndex = 15;
+            this.btnQuantityDown.Text = "v";
+            this.btnQuantityDown.UseVisualStyleBackColor = false;
+            // 
+            // lblTotal
+            // 
+            this.lblTotal.AutoSize = true;
+            this.lblTotal.BackColor = System.Drawing.Color.Transparent;
+            this.lblTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(102)))));
+            this.lblTotal.Location = new System.Drawing.Point(36, 196);
+            this.lblTotal.Name = "lblTotal";
+            this.lblTotal.Size = new System.Drawing.Size(34, 13);
+            this.lblTotal.TabIndex = 16;
+            this.lblTotal.Text = "Total:";
+            this.lblTotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // formModifyOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(331, 211);
+            this.ClientSize = new System.Drawing.Size(363, 311);
+            this.Controls.Add(this.lblTotal);
+            this.Controls.Add(this.btnQuantityDown);
+            this.Controls.Add(this.btnQuantityUp);
+            this.Controls.Add(this.btnPriceDown);
+            this.Controls.Add(this.btnPriceUp);
             this.Controls.Add(this.txtTotal);
             this.Controls.Add(this.lblOrderType);
             this.Controls.Add(this.btnAccept);
@@ -238,5 +319,10 @@
         private System.Windows.Forms.Button btnAccept;
         private System.Windows.Forms.Label lblOrderType;
         private System.Windows.Forms.TextBox txtTotal;
+        private System.Windows.Forms.Button btnPriceUp;
+        private System.Windows.Forms.Button btnPriceDown;
+        private System.Windows.Forms.Button btnQuantityUp;
+        private System.Windows.Forms.Button btnQuantityDown;
+        private System.Windows.Forms.Label lblTotal;
     }
 }

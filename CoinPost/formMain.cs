@@ -398,7 +398,9 @@ namespace CoinPost
                     this.SafeUpdateTradeHistory();
                     this.BeginInvoke(this.cbUpdateTotalBalance, total_balance);
                 }
-                this.BeginInvoke(this.cbUpdateLastPrice, BtceApi.GetTicker(this.SafeRetrieveExchangeString()).Last);
+                Ticker ticker = BtceApi.GetTicker(this.SafeRetrieveExchangeString());
+                if(ticker!=null)
+                    this.BeginInvoke(this.cbUpdateLastPrice, ticker.Last);
                 mutValid.ReleaseMutex();
                 Thread.Sleep(900);
             }
@@ -598,6 +600,8 @@ namespace CoinPost
                 return;
             TabPage delete_me = this.tabsMain.SelectedTab;
             this.tabsMain.SelectedIndex = 0;
+            foreach (Control c in delete_me.Controls)
+                c.Dispose();
             this.tabsMain.TabPages.Remove(delete_me);
         }
         #endregion
