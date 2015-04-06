@@ -1,7 +1,7 @@
 CoinPost
 ========
 * brkfstmnchr@gmail.com
-* Cryptocurrency trading app which currently only supports btc-e.
+* Cryptocurrency trading app which only supports btc-e.
 * USE AT YOUR OWN RISK!
 
 INSTRUCTIONS
