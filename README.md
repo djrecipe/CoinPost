@@ -3,7 +3,6 @@ CoinPost
 * brkfstmnchr@gmail.com
 * Cryptocurrency trading app which currently only supports btc-e.
 * USE AT YOUR OWN RISK!
-* Currently this program is in its infancy. Although it is somewhat operational, most of its functionality is simply proving as a proof-of-concept. I plan on pouring a lot of time and effort into this project, so please send me any feedback and suggestions you have. My primary goal is to make a fast, effecient, painless, -and eventually- automated interface for trading cryptocurrencies.
 
 INSTRUCTIONS
 ==========================================================================
@@ -27,3 +26,4 @@ NOTES
 KNOWN ISSUES
 ==========================================================================
 * Leaving the program open for a long period of time can cause the program to crash and it must be re-opened.
+* Currently, this program is not being actively developed or maintained. You eventually might have to fix some API calls to BTC-e or some bitcoinwisdom URLs.
